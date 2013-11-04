@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace OB.Models
+namespace OB.Models.ViewModel
 {
     public class EditEmployeeFamily
     {

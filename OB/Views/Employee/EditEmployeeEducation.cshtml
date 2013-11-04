@@ -1,4 +1,4 @@
-﻿@model OB.Models.EditEmployeeEducation
+﻿@model OB.Models.ViewModel.EditEmployeeEducation
 
 @{
     ViewBag.Title = "EditEmployeeEducation";
@@ -20,7 +20,7 @@
             @Html.EditorFor(model => model.EditEducations)
         </div>
         <p>
-            @Html.LinkToAddNestedForm("添加", "#editEducations", ".editEducation", "editEducations", typeof(OB.Models.EditEducation))
+            @Html.LinkToAddNestedForm("添加", "#editEducations", ".editEducation", "editEducations", typeof(OB.Models.ViewModel.EditEducation))
             <input type="submit" value="Save" />
         </p>
     </fieldset>
