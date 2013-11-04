@@ -1,0 +1,83 @@
+﻿@model OB.Models.EditWork
+@{
+    string tmp = "";
+    if (Model.Delete == true)
+    {
+        tmp = "display:none";
+    }
+}
+<div class="editWork" style="@tmp">
+    @Html.HiddenFor(model => model.Delete, new { @class = "mark-for-delete" })
+    <div class="multiAddItem">
+        <div class="editor-field">
+            @Html.EditorFor(model => model.WorkId)
+            @Html.ValidationMessageFor(model => model.WorkId)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Company)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Company)
+            @Html.ValidationMessageFor(model => model.Company)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Position)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Position)
+            @Html.ValidationMessageFor(model => model.Position)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Begin)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Begin)
+            @Html.ValidationMessageFor(model => model.Begin)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.End)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.End)
+            @Html.ValidationMessageFor(model => model.End)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Contact)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Contact)
+            @Html.ValidationMessageFor(model => model.Contact)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Phone)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Phone)
+            @Html.ValidationMessageFor(model => model.Phone)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Note)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Note)
+            @Html.ValidationMessageFor(model => model.Note)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        @Html.LinkToRemoveNestedForm("移除", "div.editWork", "input.mark-for-delete")
+    </div>
+</div>

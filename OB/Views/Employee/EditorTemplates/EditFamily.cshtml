@@ -1,0 +1,75 @@
+﻿@model OB.Models.EditFamily
+@{
+    string tmp = "";
+    if (Model.Delete == true)
+    {
+        tmp = "display:none";
+    }
+}
+<div class="editFamily" style="@tmp">
+    @Html.HiddenFor(model => model.Delete, new { @class = "mark-for-delete" })
+    <div class="multiAddItem">
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FamilyId)
+            @Html.ValidationMessageFor(model => model.FamilyId)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Relation)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Relation)
+            @Html.ValidationMessageFor(model => model.Relation)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SexId)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.SexId, new SelectList(ViewBag.SexList, "Id", "Name"), String.Empty)
+            @Html.ValidationMessageFor(model => model.SexId)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Company)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Company)
+            @Html.ValidationMessageFor(model => model.Company)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Position)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Position)
+            @Html.ValidationMessageFor(model => model.Position)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Phone)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Phone)
+            @Html.ValidationMessageFor(model => model.Phone)
+        </div>
+    </div>
+
+    <div class="multiAddItem">
+        @Html.LinkToRemoveNestedForm("移除", "div.editFamily", "input.mark-for-delete")
+    </div>
+</div>

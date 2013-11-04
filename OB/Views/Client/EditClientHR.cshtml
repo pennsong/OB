@@ -1,0 +1,40 @@
+﻿@model OB.Models.ViewModel.EditClientHR
+
+@{
+    ViewBag.Title = "EditClientHR";
+}
+
+<h2>EditClientHR</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>EditClientHR</legend>
+        @Html.EditorFor(model => model)
+        @Html.ListBoxFor(model => model.HRIds, new MultiSelectList(OB.Lib.Common.UserList("HR"), "Id", "Name", Model.HRIds), new { @class = "multiselect2side", size = "10" })
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "HRAdminClientIndex")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
+    <script type="text/javascript">
+        $().ready(function () {
+            $(".multiselect2side").multiselect2side();
+        });
+    </script>
+}
+@section Styles {
+    @Styles.Render("~/Content/cw_css/jquery.multiselect2side.css")
+}
+

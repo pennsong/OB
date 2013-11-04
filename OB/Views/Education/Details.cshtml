@@ -1,0 +1,43 @@
+﻿@model OB.Models.Education
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Education</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Employee.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Employee.Name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.School)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.School)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Begin)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Begin)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.End)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.End)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

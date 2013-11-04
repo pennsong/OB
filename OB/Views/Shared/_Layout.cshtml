@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title - 我的 ASP.NET MVC 应用程序</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <header>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p class="site-title">@Html.ActionLink("E-Onboarding", "Index", "Home")</p>
+            </div>
+            <div class="float-right">
+                <section id="login">
+                    @Html.Partial("_LoginPartial")
+                </section>
+                <ul id="menu">
+                    @if (Roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Admin"))
+                    {
+                        Html.RenderAction("AdminMenus", "Home", new { path1 = ViewBag.Path1, path2 = ViewBag.Path2, path3 = ViewBag.Path3 });
+                    }
+                    @if (Roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("HRAdmin"))
+                    {
+                        Html.RenderAction("HRAdminMenus", "Home", new { path1 = ViewBag.Path1, path2 = ViewBag.Path2, path3 = ViewBag.Path3 });
+                    }
+                    @if (Roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("HR"))
+                    {
+                        Html.RenderAction("HRMenus", "Home", new { path1 = ViewBag.Path1, path2 = ViewBag.Path2, path3 = ViewBag.Path3 });
+                    }
+                    @if (Roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Candidate"))
+                    {
+                        Html.RenderAction("CandidateMenus", "Home", new { path1 = ViewBag.Path1, path2 = ViewBag.Path2, path3 = ViewBag.Path3 });
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+            @RenderBody()
+        </section>
+    </div>
+    <footer>
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year - 我的 ASP.NET MVC 应用程序</p>
+            </div>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,42 @@
+﻿@model OB.Models.ViewModel.EditClientPensionCityDocument
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>ClientPensionCityDocument</legend>
+
+        @Html.EditorFor(model => model)
+        @Html.ListBoxFor(model => model.DocumentIds, new MultiSelectList(OB.Lib.Common.ClientDocumentList(Model.ClientName), "Id", "Name", Model.DocumentIds), new { @class = "multiselect2side", size = "10" })
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
+    <script type="text/javascript">
+        $().ready(function () {
+            $(".multiselect2side").multiselect2side();
+        });
+    </script>
+}
+@section Styles {
+    @Styles.Render("~/Content/cw_css/jquery.multiselect2side.css")
+}
+

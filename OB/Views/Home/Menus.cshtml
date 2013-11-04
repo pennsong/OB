@@ -1,0 +1,15 @@
+﻿@model List<OB.Models.ViewModel.Menu>
+<li>
+    @foreach (var item in Model)
+    {
+        @Html.RouteLink(item.Name, new
+    {
+        controller = item.Controller,
+        action = item.Action,
+    },
+    new
+    {
+        @class = (ViewBag.Path1 == item.Name) ? "selected" : null
+    })
+    }
+</li>

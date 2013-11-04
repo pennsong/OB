@@ -1,0 +1,65 @@
+﻿@model OB.Models.EditEducation
+@{
+    string tmp = "";
+    if (Model.Delete == true)
+    {
+        tmp = "display:none";
+    }
+}
+<div class="editEducation" style="@tmp">
+    @Html.HiddenFor(model => model.Delete, new { @class = "mark-for-delete" })
+    <div class="multiAddItem">
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EducationId)
+            @Html.ValidationMessageFor(model => model.EducationId)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.School)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.School)
+            @Html.ValidationMessageFor(model => model.School)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Major)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Major)
+            @Html.ValidationMessageFor(model => model.Major)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DegreeId)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.DegreeId, new SelectList(ViewBag.DegreeList, "Id", "Name"), String.Empty)
+            @Html.ValidationMessageFor(model => model.DegreeId)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Begin)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Begin)
+            @Html.ValidationMessageFor(model => model.Begin)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        <div class="editor-label">
+            @Html.LabelFor(model => model.End)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.End)
+            @Html.ValidationMessageFor(model => model.End)
+        </div>
+    </div>
+    <div class="multiAddItem">
+        @Html.LinkToRemoveNestedForm("移除", "div.editEducation", "input.mark-for-delete")
+    </div>
+</div>

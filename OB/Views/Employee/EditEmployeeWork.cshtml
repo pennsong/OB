@@ -1,0 +1,47 @@
+﻿@model OB.Models.EditEmployeeWork
+
+@{
+    ViewBag.Title = "EditEmployeeWork";
+}
+
+<h2>EditEmployeeWork</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    @Html.Action("EmployeeAbstract", "Employee", new { id = Model.EmployeeId });
+    <fieldset>
+        <legend>EditEmployeeWork</legend>
+
+        @Html.EditorForModel()
+        <div id="editWorks">
+            @Html.EditorFor(model => model.EditWorks)
+        </div>
+        <p>
+            @Html.LinkToAddNestedForm("添加", "#editWorks", ".editWork", "editWorks", typeof(OB.Models.EditWork))
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="@Url.Content("~/Scripts/cw/custom.js")"></script>
+    <script>
+        $(document).ready(function () {
+            $("#editWorks").delegate(".remove", "click", function () {
+                $(this).parent().siblings().children(".editor-field").children('input[name$="Company"]').val('1');
+                $(this).parent().siblings().children(".editor-field").children('input[name$="Position"]').val('1');
+                $(this).parent().siblings().children(".editor-field").children('input[name$="Begin"]').val('2000/01/01');
+                $(this).parent().siblings().children(".editor-field").children('input[name$="Contact"]').val('1');
+                $(this).parent().siblings().children(".editor-field").children('input[name$="Phone"]').val('1');
+            });
+        });
+    </script>
+}

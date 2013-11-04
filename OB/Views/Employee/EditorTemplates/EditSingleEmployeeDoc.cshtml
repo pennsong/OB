@@ -1,0 +1,7 @@
+﻿@model OB.Models.ViewModel.EditSingleEmployeeDoc
+<div class="editSingleEmployeeDoc">
+    @Html.HiddenFor(model => model.EmployeeDocId)
+    @Html.HiddenFor(model => model.DocumentId)
+    @Html.HiddenFor(model => model.DocumentName)
+    @Html.HiddenFor(model => model.ImgPath, new { id = "I_" + Model.DocumentId })
+</div>
