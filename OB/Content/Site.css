@@ -816,3 +816,8 @@ img.doc {
     height: 40px;
     width: 500px;
 }
+
+.multi {
+    min-height: 40px;
+    height: auto;
+}

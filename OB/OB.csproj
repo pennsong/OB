@@ -330,6 +330,7 @@
     <Compile Include="Models\BudgetCenter.cs" />
     <Compile Include="Models\Zhangtao.cs" />
     <Compile Include="Models\Assurance.cs" />
+    <None Include="Properties\PublishProfiles\LocalTest.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\default.png" />
     <Content Include="Scripts\cw\custom.js" />
@@ -549,6 +550,10 @@
     <Content Include="Views\CustomField\Create.cshtml" />
     <Content Include="Views\CustomField\Edit.cshtml" />
     <Content Include="Views\CustomField\Delete.cshtml" />
+    <Content Include="Views\Employee\FrontDetail.cshtml" />
+    <Content Include="Views\Employee\DisplayTemplates\Education.cshtml" />
+    <Content Include="Views\Employee\DisplayTemplates\Work.cshtml" />
+    <Content Include="Views\Employee\DisplayTemplates\Family.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

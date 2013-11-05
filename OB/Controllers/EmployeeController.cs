@@ -78,6 +78,26 @@ namespace OB.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "Candidate")]
+        public ActionResult FrontDetail()
+        {
+            ViewBag.Path1 = "信息详情";
+            Employee employee = db.Employee.Where(a => a.UserId == WebSecurity.CurrentUserId).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+
+            var docList = db.ClientPensionCityDocument.Where(a => a.ClientId == employee.ClientId && ((employee.PensionCityId == null && a.PensionCityId == null) || employee.PensionCityId == a.PensionCityId)).SingleOrDefault();
+            if (docList == null)
+            {
+                throw new Exception("对应资料列表未配置, 请联系客服人员!");
+            }
+            ViewBag.DocList = docList;
+
+            return View(employee);
+        }
+
         //
         // POST: /Employee/Edit/5
 
@@ -108,6 +128,7 @@ namespace OB.Controllers
             editEmployeeFront.Employee = employee;
 
             ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
+            ViewBag.MarriageList = db.Marriage.OrderBy(a => a.Id).ToList();
             ViewBag.CertificateList = db.Certificate.OrderBy(a => a.Id).ToList();
             ViewBag.HukouTypeList = db.HukouType.OrderBy(a => a.Id).ToList();
             ViewBag.CityList = db.City.OrderBy(a => a.Id).ToList();
@@ -185,6 +206,7 @@ namespace OB.Controllers
             editEmployeeFront.Employee = employee;
 
             ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
+            ViewBag.MarriageList = db.Marriage.OrderBy(a => a.Id).ToList();
             ViewBag.CertificateList = db.Certificate.OrderBy(a => a.Id).ToList();
             ViewBag.HukouTypeList = db.HukouType.OrderBy(a => a.Id).ToList();
             ViewBag.CityList = db.City.OrderBy(a => a.Id).ToList();
@@ -444,7 +466,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Candidate")]
         public ActionResult EditEmployeeDoc()
         {
-            ViewBag.Path1 = "上传资料";
+            ViewBag.Path1 = "上传资料>";
             var employee = db.Employee.Where(a => a.UserId == WebSecurity.CurrentUserId).SingleOrDefault();
             if (employee == null)
             {
@@ -481,7 +503,7 @@ namespace OB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditEmployeeDoc(EditEmployeeDoc editEmployeeDoc)
         {
-            ViewBag.Path1 = "上传资料";
+            ViewBag.Path1 = "上传资料>";
             var employee = db.Employee.Include(a => a.Families).Where(a => a.UserId == WebSecurity.CurrentUserId && a.Id == editEmployeeDoc.EmployeeId).SingleOrDefault();
             if (employee == null)
             {
@@ -527,7 +549,7 @@ namespace OB.Controllers
                 }
                 // end
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("FrontDetail");
             }
 
             ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();

@@ -1,0 +1,35 @@
+﻿@model OB.Models.Education
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.School)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.School)
+</div>
+
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.Major)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.Major)
+</div>
+
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.DegreeId)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.Degree.Name)
+</div>
+
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.Begin)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.Begin)
+</div>
+
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.End)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.End)
+</div>

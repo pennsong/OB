@@ -161,7 +161,8 @@ namespace OB.Controllers
                 new Menu{Name="教育信息>", Controller ="Employee", Action="EditEmployeeEducation"},
                 new Menu{Name="工作经历>", Controller ="Employee", Action="EditEmployeeWork"},
                 new Menu{Name="家庭信息>", Controller ="Employee", Action="EditEmployeeFamily"},
-                new Menu{Name="上传资料", Controller ="Employee", Action="EditEmployeeDoc"},
+                new Menu{Name="上传资料>", Controller ="Employee", Action="EditEmployeeDoc"},
+                new Menu{Name="信息详情", Controller ="Employee", Action="FrontDetail"},
             };
 
             return PartialView("Menus", menus);
