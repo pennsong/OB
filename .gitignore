@@ -29,3 +29,5 @@ _ReSharper*/
 $tf*/
 App_Data/
 UploadedFolder/
+*.mdf
+*.ldf
