@@ -114,6 +114,54 @@ namespace OB.Controllers
             return View(employee);
         }
 
+        [Authorize(Roles = "HR")]
+        public ActionResult SendOffer(int id)//employeeId
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == id && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            return HttpNotFound();
+        }
+
+        [Authorize(Roles = "HR")]
+        public ActionResult HREmployeeIndex()
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            var employees = db.Employee.Where(a => clientList.Contains(a.ClientId));
+            return View(employees.ToList());
+        }
+
+        [Authorize(Roles = "HR")]
+        public ActionResult EditEmployeeBack(int id)
+        {
+            ViewBag.Path1 = "员工资料编辑>";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == id && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+
+            // 处理EditEmployeeBack中必填但在employee中为空的值
+
+
+
+            Mapper.CreateMap<Employee, EditEmployeeBack>().ForMember(x => x.EmployeeId, o => o.MapFrom(s => s.Id));
+            var editEmployeeBack = Mapper.Map<Employee, EditEmployeeBack>(employee);
+            editEmployeeBack.Employee = employee;
+
+            ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
+            ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
+            ViewBag.TaxTypeList = db.TaxType.OrderBy(a => a.Id).ToList();
+
+            return View(editEmployeeBack);
+        }
+
         [Authorize(Roles = "Candidate")]
         public ActionResult EditEmployeeFront()
         {

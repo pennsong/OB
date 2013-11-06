@@ -26,5 +26,16 @@ namespace OB.Models
         public virtual ICollection<City> TaxCities { get; set; }
         public virtual ICollection<City> PensionCities { get; set; }
         public virtual ICollection<City> AccumulationCities { get; set; }
+
+        public virtual ICollection<Assurance> Assurances { get; set; }
+        public virtual ICollection<BudgetCenter> BudgetCenters { get; set; }
+        public virtual ICollection<ContractType> ContractTypes { get; set; }
+        public virtual ICollection<CustomField> CustomFields { get; set; }
+        public virtual ICollection<Department> Departments { get; set; }
+        public virtual ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Level> Levels { get; set; }
+        public virtual ICollection<Position> Positions { get; set; }
+        public virtual ICollection<Weight> Weights { get; set; }
+        public virtual ICollection<Zhangtao> Zhangtaos { get; set; }
     }
 }

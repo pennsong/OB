@@ -4,11 +4,14 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace OB.Models.ViewModel
 {
     public class EditEmployeeBack
     {
+        [HiddenInput(DisplayValue = true)]
+        [DisplayName("员工编号")]
         public int EmployeeId { get; set; }
 
         [Timestamp]
@@ -214,9 +217,6 @@ namespace OB.Models.ViewModel
         public string PensionInfo5 { get; set; }
 
         // 雇佣信息
-        [DisplayName("所属客户")]
-        public string ClientId { get; set; }
-
         [MaxLength(100)]
         [DisplayName("外派客户")]
         public string WorkClient { get; set; }
@@ -439,5 +439,7 @@ namespace OB.Models.ViewModel
         [MaxLength(100)]
         [DisplayName("雇佣信息20")]
         public string HireInfo20 { get; set; }
+
+        public virtual Employee Employee { get; set; }
     }
 }

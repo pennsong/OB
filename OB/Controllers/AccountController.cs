@@ -28,6 +28,7 @@ namespace OB.Controllers
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
+            WebSecurity.Logout();
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -190,7 +191,7 @@ namespace OB.Controllers
                         WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password);
                         Roles.AddUsersToRoles(new[] { createCandidate.UserName }, new[] { "Candidate" });
                         var user = db.User.Where(a => a.Name == createCandidate.UserName).Single();
-                        var employee = new Employee { UserId = user.Id, User = user, ChineseName = createCandidate.ChineseName, ClientId = createCandidate.ClientId };
+                        var employee = new Employee { UserId = user.Id, User = user, EmployeeStatus = EmployeeStatus.新增未通知, ChineseName = createCandidate.ChineseName, ClientId = createCandidate.ClientId };
                         db.Employee.Add(employee);
 
                         db.SaveChanges();

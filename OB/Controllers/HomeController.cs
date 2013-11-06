@@ -146,6 +146,7 @@ namespace OB.Controllers
             var menus = new List<Menu> { 
                 new Menu{Name="首页", Controller ="Home", Action="Index"},
                 new Menu{Name = "用户", Controller="Account", Action="CandidateList"},
+                new Menu{Name = "员工管理", Controller="Employee", Action="HREmployeeIndex"},
             };
 
             return PartialView("Menus", menus);

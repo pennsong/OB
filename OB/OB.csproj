@@ -229,12 +229,14 @@
     <Compile Include="Models\Education.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeDoc.cs" />
+    <Compile Include="Models\EmployeeStatus.cs" />
     <Compile Include="Models\Marriage.cs" />
     <Compile Include="Models\Sex.cs" />
     <Compile Include="Models\ViewModel\EditClientHR.cs" />
     <Compile Include="Models\ViewModel\EditEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeFront.cs" />
     <Compile Include="Models\ViewModel\EditSingleEmployeeDoc.cs" />
+    <Compile Include="Models\ViewModel\EmployeeBack.cs" />
     <Compile Include="Models\ViewModel\Menu.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeWork.cs" />
@@ -554,6 +556,9 @@
     <Content Include="Views\Employee\DisplayTemplates\Education.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Work.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Family.cshtml" />
+    <Content Include="Views\Employee\EditEmployeeBack.cshtml" />
+    <Content Include="Views\Employee\HREmployeeIndex.cshtml" />
+    <Content Include="Views\Home\Reset.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

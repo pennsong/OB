@@ -17,6 +17,9 @@ namespace OB.Models
         [DisplayName("用户名")]
         public int UserId { get; set; }
 
+        [Required]
+        [DisplayName("员工状态")]
+        public EmployeeStatus EmployeeStatus { get; set; }
         // 基本信息
         [Required]
         [MaxLength(100)]

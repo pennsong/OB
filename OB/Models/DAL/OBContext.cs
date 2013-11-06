@@ -68,6 +68,14 @@ namespace OB.Models.DAL
     {
         protected override void Seed(OBContext context)
         {
+            SeedBody.Seed(context);
+        }
+    }
+
+    public static class SeedBody
+    {
+        public static void Seed(OBContext context)
+        {
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON AccumulationStatus(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON AccumulationType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Assurance(ClientId, Name)");
@@ -95,6 +103,29 @@ namespace OB.Models.DAL
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Client ON Weight(WeightClientId)");
             //none for Work
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Zhangtao(ClientId, Name)");
+
+            //调用WebSecurity的方法前需先调用InitializeDatabaseConnection初始化
+            if (!WebSecurity.Initialized) WebSecurity.InitializeDatabaseConnection("OB", "User", "Id", "Name", autoCreateTables: true);
+
+            //init roles
+            Roles.CreateRole("Admin");
+            Roles.CreateRole("HRAdmin");
+            Roles.CreateRole("HR");
+            Roles.CreateRole("Candidate");
+
+            //admin
+            WebSecurity.CreateUserAndAccount("admin", "123456");
+            Roles.AddUsersToRoles(new[] { "admin" }, new[] { "Admin" });
+
+            //hradmin
+            WebSecurity.CreateUserAndAccount("hra1", "123456");
+            WebSecurity.CreateUserAndAccount("hra2", "123456");
+            Roles.AddUsersToRoles(new[] { "hra1", "hra2" }, new[] { "HRAdmin" });
+
+            //hr
+            WebSecurity.CreateUserAndAccount("hr1", "123456");
+            WebSecurity.CreateUserAndAccount("hr2", "123456");
+            Roles.AddUsersToRoles(new[] { "hr1", "hr2" }, new[] { "HR" });
 
             //init data
             var accumulationStatus = new List<AccumulationStatus>{
@@ -138,11 +169,14 @@ namespace OB.Models.DAL
             context.SaveChanges();
 
             var client = new List<Client>{
-                new Client{Name="客户1"},
-                new Client{Name="客户2"},
+                new Client{Name="客户1", HRAdminId = 1},
+                new Client{Name="客户2", HRAdminId = 2},
             };
             foreach (var item in client)
             {
+                item.HRs = new List<User> { };
+                item.HRs.Add(context.User.Where(a => a.Name == "hr1").Single());
+                item.HRs.Add(context.User.Where(a => a.Name == "hr2").Single());
                 context.Client.Add(item);
             }
             context.SaveChanges();
@@ -235,42 +269,6 @@ namespace OB.Models.DAL
                 context.CustomField.Add(item);
             }
             context.SaveChanges();
-
-            //调用WebSecurity的方法前需先调用InitializeDatabaseConnection初始化
-            if (!WebSecurity.Initialized) WebSecurity.InitializeDatabaseConnection("OB", "User", "Id", "Name", autoCreateTables: true);
-
-            // init roles
-            if (!Roles.RoleExists("Admin"))
-            {
-                Roles.CreateRole("Admin");
-            }
-
-            if (!Roles.RoleExists("HRAdmin"))
-            {
-                Roles.CreateRole("HRAdmin");
-            }
-
-            if (!Roles.RoleExists("HR"))
-            {
-                Roles.CreateRole("HR");
-            }
-
-            if (!Roles.RoleExists("Candidate"))
-            {
-                Roles.CreateRole("Candidate");
-            }
-
-
-            if (!WebSecurity.UserExists("admin"))
-            {
-                WebSecurity.CreateUserAndAccount("admin", "123456");
-            }
-
-            if (!Roles.GetRolesForUser("admin").Contains("Admin"))
-            {
-                Roles.AddUsersToRoles(new[] { "admin" }, new[] { "Admin" });
-            }
-            // end init Roles
         }
     }
 }

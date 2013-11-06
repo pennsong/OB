@@ -29,7 +29,7 @@ namespace OB
             }
             //调用WebSecurity的方法前需先调用InitializeDatabaseConnection初始化
             if (!WebSecurity.Initialized) WebSecurity.InitializeDatabaseConnection("OB", "User", "Id", "Name", autoCreateTables: true);
-            
+
             AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);
