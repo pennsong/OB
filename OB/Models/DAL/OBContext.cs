@@ -59,8 +59,6 @@ namespace OB.Models.DAL
 
             modelBuilder.Entity<Client>().HasMany(c => c.HRs).WithMany(i => i.HRClients).Map(t => t.MapLeftKey("ClientId").MapRightKey("UserId").ToTable("ClientHr"));
             modelBuilder.Entity<Client>().HasOptional(c => c.HRAdmin).WithMany(i => i.HRAdminClients).HasForeignKey(c => c.HRAdminId);
-
-            //modelBuilder.Entity<User>().HasOptional(c => c.Employee).WithRequired(i => i.User);
         }
     }
 
@@ -174,12 +172,92 @@ namespace OB.Models.DAL
             };
             foreach (var item in client)
             {
-                item.HRs = new List<User> { };
-                item.HRs.Add(context.User.Where(a => a.Name == "hr1").Single());
-                item.HRs.Add(context.User.Where(a => a.Name == "hr2").Single());
+                item.HRs = new List<User> 
+                { 
+                    context.User.Where(a => a.Name == "hr1").Single(),
+                    context.User.Where(a => a.Name == "hr2").Single(),
+                };
+
+                item.Assurances = new List<Assurance> 
+                {
+                    new Assurance{ ClientId = item.Id, Name=item.Name+"保险1"},
+                    new Assurance{ ClientId = item.Id, Name=item.Name+"保险2"},
+                };
+
+                item.BudgetCenters = new List<BudgetCenter> 
+                {
+                    new BudgetCenter{ ClientId = item.Id, Name=item.Name+"成本中心1"},
+                    new BudgetCenter{ ClientId = item.Id, Name=item.Name+"成本中心2"},
+                };
+
+                item.PensionCities = item.AccumulationCities = item.TaxCities = item.WorkCities = new List<City> 
+                {
+                    context.City.Find(1),
+                    context.City.Find(2),
+                };
+
+                item.ContractTypes = new List<ContractType> 
+                {
+                    new ContractType{ ClientId = item.Id, Name=item.Name+"合同类型1"},
+                    new ContractType{ ClientId = item.Id, Name=item.Name+"合同类型2"},
+                };
+
+                item.Departments = new List<Department> 
+                {
+                    new Department{ ClientId = item.Id, Name=item.Name+"部门1"},
+                    new Department{ ClientId = item.Id, Name=item.Name+"部门2"},
+                };
+
+                item.Levels = new List<Level> 
+                {
+                    new Level{ ClientId = item.Id, Name=item.Name+"级别1"},
+                    new Level{ ClientId = item.Id, Name=item.Name+"级别2"},
+                };
+
+                item.Positions = new List<Position> 
+                {
+                    new Position{ ClientId = item.Id, Name=item.Name+"职位1"},
+                    new Position{ ClientId = item.Id, Name=item.Name+"职位2"},
+                };
+
+                item.Zhangtaos = new List<Zhangtao> 
+                {
+                    new Zhangtao{ ClientId = item.Id, Name=item.Name+"账套1"},
+                    new Zhangtao{ ClientId = item.Id, Name=item.Name+"账套2"},
+                };
+
+
                 context.Client.Add(item);
             }
             context.SaveChanges();
+
+            var document = new List<Document>{
+                new Document{ClientId=1, Name="C1D1", Weight=5},
+                new Document{ClientId=1, Name="C1D2", Weight=5},
+                new Document{ClientId=2, Name="C2D1", Weight=5},
+                new Document{ClientId=2, Name="C2D2", Weight=5},
+
+            };
+            foreach (var item in document)
+            {
+                context.Document.Add(item);
+            }
+            context.SaveChanges();
+
+            var clientPensionCityDocument = new List<ClientPensionCityDocument>{
+                new ClientPensionCityDocument{ClientId=1, PensionCityId= null, Documents=new List<Document>{document[0], document[1]}},
+                new ClientPensionCityDocument{ClientId=1, PensionCityId = 1, Documents=new List<Document>{document[0], document[1]}},
+                new ClientPensionCityDocument{ClientId=1, PensionCityId = 2, Documents=new List<Document>{document[0], document[1]}},
+                new ClientPensionCityDocument{ClientId=2, PensionCityId= null, Documents=new List<Document>{document[2], document[3]}},
+                new ClientPensionCityDocument{ClientId=2, PensionCityId = 1, Documents=new List<Document>{document[2], document[3]}},
+                new ClientPensionCityDocument{ClientId=2, PensionCityId = 2, Documents=new List<Document>{document[2], document[3]}},
+            };
+            foreach (var item in clientPensionCityDocument)
+            {
+                context.ClientPensionCityDocument.Add(item);
+            }
+            context.SaveChanges();
+
 
             var degree = new List<Degree>{
                 new Degree{Name="学历1"},

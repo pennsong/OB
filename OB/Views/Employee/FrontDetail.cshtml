@@ -5,7 +5,7 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<h3>完成度:@Html.Action("Percent", "Employee", new { id = Model.Id })</h3>
+<h3>@Html.DisplayNameFor(model => model.Percent):@Html.DisplayFor(model => model.Percent)</h3>
 
 <fieldset>
     <legend>Employee</legend>
@@ -399,13 +399,7 @@
         @Html.DisplayNameFor(model => model.EmployeeDocs)
     </div>
     <div class="display-field multi">
-        @foreach (var item in ((OB.Models.ClientPensionCityDocument)ViewBag.DocList).Documents)
-        {
-            <div>
-                @Html.CheckBox("available", true, new { disabled = "disabled" })
-                @Html.DisplayFor(model => item.Name)
-            </div>
-        }
+        @Html.Action("EmployeeDoc", "Employee", new { id = Model.Id })
     </div>
 
 </fieldset>

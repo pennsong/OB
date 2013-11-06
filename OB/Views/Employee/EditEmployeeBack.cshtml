@@ -378,7 +378,7 @@
             @Html.LabelFor(model => model.ZhangtaoId)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.ZhangtaoId)
+            @Html.DropDownListFor(model => model.ZhangtaoId, new SelectList(Model.Employee.Client.Zhangtaos.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.ZhangtaoId)
         </div>
 
@@ -549,7 +549,20 @@
             @Html.EditorFor(model => model.HireInfo20)
             @Html.ValidationMessageFor(model => model.HireInfo20)
         </div>
-
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BudgetCenterIds)
+        </div>
+        <div class="editor-field">
+            @Html.ListBoxFor(model => model.BudgetCenterIds, new MultiSelectList(Model.Employee.Client.BudgetCenters.OrderBy(a => a.Name).ToList(), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
+            @Html.ValidationMessageFor(model => model.TaxCityId)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AssuranceIds)
+        </div>
+        <div class="editor-field">
+            @Html.ListBoxFor(model => model.AssuranceIds, new MultiSelectList(Model.Employee.Client.Assurances.OrderBy(a => a.Name).ToList(), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
+            @Html.ValidationMessageFor(model => model.TaxCityId)
+        </div>
         <p>
             <input type="submit" value="Save" />
         </p>
@@ -560,9 +573,18 @@
     @Html.ActionLink("Back to List", "Index")
 </div>
 
+@section Styles {
+    @Styles.Render("~/Content/cw_css/jquery.multiselect2side.css")
+}
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
     <script type="text/javascript">
+        $().ready(function () {
+            $(".multiselect2side").multiselect2side();
+        });
         $(document).ready(function () {
             setCustomField(@Model.EmployeeId);
         });

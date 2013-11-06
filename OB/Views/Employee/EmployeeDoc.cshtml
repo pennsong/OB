@@ -1,0 +1,16 @@
+﻿@model OB.Models.Employee
+
+@foreach (var item in ((OB.Models.ClientPensionCityDocument)ViewBag.DocList).Documents)
+{
+    OB.Models.EmployeeDoc doc = Model.EmployeeDocs.Where(a => (!String.IsNullOrWhiteSpace(a.ImgPath) && a.DocumentId == item.Id)).SingleOrDefault();
+    <div>
+        @Html.CheckBox("available", (doc != null) ? true : false, new { disabled = "disabled" })
+        @Html.DisplayFor(model => item.Name)
+    </div>
+    <div>
+        @if (doc != null)
+        {
+            <img class="doc" src="~/Content/UploadedFolder/@doc.ImgPath" />
+        }
+    </div>
+}

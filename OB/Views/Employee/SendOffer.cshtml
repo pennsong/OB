@@ -1,0 +1,41 @@
+﻿@model OB.Models.ViewModel.Offer
+
+@{
+    ViewBag.Title = "发送Offer";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    @Html.Action("EmployeeAbstract", "Employee", new { id = Model.EmployeeId });
+    <fieldset>
+        <legend>Offer</legend>
+
+        @Html.HiddenFor(model => model.EmployeeId)
+        @Html.HiddenFor(model => model.Timestamp)
+        @Html.TextAreaFor(model => model.Content, new { @class = "ckeditor" })
+        @Html.ValidationMessageFor(model => model.Content)
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("取消", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/ckeditor/ckeditor.js")
+    <script>
+        CKEDITOR.replace('Content', {
+            // Load the German interface.
+            language: 'zh-cn'
+        });
+    </script>
+
+}

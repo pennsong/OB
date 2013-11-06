@@ -12,6 +12,7 @@ using WebMatrix.WebData;
 using OB.Models.ViewModel;
 using System.IO;
 using System.Reflection;
+using System.Web.Helpers;
 
 namespace OB.Controllers
 {
@@ -88,12 +89,26 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
 
-            var docList = db.ClientPensionCityDocument.Where(a => a.ClientId == employee.ClientId && ((employee.PensionCityId == null && a.PensionCityId == null) || employee.PensionCityId == a.PensionCityId)).SingleOrDefault();
+            var docList = db.ClientPensionCityDocument.Include(a => a.Documents).Where(a => a.ClientId == employee.ClientId && ((employee.PensionCityId == null && a.PensionCityId == null) || employee.PensionCityId == a.PensionCityId)).SingleOrDefault();
             if (docList == null)
             {
                 throw new Exception("对应资料列表未配置, 请联系客服人员!");
             }
             ViewBag.DocList = docList;
+
+            return View(employee);
+        }
+
+        [Authorize(Roles = "HR")]
+        public ActionResult BackDetail(int id)
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == id && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
 
             return View(employee);
         }
@@ -124,7 +139,90 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
-            return HttpNotFound();
+            Offer offer = new Offer { EmployeeId = id, Content = "test" };
+            return View(offer);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult SendOffer(Offer offer)
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == offer.EmployeeId && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                employee.Timestamp = offer.Timestamp;
+                employee.EmployeeStatus = EmployeeStatus.新增已通知;
+                employee.OfferContent = offer.Content;
+
+                db.SaveChanges();
+
+                try
+                {
+                    WebMail.SmtpServer = "smtp.163.com";
+                    WebMail.SmtpPort = 25;
+                    WebMail.EnableSsl = false;
+                    WebMail.UserName = "ssss123456ssss@163.com";
+                    WebMail.Password = "tcltcl";
+                    WebMail.From = "ssss123456ssss@163.com";
+                    WebMail.Send("ssss123456ssssb@163.com", "RSVP Notification", offer.Content);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.ToString());
+                }
+
+                return RedirectToAction("HREmployeeIndex");
+            }
+
+            return View(offer);
+        }
+
+        [Authorize(Roles = "HR")]
+        public ActionResult OnPosition(int id)//employeeId
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == id && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            OnPosition onPosition = new OnPosition { EmployeeId = employee.Id, Timestamp = employee.Timestamp };
+
+            return View(onPosition);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult OnPosition(OnPosition onPosition)
+        {
+            ViewBag.Path1 = "员工管理";
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Where(a => a.Id == onPosition.EmployeeId && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                employee.Timestamp = onPosition.Timestamp;
+                employee.EmployeeStatus = EmployeeStatus.在职;
+
+                db.SaveChanges();
+                return RedirectToAction("HREmployeeIndex");
+            }
+
+            return View(onPosition);
         }
 
         [Authorize(Roles = "HR")]
@@ -139,7 +237,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HR")]
         public ActionResult EditEmployeeBack(int id)
         {
-            ViewBag.Path1 = "员工资料编辑>";
+            ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
             Employee employee = db.Employee.Where(a => a.Id == id && clientList.Contains(a.ClientId)).SingleOrDefault();
             if (employee == null)
@@ -147,13 +245,112 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
 
-            // 处理EditEmployeeBack中必填但在employee中为空的值
-
-
-
             Mapper.CreateMap<Employee, EditEmployeeBack>().ForMember(x => x.EmployeeId, o => o.MapFrom(s => s.Id));
             var editEmployeeBack = Mapper.Map<Employee, EditEmployeeBack>(employee);
             editEmployeeBack.Employee = employee;
+            editEmployeeBack.BudgetCenterIds = employee.BudgetCenters.Select(a => a.Id).ToList();
+            editEmployeeBack.AssuranceIds = employee.Assurances.Select(a => a.Id).ToList();
+
+            ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
+            ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
+            ViewBag.TaxTypeList = db.TaxType.OrderBy(a => a.Id).ToList();
+
+            return View(editEmployeeBack);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditEmployeeBack(EditEmployeeBack editEmployeeBack)
+        {
+            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
+            Employee employee = db.Employee.Include(a => a.BudgetCenters).Include(a => a.Assurances).Where(a => a.Id == editEmployeeBack.EmployeeId && clientList.Contains(a.ClientId)).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                employee.Timestamp = editEmployeeBack.Timestamp;
+                employee.ChineseName = editEmployeeBack.ChineseName;
+                employee.Mobile1 = editEmployeeBack.Mobile1;
+                employee.PrivateMail = editEmployeeBack.PrivateMail;
+                employee.EmployeeNote = editEmployeeBack.EmployeeNote;
+                employee.BasicInfo6 = editEmployeeBack.BasicInfo6;
+                employee.BasicInfo7 = editEmployeeBack.BasicInfo7;
+                employee.BasicInfo8 = editEmployeeBack.BasicInfo8;
+                employee.BasicInfo9 = editEmployeeBack.BasicInfo9;
+                employee.BasicInfo10 = editEmployeeBack.BasicInfo10;
+                employee.PensionCityId = editEmployeeBack.PensionCityId;
+                employee.AccumulationCityId = editEmployeeBack.AccumulationCityId;
+                employee.PensionTypeId = editEmployeeBack.PensionTypeId;
+                employee.AccumulationTypeId = editEmployeeBack.AccumulationTypeId;
+                employee.WorkClient = editEmployeeBack.WorkClient;
+                employee.CompanyMail = editEmployeeBack.CompanyMail;
+                employee.EnterDate = editEmployeeBack.EnterDate;
+                employee.ProbationDueDate = editEmployeeBack.ProbationDueDate;
+                employee.EnterClientDate = editEmployeeBack.EnterClientDate;
+                employee.CompanyYearAdjust = editEmployeeBack.CompanyYearAdjust;
+                employee.SocialYearAdjust = editEmployeeBack.SocialYearAdjust;
+                employee.VacationDays = editEmployeeBack.VacationDays;
+                employee.WorkCityId = editEmployeeBack.WorkCityId;
+                employee.DepartmentId = editEmployeeBack.DepartmentId;
+                employee.LevelId = editEmployeeBack.LevelId;
+                employee.PositionId = editEmployeeBack.PositionId;
+                employee.ContractNumber = editEmployeeBack.ContractNumber;
+                employee.ContractBeginDate = editEmployeeBack.ContractBeginDate;
+                employee.ContractEndDate = editEmployeeBack.ContractEndDate;
+                employee.ContractTypeId = editEmployeeBack.ContractTypeId;
+                employee.ProbationSalary = editEmployeeBack.ProbationSalary;
+                employee.Salary = editEmployeeBack.Salary;
+                employee.PensionStartMonth = editEmployeeBack.PensionStartMonth;
+                employee.AccumulationStartMonth = editEmployeeBack.AccumulationStartMonth;
+                employee.PayByCompany = editEmployeeBack.PayByCompany;
+                employee.Yljs = editEmployeeBack.Yljs;
+                employee.Syjs = editEmployeeBack.Syjs;
+                employee.Yiliaojs = editEmployeeBack.Yiliaojs;
+                employee.Gsjs = editEmployeeBack.Gsjs;
+                employee.Shengyujs = editEmployeeBack.Shengyujs;
+                employee.Qtjs = editEmployeeBack.Qtjs;
+                employee.Bcjs = editEmployeeBack.Bcjs;
+                employee.Gjjjs = editEmployeeBack.Gjjjs;
+                employee.Bcgjjjs = editEmployeeBack.Bcgjjjs;
+                employee.TaxTypeId = editEmployeeBack.TaxTypeId;
+                employee.ZhangtaoId = editEmployeeBack.ZhangtaoId;
+                employee.TaxCityId = editEmployeeBack.TaxCityId;
+                employee.HireInfo1 = editEmployeeBack.HireInfo1;
+                employee.HireInfo2 = editEmployeeBack.HireInfo2;
+                employee.HireInfo3 = editEmployeeBack.HireInfo3;
+                employee.HireInfo4 = editEmployeeBack.HireInfo4;
+                employee.HireInfo5 = editEmployeeBack.HireInfo5;
+                employee.HireInfo6 = editEmployeeBack.HireInfo6;
+                employee.HireInfo7 = editEmployeeBack.HireInfo7;
+                employee.HireInfo8 = editEmployeeBack.HireInfo8;
+                employee.HireInfo9 = editEmployeeBack.HireInfo9;
+                employee.HireInfo10 = editEmployeeBack.HireInfo10;
+                employee.HireInfo11 = editEmployeeBack.HireInfo11;
+                employee.HireInfo12 = editEmployeeBack.HireInfo12;
+                employee.HireInfo13 = editEmployeeBack.HireInfo13;
+                employee.HireInfo14 = editEmployeeBack.HireInfo14;
+                employee.HireInfo15 = editEmployeeBack.HireInfo15;
+                employee.HireInfo16 = editEmployeeBack.HireInfo16;
+                employee.HireInfo17 = editEmployeeBack.HireInfo17;
+                employee.HireInfo18 = editEmployeeBack.HireInfo18;
+                employee.HireInfo19 = editEmployeeBack.HireInfo19;
+                employee.HireInfo20 = editEmployeeBack.HireInfo20;
+
+                //save budgetcenters, assurances
+                var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
+                employee.BudgetCenters = budgetcenters;
+                var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
+                employee.Assurances = assurances;
+
+                db.SaveChanges();
+                return RedirectToAction("HREmployeeIndex");
+            }
+            editEmployeeBack.Employee = employee;
+            editEmployeeBack.BudgetCenterIds = employee.BudgetCenters.Select(a => a.Id).ToList();
+            editEmployeeBack.AssuranceIds = employee.Assurances.Select(a => a.Id).ToList();
 
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
@@ -676,68 +873,23 @@ namespace OB.Controllers
             return PartialView(employee);
         }
 
-        public string Percent(int id = 0)
+        public PartialViewResult EmployeeDetail(int id = 0)//employeeId
         {
-            // 常规项
             var employee = db.Employee.Find(id);
-            if (employee == null)
-            {
-                return "0%";
-            }
+            return PartialView(employee);
+        }
 
-            // 取得普通权重
-            var weight = db.Weight.Where(a => a.WeightClientId == employee.ClientId).SingleOrDefault();
-            if (weight == null)
+        public PartialViewResult EmployeeDoc(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            var docList = db.ClientPensionCityDocument.Include(a => a.Documents).Where(a => a.ClientId == employee.ClientId && ((employee.PensionCityId == null && a.PensionCityId == null) || employee.PensionCityId == a.PensionCityId)).SingleOrDefault();
+            if (docList == null)
             {
-                weight = db.Weight.Where(a => a.WeightClientId == null).SingleOrDefault();
+                throw new Exception("对应资料列表未配置, 请联系客服人员!");
             }
-            PropertyInfo[] fs = typeof(Weight).GetProperties();
-            decimal count = 0;
-            decimal total = 0;
-            string[] exclude = { "Id", "WeightClientId", "WeightClient" };
-            string[] collection = { "Educations", "Works", "Families" };
-            foreach (PropertyInfo item in fs)
-            {
-                if (exclude.Contains(item.Name))
-                {
-                    continue;
-                }
-                else
-                {
-                    var t = typeof(Employee).GetProperty(item.Name);
-                    var v = t.GetValue(employee);
-                    if ((collection.Contains(item.Name) && Convert.ToInt32(v.GetType().GetProperty("Count").GetValue(v)) > 0) || !(collection.Contains(item.Name) && v != null))
-                    {
-                        count += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
-                    }
-                }
-                total += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
-            }
+            ViewBag.DocList = docList;
 
-            // 取得上传文件权重
-            var clientPensionCityDocument = db.ClientPensionCityDocument.Where(a => a.ClientId == employee.ClientId && ((a.PensionCityId == null && employee.PensionCityId == null) || (a.PensionCityId == employee.PensionCityId))).SingleOrDefault();
-            if (clientPensionCityDocument == null)
-            {
-                return "0%";
-            }
-            foreach (var item in clientPensionCityDocument.Documents)
-            {
-                var doc = db.EmployeeDoc.Where(a => a.EmployeeId == employee.Id && a.DocumentId == item.Id).SingleOrDefault();
-                if (doc != null && !String.IsNullOrWhiteSpace(doc.ImgPath))
-                {
-                    count += item.Weight;
-                }
-                total += item.Weight;
-            }
-
-            if (total == 0)
-            {
-                return "0%";
-            }
-            else
-            {
-                return String.Format("{0:P2}.", count / total);
-            }
+            return PartialView(employee);
         }
 
         protected override void Dispose(bool disposing)

@@ -28,5 +28,7 @@ namespace OB.Models
         public int Weight { get; set; }
 
         public virtual Client Client { get; set; }
+
+        public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
     }
 }

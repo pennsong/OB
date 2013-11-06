@@ -27,7 +27,6 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.vssscc
 $tf*/
-App_Data/
 UploadedFolder/
-*.mdf
-*.ldf
+App_Data/*.mdf
+App_Data/*.ldf

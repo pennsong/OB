@@ -23,117 +23,19 @@ namespace OB.Models.ViewModel
         [DisplayName("中文名")]
         public string ChineseName { get; set; }
 
-        [MaxLength(100)]
-        [DisplayName("英文名")]
-        public string EnglishName { get; set; }
-
-        [DisplayName("性别")]
-        public int? SexId { get; set; }
-
-        [DisplayName("婚姻状况")]
-        public int? MarriageId { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("国籍")]
-        public string Nationality { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("民族")]
-        public string Nation { get; set; }
-
-        [DisplayName("证件类型")]
-        public int? CertificateId { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("证件号码")]
-        public string CertificateNumber { get; set; }
-
-        [DisplayName("出生日期")]
-        public DateTime? Birthday { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("居住地址")]
-        public string JuzhuAddress { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("居住地邮编")]
-        public string JuzhudiZipCode { get; set; }
-
         [Required]
         [MaxLength(100)]
         [DisplayName("手机号码1")]
         public string Mobile1 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("手机号码2")]
-        public string Mobile2 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("紧急联系人")]
-        public string EmergencyContract { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("紧急联系人电话")]
-        public string EmergencyContractPhone { get; set; }
 
         [Required]
         [MaxLength(100)]
         [DisplayName("私人邮箱")]
         public string PrivateMail { get; set; }
 
-        [MaxLength(100)]
-        [DisplayName("户籍地址")]
-        public string HujiAddress { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("户籍地邮编")]
-        public string HujiZipCode { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("居住证号码")]
-        public string JuzhuzhengNumber { get; set; }
-
-        [DisplayName("居住证到期日")]
-        public DateTime? JuzhuzhengDueDate { get; set; }
-
-        [DisplayName("社会工龄起始日期")]
-        public DateTime? ShehuigonglingStartDate { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("开户银行")]
-        public string Bank { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("银行帐号")]
-        public string BankAccount { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("开户名")]
-        public string BankAccountName { get; set; }
-
         [MaxLength(1000)]
         [DisplayName("员工备注")]
         public string EmployeeNote { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("基本信息1")]
-        public string BasicInfo1 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("基本信息2")]
-        public string BasicInfo2 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("基本信息3")]
-        public string BasicInfo3 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("基本信息4")]
-        public string BasicInfo4 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("基本信息5")]
-        public string BasicInfo5 { get; set; }
 
         [MaxLength(100)]
         [DisplayName("基本信息6")]
@@ -156,9 +58,6 @@ namespace OB.Models.ViewModel
         public string BasicInfo10 { get; set; }
 
         // 参保信息
-        [DisplayName("户口性质")]
-        public int? HukouTypeId { get; set; }
-
         [DisplayName("参保城市")]
         public int PensionCityId { get; set; }
 
@@ -171,51 +70,6 @@ namespace OB.Models.ViewModel
         [DisplayName("公积金类型")]
         public int AccumulationTypeId { get; set; }
 
-        [DisplayName("社保状态")]
-        public int? PensionStatusId { get; set; }
-
-        [DisplayName("是否办理过医保卡")]
-        public bool? YibaokaAvailable { get; set; }
-
-        [DisplayName("公积金状态")]
-        public int? AccumulationStatusId { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("本人公积金帐号")]
-        public string AccumulationNumber { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("档案所在地")]
-        public string DanganAddress { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("档案存放机构名称")]
-        public string DanganOrganise { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("档案保管号")]
-        public string DanganNumber { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("参保信息1")]
-        public string PensionInfo1 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("参保信息2")]
-        public string PensionInfo2 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("参保信息3")]
-        public string PensionInfo3 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("参保信息4")]
-        public string PensionInfo4 { get; set; }
-
-        [MaxLength(100)]
-        [DisplayName("参保信息5")]
-        public string PensionInfo5 { get; set; }
-
         // 雇佣信息
         [MaxLength(100)]
         [DisplayName("外派客户")]
@@ -225,8 +79,9 @@ namespace OB.Models.ViewModel
         [DisplayName("公司邮箱")]
         public string CompanyMail { get; set; }
 
+        [Required]
         [DisplayName("入职日期")]
-        public DateTime EnterDate { get; set; }
+        public DateTime? EnterDate { get; set; }
 
         [DisplayName("试用期到期日")]
         public DateTime? ProbationDueDate { get; set; }
@@ -260,20 +115,24 @@ namespace OB.Models.ViewModel
         [DisplayName("合同编号")]
         public string ContractNumber { get; set; }
 
+        [Required]
         [DisplayName("合同开始日期")]
-        public DateTime ContractBeginDate { get; set; }
+        public DateTime? ContractBeginDate { get; set; }
 
+        [Required]
         [DisplayName("合同终止日期")]
-        public DateTime ContractEndDate { get; set; }
+        public DateTime? ContractEndDate { get; set; }
 
         [DisplayName("合同类型")]
         public int ContractTypeId { get; set; }
 
+        [Required]
         [DisplayName("试用期工资")]
-        public decimal ProbationSalary { get; set; }
+        public decimal? ProbationSalary { get; set; }
 
+        [Required]
         [DisplayName("基本工资")]
-        public decimal Salary { get; set; }
+        public decimal? Salary { get; set; }
 
         private DateTime? _PensionStartMonth { get; set; }
         [DisplayName("社保起缴月份")]
@@ -321,8 +180,9 @@ namespace OB.Models.ViewModel
             }
         }
 
+        [Required]
         [DisplayName("是否公司承担个人福利")]
-        public bool PayByCompany { get; set; }
+        public bool? PayByCompany { get; set; }
 
         [DisplayName("养老基数")]
         public decimal? Yljs { get; set; }
@@ -441,5 +301,8 @@ namespace OB.Models.ViewModel
         public string HireInfo20 { get; set; }
 
         public virtual Employee Employee { get; set; }
+
+        public ICollection<int> BudgetCenterIds { get; set; }
+        public ICollection<int> AssuranceIds { get; set; }
     }
 }

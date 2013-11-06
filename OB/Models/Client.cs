@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -20,6 +21,7 @@ namespace OB.Models
 
         [ForeignKey("HRAdminId")]
         public virtual User HRAdmin { get; set; }
+
         public virtual ICollection<User> HRs { get; set; }
 
         public virtual ICollection<City> WorkCities { get; set; }
@@ -30,12 +32,12 @@ namespace OB.Models
         public virtual ICollection<Assurance> Assurances { get; set; }
         public virtual ICollection<BudgetCenter> BudgetCenters { get; set; }
         public virtual ICollection<ContractType> ContractTypes { get; set; }
-        public virtual ICollection<CustomField> CustomFields { get; set; }
         public virtual ICollection<Department> Departments { get; set; }
         public virtual ICollection<Document> Documents { get; set; }
         public virtual ICollection<Level> Levels { get; set; }
         public virtual ICollection<Position> Positions { get; set; }
-        public virtual ICollection<Weight> Weights { get; set; }
         public virtual ICollection<Zhangtao> Zhangtaos { get; set; }
+
+        public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
     }
 }

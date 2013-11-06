@@ -1,9 +1,13 @@
-﻿using System;
+﻿using OB.Models.DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Reflection;
 using System.Web;
+using System.Data.Entity;
+
 
 namespace OB.Models
 {
@@ -20,6 +24,11 @@ namespace OB.Models
         [Required]
         [DisplayName("员工状态")]
         public EmployeeStatus EmployeeStatus { get; set; }
+
+        [MaxLength(1000)]
+        [DisplayName("Offer")]
+        public string OfferContent { get; set; }
+
         // 基本信息
         [Required]
         [MaxLength(100)]
@@ -442,6 +451,74 @@ namespace OB.Models
         [MaxLength(100)]
         [DisplayName("雇佣信息20")]
         public string HireInfo20 { get; set; }
+
+        [DisplayName("完成度")]
+        [DisplayFormat(DataFormatString = "{0:P2}")]
+        public decimal Percent
+        {
+            get
+            {
+                // 取权重
+                Weight weight;
+                using (var db = new OBContext())
+                {
+                    weight = db.Weight.Where(a => a.WeightClientId == ClientId).Single();
+                    if (weight == null)
+                    {
+                        weight = db.Weight.Where(a => a.WeightClientId == null).Single();
+                    }
+                }
+
+                // 取得普通权重
+                PropertyInfo[] fs = typeof(Weight).GetProperties();
+                decimal count = 0;
+                decimal total = 0;
+                string[] exclude = { "Id", "WeightClientId", "WeightClient" };
+                string[] collection = { "Educations", "Works", "Families" };
+                foreach (PropertyInfo item in fs)
+                {
+                    if (exclude.Contains(item.Name))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        var t = typeof(Employee).GetProperty(item.Name);
+                        var v = t.GetValue(this);
+                        if ((collection.Contains(item.Name) && Convert.ToInt32(v.GetType().GetProperty("Count").GetValue(v)) > 0) || (!(collection.Contains(item.Name)) && v != null))
+                        {
+                            count += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
+                        }
+                    }
+                    total += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
+                }
+
+                // 取得上传文件权重
+                var clientPensionCityDocument = Client.ClientPensionCityDocuments.Where(a => (a.PensionCityId == null && PensionCityId == null) || (a.PensionCityId == PensionCityId)).SingleOrDefault();
+                if (clientPensionCityDocument == null)
+                {
+                    return 0;
+                }
+                foreach (var item in clientPensionCityDocument.Documents)
+                {
+                    var doc = EmployeeDocs.Where(a => a.DocumentId == item.Id).SingleOrDefault();
+                    if (doc != null && !String.IsNullOrWhiteSpace(doc.ImgPath))
+                    {
+                        count += item.Weight;
+                    }
+                    total += item.Weight;
+                }
+
+                if (total == 0)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return (count / total);
+                }
+            }
+        }
 
         public virtual User User { get; set; }
         public virtual Sex Sex { get; set; }

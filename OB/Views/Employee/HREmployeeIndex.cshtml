@@ -12,13 +12,16 @@
 <table>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UserId)
+            @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ChineseName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.EmployeeStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Percent)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.ClientId)
@@ -48,13 +51,16 @@
     {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.UserId)
+                @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ChineseName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.EmployeeStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Percent)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Client.Name)
@@ -79,9 +85,10 @@
             </td>
             <td>
                 @Html.ActionLink("发送Offer", "SendOffer", new { id = item.Id }) |
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("入职", "OnPosition", new { id = item.Id }) |
+                @Html.ActionLink("编辑", "EditEmployeeBack", new { id = item.Id }) |
+                @Html.ActionLink("详情", "BackDetail", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             </td>
         </tr>
     }
