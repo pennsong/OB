@@ -10,12 +10,16 @@ using WebMatrix.WebData;
 
 
 using System.Data.Entity;
+using OB.Models;
 
 
 namespace OB.Controllers
 {
     public class HomeController : Controller
     {
+
+        private OBContext db = new OBContext();
+
         [Authorize]
         public RedirectToRouteResult Index()
         {
@@ -219,6 +223,23 @@ namespace OB.Controllers
                                                        ).AsNoTracking().FirstOrDefault();
                 return this.Json(ob, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        //private IEnumerable<City> _GetPensionCity(int clientId)
+        //{
+        //    return db.Client.Find(clientId).PensionCities.ToList();
+        //}
+
+        //public JsonResult GetPensionCity(clientId)
+        //{
+        //    IEnumerable<Person> data = GetData(selectedRole);
+        //    return Json(data, JsonRequestBehavior.AllowGet);
+        //}
+
+        protected override void Dispose(bool disposing)
+        {
+            db.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

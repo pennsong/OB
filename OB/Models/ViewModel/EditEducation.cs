@@ -23,14 +23,22 @@ namespace OB.Models.ViewModel
         [DisplayName("学历")]
         public int DegreeId { get; set; }
 
-        private DateTime _Begin = DateTime.Now;
+        private DateTime? _Begin;
+
+        [Required]
         [DisplayName("开始时间")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime Begin
+        public DateTime? Begin
         {
             get { return _Begin; }
-            set { _Begin = value; }
+            set
+            {
+                if (value.HasValue)
+                {
+                    _Begin = value.Value;
+                }
+            }
         }
 
         private DateTime? _End;

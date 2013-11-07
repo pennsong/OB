@@ -522,7 +522,7 @@ namespace OB.Controllers
                     e1.School = e2.School;
                     e1.Major = e2.Major;
                     e1.DegreeId = e2.DegreeId;
-                    e1.Begin = e2.Begin;
+                    e1.Begin = e2.Begin.Value;
                     e1.End = e2.End;
                 }
                 // end
@@ -531,7 +531,7 @@ namespace OB.Controllers
                 var add = editEmployeeEducation.EditEducations.Where(a => a.Delete == false && a.EducationId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Education { School = i.School, Major = i.Major, DegreeId = i.DegreeId, Begin = i.Begin, End = i.End };
+                    var e = new Education { School = i.School, Major = i.Major, DegreeId = i.DegreeId, Begin = i.Begin.Value, End = i.End };
                     employee.Educations.Add(e);
                 }
                 // end
@@ -602,7 +602,7 @@ namespace OB.Controllers
                     var e2 = editEmployeeWork.EditWorks.Where(a => a.WorkId == i).Single();
                     e1.Company = e2.Company;
                     e1.Position = e2.Position;
-                    e1.Begin = e2.Begin;
+                    e1.Begin = e2.Begin.Value;
                     e1.End = e2.End;
                     e1.Contact = e2.Contact;
                     e1.Phone = e2.Phone;
@@ -614,7 +614,7 @@ namespace OB.Controllers
                 var add = editEmployeeWork.EditWorks.Where(a => a.Delete == false && a.WorkId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Work { Company = i.Company, Position = i.Position, Begin = i.Begin, End = i.End, Contact = i.Contact, Phone = i.Phone, Note = i.Note };
+                    var e = new Work { Company = i.Company, Position = i.Position, Begin = i.Begin.Value, End = i.End, Contact = i.Contact, Phone = i.Phone, Note = i.Note };
                     employee.Works.Add(e);
                 }
                 // end

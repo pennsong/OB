@@ -167,8 +167,8 @@ namespace OB.Models.DAL
             context.SaveChanges();
 
             var client = new List<Client>{
-                new Client{Name="客户1", HRAdminId = 1},
-                new Client{Name="客户2", HRAdminId = 2},
+                new Client{Name="客户1", HRAdminId = 2},
+                new Client{Name="客户2", HRAdminId = 3},
             };
             foreach (var item in client)
             {
