@@ -253,7 +253,6 @@ namespace OB.Controllers
 
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
-            ViewBag.TaxTypeList = db.TaxType.OrderBy(a => a.Id).ToList();
 
             return View(editEmployeeBack);
         }
@@ -315,7 +314,7 @@ namespace OB.Controllers
                 employee.Bcjs = editEmployeeBack.Bcjs;
                 employee.Gjjjs = editEmployeeBack.Gjjjs;
                 employee.Bcgjjjs = editEmployeeBack.Bcgjjjs;
-                employee.TaxTypeId = editEmployeeBack.TaxTypeId;
+                employee.TaxType = editEmployeeBack.TaxType;
                 employee.ZhangtaoId = editEmployeeBack.ZhangtaoId;
                 employee.TaxCityId = editEmployeeBack.TaxCityId;
                 employee.HireInfo1 = editEmployeeBack.HireInfo1;
@@ -354,7 +353,6 @@ namespace OB.Controllers
 
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
-            ViewBag.TaxTypeList = db.TaxType.OrderBy(a => a.Id).ToList();
 
             return View(editEmployeeBack);
         }
@@ -372,10 +370,7 @@ namespace OB.Controllers
             var editEmployeeFront = Mapper.Map<Employee, EditEmployeeFront>(employee);
             editEmployeeFront.Employee = employee;
 
-            ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
-            ViewBag.MarriageList = db.Marriage.OrderBy(a => a.Id).ToList();
             ViewBag.CertificateList = db.Certificate.OrderBy(a => a.Id).ToList();
-            ViewBag.HukouTypeList = db.HukouType.OrderBy(a => a.Id).ToList();
             ViewBag.CityList = db.City.OrderBy(a => a.Id).ToList();
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.ClientList = db.Client.OrderBy(a => a.Id).ToList();
@@ -398,8 +393,8 @@ namespace OB.Controllers
             {
                 employee.Timestamp = editEmployeeFront.Timestamp;
                 employee.EnglishName = editEmployeeFront.EnglishName;
-                employee.SexId = editEmployeeFront.SexId;
-                employee.MarriageId = editEmployeeFront.MarriageId;
+                employee.Sex = editEmployeeFront.Sex;
+                employee.Marriage = editEmployeeFront.Marriage;
                 employee.Nationality = editEmployeeFront.Nationality;
                 employee.Nation = editEmployeeFront.Nation;
                 employee.CertificateId = editEmployeeFront.CertificateId;
@@ -431,10 +426,10 @@ namespace OB.Controllers
                 employee.BasicInfo9 = editEmployeeFront.BasicInfo9;
                 employee.BasicInfo10 = editEmployeeFront.BasicInfo10;
 
-                employee.HukouTypeId = editEmployeeFront.HukouTypeId;
-                employee.PensionStatusId = editEmployeeFront.PensionStatusId;
+                employee.HukouType = editEmployeeFront.HukouType.Value;
+                employee.PensionStatus = editEmployeeFront.PensionStatus;
                 employee.YibaokaAvailable = editEmployeeFront.YibaokaAvailable;
-                employee.AccumulationStatusId = editEmployeeFront.AccumulationStatusId;
+                employee.AccumulationStatus = editEmployeeFront.AccumulationStatus;
                 employee.AccumulationNumber = editEmployeeFront.AccumulationNumber;
                 employee.DanganAddress = editEmployeeFront.DanganAddress;
                 employee.DanganOrganization = editEmployeeFront.DanganOrganization;
@@ -450,10 +445,7 @@ namespace OB.Controllers
             }
             editEmployeeFront.Employee = employee;
 
-            ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
-            ViewBag.MarriageList = db.Marriage.OrderBy(a => a.Id).ToList();
             ViewBag.CertificateList = db.Certificate.OrderBy(a => a.Id).ToList();
-            ViewBag.HukouTypeList = db.HukouType.OrderBy(a => a.Id).ToList();
             ViewBag.CityList = db.City.OrderBy(a => a.Id).ToList();
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.ClientList = db.Client.OrderBy(a => a.Id).ToList();
@@ -477,7 +469,6 @@ namespace OB.Controllers
 
             editEmployeeEducation.EditEducations = list;
 
-            ViewBag.DegreeList = db.Degree.OrderBy(a => a.Id).ToList();
             return View(editEmployeeEducation);
         }
 
@@ -521,7 +512,7 @@ namespace OB.Controllers
                     var e2 = editEmployeeEducation.EditEducations.Where(a => a.EducationId == i).Single();
                     e1.School = e2.School;
                     e1.Major = e2.Major;
-                    e1.DegreeId = e2.DegreeId;
+                    e1.Degree = e2.Degree;
                     e1.Begin = e2.Begin.Value;
                     e1.End = e2.End;
                 }
@@ -531,7 +522,7 @@ namespace OB.Controllers
                 var add = editEmployeeEducation.EditEducations.Where(a => a.Delete == false && a.EducationId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Education { School = i.School, Major = i.Major, DegreeId = i.DegreeId, Begin = i.Begin.Value, End = i.End };
+                    var e = new Education { School = i.School, Major = i.Major, Degree = i.Degree, Begin = i.Begin.Value, End = i.End };
                     employee.Educations.Add(e);
                 }
                 // end
@@ -539,7 +530,6 @@ namespace OB.Controllers
                 return RedirectToAction("EditEmployeeWork");
             }
 
-            ViewBag.DegreeList = db.Degree.OrderBy(a => a.Id).ToList();
             return View(editEmployeeEducation);
         }
 
@@ -641,7 +631,6 @@ namespace OB.Controllers
 
             editEmployeeFamily.EditFamilies = list;
 
-            ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
             return View(editEmployeeFamily);
         }
 
@@ -704,7 +693,6 @@ namespace OB.Controllers
                 return RedirectToAction("EditEmployeeDoc");
             }
 
-            ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
             return View(editEmployeeFamily);
         }
 
@@ -797,7 +785,6 @@ namespace OB.Controllers
                 return RedirectToAction("FrontDetail");
             }
 
-            ViewBag.SexList = db.Sex.OrderBy(a => a.Id).ToList();
             return View(editEmployeeDoc);
         }
 

@@ -367,11 +367,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.TaxTypeId)
+            @Html.LabelFor(model => model.TaxType)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.TaxTypeId, new SelectList(ViewBag.TaxTypeList, "Id", "Name"), String.Empty)
-            @Html.ValidationMessageFor(model => model.TaxTypeId)
+            @Html.EditorFor(model => model.TaxType)
+            @Html.ValidationMessageFor(model => model.TaxType)
         </div>
 
         <div class="editor-label">

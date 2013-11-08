@@ -40,10 +40,10 @@ namespace OB.Models
         public string EnglishName { get; set; }
 
         [DisplayName("性别")]
-        public int? SexId { get; set; }
+        public Sex? Sex { get; set; }
 
         [DisplayName("婚姻状况")]
-        public int? MarriageId { get; set; }
+        public Marriage? Marriage { get; set; }
 
         [MaxLength(100)]
         [DisplayName("国籍")]
@@ -167,7 +167,7 @@ namespace OB.Models
 
         // 参保信息
         [DisplayName("户口性质")]
-        public int? HukouTypeId { get; set; }
+        public HukouType HukouType { get; set; }
 
         [DisplayName("参保城市")]
         public int? PensionCityId { get; set; }
@@ -182,13 +182,13 @@ namespace OB.Models
         public int? AccumulationTypeId { get; set; }
 
         [DisplayName("社保状态")]
-        public int? PensionStatusId { get; set; }
+        public PensionStatus? PensionStatus { get; set; }
 
         [DisplayName("是否办理过医保卡")]
         public bool? YibaokaAvailable { get; set; }
 
         [DisplayName("公积金状态")]
-        public int? AccumulationStatusId { get; set; }
+        public AccumulationStatus? AccumulationStatus { get; set; }
 
         [MaxLength(100)]
         [DisplayName("本人公积金帐号")]
@@ -364,7 +364,7 @@ namespace OB.Models
         public decimal? Bcgjjjs { get; set; }
 
         [DisplayName("纳税类型")]
-        public int? TaxTypeId { get; set; }
+        public TaxType? TaxType { get; set; }
 
         [DisplayName("薪资账套")]
         public int? ZhangtaoId { get; set; }
@@ -521,23 +521,17 @@ namespace OB.Models
         }
 
         public virtual User User { get; set; }
-        public virtual Sex Sex { get; set; }
-        public virtual Marriage Marriage { get; set; }
         public virtual Certificate Certificate { get; set; }
-        public virtual HukouType HukouType { get; set; }
         public virtual City PensionCity { get; set; }
         public virtual City AccumulationCity { get; set; }
         public virtual PensionType PensionType { get; set; }
         public virtual AccumulationType AccumulationType { get; set; }
-        public virtual PensionStatus PensionStatus { get; set; }
-        public virtual AccumulationStatus AccumulationStatus { get; set; }
         public virtual Client Client { get; set; }
         public virtual City WorkCity { get; set; }
         public virtual Department Department { get; set; }
         public virtual Level Level { get; set; }
         public virtual Position Position { get; set; }
         public virtual ContractType ContractType { get; set; }
-        public virtual TaxType TaxType { get; set; }
         public virtual Zhangtao Zhangtao { get; set; }
         public virtual City TaxCity { get; set; }
 

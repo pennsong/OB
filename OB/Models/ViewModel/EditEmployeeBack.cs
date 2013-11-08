@@ -212,7 +212,7 @@ namespace OB.Models.ViewModel
         public decimal? Bcgjjjs { get; set; }
 
         [DisplayName("纳税类型")]
-        public int? TaxTypeId { get; set; }
+        public TaxType? TaxType { get; set; }
 
         [DisplayName("薪资账套")]
         public int? ZhangtaoId { get; set; }

@@ -37,19 +37,19 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.SexId)
+            @Html.LabelFor(model => model.Sex)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.SexId, new SelectList(ViewBag.SexList, "Id", "Name"), String.Empty)
-            @Html.ValidationMessageFor(model => model.SexId)
+            @Html.EnumDropDownListFor(model => model.Sex)
+            @Html.ValidationMessageFor(model => model.Sex)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.MarriageId)
+            @Html.LabelFor(model => model.Marriage)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.MarriageId, new SelectList(ViewBag.MarriageList, "Id", "Name"), String.Empty)
-            @Html.ValidationMessageFor(model => model.MarriageId)
+            @Html.EnumDropDownListFor(model => model.Marriage)
+            @Html.ValidationMessageFor(model => model.Marriage)
         </div>
 
         <div class="editor-label">
@@ -293,11 +293,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.HukouTypeId)
+            @Html.LabelFor(model => model.HukouType)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.HukouTypeId, new SelectList(ViewBag.HukouTypeList, "Id", "Name"), String.Empty)
-            @Html.ValidationMessageFor(model => model.HukouTypeId)
+            @Html.EnumDropDownListFor(model => model.HukouType)
+            @Html.ValidationMessageFor(model => model.HukouType)
         </div>
 
         <div class="display-label">
@@ -322,11 +322,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.PensionStatusId)
+            @Html.LabelFor(model => model.PensionStatus)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.PensionStatusId)
-            @Html.ValidationMessageFor(model => model.PensionStatusId)
+            @Html.EnumDropDownListFor(model => model.PensionStatus)
+            @Html.ValidationMessageFor(model => model.PensionStatus)
         </div>
 
         <div class="editor-label">
@@ -338,11 +338,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.AccumulationStatusId)
+            @Html.LabelFor(model => model.AccumulationStatus)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.AccumulationStatusId)
-            @Html.ValidationMessageFor(model => model.AccumulationStatusId)
+            @Html.EnumDropDownListFor(model => model.AccumulationStatus)
+            @Html.ValidationMessageFor(model => model.AccumulationStatus)
         </div>
 
         <div class="editor-label">

@@ -23,11 +23,14 @@ namespace OB.Models.ViewModel
         [DisplayName("英文名")]
         public string EnglishName { get; set; }
 
+        [Required]
+        [EnumDataType(typeof(Sex))]
         [DisplayName("性别")]
-        public int SexId { get; set; }
+        public Sex? Sex { get; set; }
 
+        [EnumDataType(typeof(Marriage))]
         [DisplayName("婚姻状况")]
-        public int? MarriageId { get; set; }
+        public Marriage? Marriage { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -154,17 +157,21 @@ namespace OB.Models.ViewModel
         public string BasicInfo10 { get; set; }
 
         // 参保信息
+        [Required]
+        [EnumDataType(typeof(HukouType))]
         [DisplayName("户口性质")]
-        public int HukouTypeId { get; set; }
+        public HukouType? HukouType { get; set; }
 
+        [EnumDataType(typeof(PensionStatus))]
         [DisplayName("社保状态")]
-        public int? PensionStatusId { get; set; }
+        public PensionStatus? PensionStatus { get; set; }
 
         [DisplayName("是否办理过医保卡")]
         public bool? YibaokaAvailable { get; set; }
 
+        [EnumDataType(typeof(AccumulationStatus))]
         [DisplayName("公积金状态")]
-        public int? AccumulationStatusId { get; set; }
+        public AccumulationStatus? AccumulationStatus { get; set; }
 
         [MaxLength(100)]
         [DisplayName("本人公积金帐号")]

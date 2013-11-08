@@ -17,7 +17,6 @@ namespace OB.Models.DAL
         }
         public DbSet<User> User { get; set; }
 
-        public DbSet<AccumulationStatus> AccumulationStatus { get; set; }
         public DbSet<AccumulationType> AccumulationType { get; set; }
         public DbSet<Assurance> Assurance { get; set; }
         public DbSet<BudgetCenter> BudgetCenter { get; set; }
@@ -27,21 +26,15 @@ namespace OB.Models.DAL
         public DbSet<ClientPensionCityDocument> ClientPensionCityDocument { get; set; }
         public DbSet<ContractType> ContractType { get; set; }
         public DbSet<CustomField> CustomField { get; set; }
-        public DbSet<Degree> Degree { get; set; }
         public DbSet<Department> Department { get; set; }
         public DbSet<Document> Document { get; set; }
         public DbSet<Education> Education { get; set; }
         public DbSet<Employee> Employee { get; set; }
         public DbSet<EmployeeDoc> EmployeeDoc { get; set; }
         public DbSet<Family> Family { get; set; }
-        public DbSet<HukouType> HukouType { get; set; }
         public DbSet<Level> Level { get; set; }
-        public DbSet<Marriage> Marriage { get; set; }
-        public DbSet<PensionStatus> PensionStatus { get; set; }
         public DbSet<PensionType> PensionType { get; set; }
         public DbSet<Position> Position { get; set; }
-        public DbSet<Sex> Sex { get; set; }
-        public DbSet<TaxType> TaxType { get; set; }
         public DbSet<Weight> Weight { get; set; }
         public DbSet<Work> Work { get; set; }
         public DbSet<Zhangtao> Zhangtao { get; set; }
@@ -74,7 +67,6 @@ namespace OB.Models.DAL
     {
         public static void Seed(OBContext context)
         {
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON AccumulationStatus(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON AccumulationType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Assurance(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON BudgetCenter(ClientId, Name)");
@@ -84,20 +76,14 @@ namespace OB.Models.DAL
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_ClientCity ON ClientPensionCityDocument(ClientId, PensionCityId)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON ContractType(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Client ON CustomField(ClientId)");
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Degree(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Department(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Document(ClientId, Name)");
             //none for Education
             //none for Employee
             //none for Family
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON HukouType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Level(ClientId, Name)");
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Marriage(Name)");
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON PensionStatus(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON PensionType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Position(ClientId, Name)");
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Sex(Name)");
-            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON TaxType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Client ON Weight(WeightClientId)");
             //none for Work
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Zhangtao(ClientId, Name)");
@@ -126,16 +112,6 @@ namespace OB.Models.DAL
             Roles.AddUsersToRoles(new[] { "hr1", "hr2" }, new[] { "HR" });
 
             //init data
-            var accumulationStatus = new List<AccumulationStatus>{
-                new AccumulationStatus{Name="公积金状态1"},
-                new AccumulationStatus{Name="公积金状态2"},
-            };
-            foreach (var item in accumulationStatus)
-            {
-                context.AccumulationStatus.Add(item);
-            }
-            context.SaveChanges();
-
             var accumulationType = new List<AccumulationType>{
                 new AccumulationType{Name="公积金类型1"},
                 new AccumulationType{Name="公积金类型2"},
@@ -258,47 +234,6 @@ namespace OB.Models.DAL
             }
             context.SaveChanges();
 
-
-            var degree = new List<Degree>{
-                new Degree{Name="学历1"},
-                new Degree{Name="学历2"},
-            };
-            foreach (var item in degree)
-            {
-                context.Degree.Add(item);
-            }
-            context.SaveChanges();
-
-            var hukouType = new List<HukouType>{
-                new HukouType{Name="户口类型1"},
-                new HukouType{Name="户口类型2"},
-            };
-            foreach (var item in hukouType)
-            {
-                context.HukouType.Add(item);
-            }
-            context.SaveChanges();
-
-            var marriage = new List<Marriage>{
-                new Marriage{Name="婚姻状态1"},
-                new Marriage{Name="婚姻状态2"},
-            };
-            foreach (var item in marriage)
-            {
-                context.Marriage.Add(item);
-            }
-            context.SaveChanges();
-
-            var pensionStatus = new List<PensionStatus>{
-                new PensionStatus{Name="社保状态1"},
-                new PensionStatus{Name="社保状态2"},
-            };
-            foreach (var item in pensionStatus)
-            {
-                context.PensionStatus.Add(item);
-            }
-            context.SaveChanges();
-
             var pensionType = new List<PensionType>{
                 new PensionType{Name="社保类型1"},
                 new PensionType{Name="社保类型2"},
@@ -306,26 +241,6 @@ namespace OB.Models.DAL
             foreach (var item in pensionType)
             {
                 context.PensionType.Add(item);
-            }
-            context.SaveChanges();
-
-            var sex = new List<Sex>{
-                new Sex{Name="男"},
-                new Sex{Name="女"},
-            };
-            foreach (var item in sex)
-            {
-                context.Sex.Add(item);
-            }
-            context.SaveChanges();
-
-            var taxType = new List<TaxType>{
-                new TaxType{Name="中国"},
-                new TaxType{Name="外籍"},
-            };
-            foreach (var item in taxType)
-            {
-                context.TaxType.Add(item);
             }
             context.SaveChanges();
 

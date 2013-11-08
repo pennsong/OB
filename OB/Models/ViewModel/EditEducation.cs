@@ -19,9 +19,9 @@ namespace OB.Models.ViewModel
         [Required]
         [DisplayName("专业")]
         public string Major { get; set; }
-        [Required]
+
         [DisplayName("学历")]
-        public int DegreeId { get; set; }
+        public Degree Degree { get; set; }
 
         private DateTime? _Begin;
 
