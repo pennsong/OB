@@ -20,9 +20,9 @@ namespace OB.Models
         [MaxLength(100)]
         [DisplayName("专业")]
         public string Major { get; set; }
-        [Required]
+
         [DisplayName("学历")]
-        public int DegreeId { get; set; }
+        public Degree Degree { get; set; }
 
         [DisplayName("开始时间")]
         public DateTime Begin { get; set; }
@@ -31,6 +31,5 @@ namespace OB.Models
         public DateTime? End { get; set; }
 
         public virtual Employee Employee { get; set; }
-        public virtual Degree Degree { get; set; }
     }
 }

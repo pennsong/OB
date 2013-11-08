@@ -674,7 +674,7 @@ namespace OB.Controllers
                     var e2 = editEmployeeFamily.EditFamilies.Where(a => a.FamilyId == i).Single();
                     e1.Name = e2.Name;
                     e1.Relation = e2.Relation;
-                    e1.SexId = e2.SexId;
+                    e1.Sex = e2.Sex;
                     e1.Company = e2.Company;
                     e1.Position = e2.Position;
                     e1.Phone = e2.Phone;
@@ -685,7 +685,7 @@ namespace OB.Controllers
                 var add = editEmployeeFamily.EditFamilies.Where(a => a.Delete == false && a.FamilyId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Family { Name = i.Name, Relation = i.Relation, SexId = i.SexId, Company = i.Company, Position = i.Position, Phone = i.Phone };
+                    var e = new Family { Name = i.Name, Relation = i.Relation, Sex = i.Sex, Company = i.Company, Position = i.Position, Phone = i.Phone };
                     employee.Families.Add(e);
                 }
                 // end

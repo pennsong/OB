@@ -31,10 +31,10 @@ namespace OB.Models
         public int? EnglishName { get; set; }
 
         [DisplayName("性别")]
-        public int? SexId { get; set; }
+        public int? Sex { get; set; }
 
         [DisplayName("婚姻状况")]
-        public int? MarriageId { get; set; }
+        public int? Marriage { get; set; }
 
         [DisplayName("国籍")]
         public int? Nationality { get; set; }
@@ -131,7 +131,7 @@ namespace OB.Models
 
         // 参保信息
         [DisplayName("户口性质")]
-        public int? HukouTypeId { get; set; }
+        public int? HukouType { get; set; }
 
         [DisplayName("参保城市")]
         public int? PensionCityId { get; set; }
@@ -146,13 +146,13 @@ namespace OB.Models
         public int? AccumulationTypeId { get; set; }
 
         [DisplayName("社保状态")]
-        public int? PensionStatusId { get; set; }
+        public int? PensionStatus { get; set; }
 
         [DisplayName("是否办理过医保卡")]
         public int? YibaokaAvailable { get; set; }
 
         [DisplayName("公积金状态")]
-        public int? AccumulationStatusId { get; set; }
+        public int? AccumulationStatus { get; set; }
 
         [DisplayName("本人公积金帐号")]
         public int? AccumulationNumber { get; set; }
@@ -276,7 +276,7 @@ namespace OB.Models
         public int? Bcgjjjs { get; set; }
 
         [DisplayName("纳税类型")]
-        public int? TaxTypeId { get; set; }
+        public int? TaxType { get; set; }
 
         [DisplayName("薪资账套")]
         public int? ZhangtaoId { get; set; }

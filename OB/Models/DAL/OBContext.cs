@@ -245,8 +245,8 @@ namespace OB.Models.DAL
             context.SaveChanges();
 
             var weight = new List<Weight>{
-                new Weight{WeightClientId=null, EnglishName=10, SexId=10},
-                new Weight{WeightClientId=1, EnglishName=10, SexId=2},
+                new Weight{WeightClientId=null, EnglishName=10, Sex=10},
+                new Weight{WeightClientId=1, EnglishName=10, Sex=10},
             };
             foreach (var item in weight)
             {

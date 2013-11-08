@@ -34,11 +34,11 @@
     </div>
     <div class="multiAddItem">
         <div class="editor-label">
-            @Html.LabelFor(model => model.SexId)
+            @Html.LabelFor(model => model.Sex)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.SexId, new SelectList(ViewBag.SexList, "Id", "Name"), String.Empty)
-            @Html.ValidationMessageFor(model => model.SexId)
+            @Html.EnumDropDownListFor(model => model.Sex)
+            @Html.ValidationMessageFor(model => model.Sex)
         </div>
     </div>
     <div class="multiAddItem">

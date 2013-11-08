@@ -23,7 +23,7 @@ namespace OB.Models
         public string Relation { get; set; }
 
         [DisplayName("性别")]
-        public int SexId { get; set; }
+        public Sex Sex { get; set; }
 
         [MaxLength(100)]
         [DisplayName("公司")]
@@ -38,6 +38,5 @@ namespace OB.Models
         public string Phone { get; set; }
 
         public virtual Employee Employee { get; set; }
-        public virtual Sex Sex { get; set; }
     }
 }
