@@ -37,7 +37,7 @@
             @Html.LabelFor(model => model.Degree)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.Degree)
+            @Html.EnumDropDownListFor(model => model.Degree)
             @Html.ValidationMessageFor(model => model.Degree)
         </div>
     </div>

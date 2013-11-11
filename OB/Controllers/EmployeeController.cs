@@ -23,9 +23,9 @@ namespace OB.Controllers
         //
         // GET: /Employee/
 
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
-            return View(db.Employee.ToList());
+            return View(db.Employee.OrderBy(a => a.Id).ToList());
         }
 
         //
@@ -339,10 +339,25 @@ namespace OB.Controllers
                 employee.HireInfo20 = editEmployeeBack.HireInfo20;
 
                 //save budgetcenters, assurances
-                var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
-                employee.BudgetCenters = budgetcenters;
-                var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
-                employee.Assurances = assurances;
+                if (editEmployeeBack.BudgetCenterIds == null)
+                {
+                    employee.BudgetCenters = new List<BudgetCenter> { };
+                }
+                else
+                {
+                    var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
+                    employee.BudgetCenters = budgetcenters;
+                }
+
+                if (editEmployeeBack.AssuranceIds == null)
+                {
+                    employee.Assurances = new List<Assurance> { };
+                }
+                else
+                {
+                    var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
+                    employee.Assurances = assurances;
+                }
 
                 db.SaveChanges();
                 return RedirectToAction("HREmployeeIndex");
@@ -512,7 +527,7 @@ namespace OB.Controllers
                     var e2 = editEmployeeEducation.EditEducations.Where(a => a.EducationId == i).Single();
                     e1.School = e2.School;
                     e1.Major = e2.Major;
-                    e1.Degree = e2.Degree;
+                    e1.Degree = e2.Degree.Value;
                     e1.Begin = e2.Begin.Value;
                     e1.End = e2.End;
                 }
@@ -522,7 +537,7 @@ namespace OB.Controllers
                 var add = editEmployeeEducation.EditEducations.Where(a => a.Delete == false && a.EducationId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Education { School = i.School, Major = i.Major, Degree = i.Degree, Begin = i.Begin.Value, End = i.End };
+                    var e = new Education { School = i.School, Major = i.Major, Degree = i.Degree.Value, Begin = i.Begin.Value, End = i.End };
                     employee.Educations.Add(e);
                 }
                 // end
@@ -674,7 +689,7 @@ namespace OB.Controllers
                     var e2 = editEmployeeFamily.EditFamilies.Where(a => a.FamilyId == i).Single();
                     e1.Name = e2.Name;
                     e1.Relation = e2.Relation;
-                    e1.Sex = e2.Sex;
+                    e1.Sex = e2.Sex.Value;
                     e1.Company = e2.Company;
                     e1.Position = e2.Position;
                     e1.Phone = e2.Phone;
@@ -685,7 +700,7 @@ namespace OB.Controllers
                 var add = editEmployeeFamily.EditFamilies.Where(a => a.Delete == false && a.FamilyId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Family { Name = i.Name, Relation = i.Relation, Sex = i.Sex, Company = i.Company, Position = i.Position, Phone = i.Phone };
+                    var e = new Family { Name = i.Name, Relation = i.Relation, Sex = i.Sex.Value, Company = i.Company, Position = i.Position, Phone = i.Phone };
                     employee.Families.Add(e);
                 }
                 // end

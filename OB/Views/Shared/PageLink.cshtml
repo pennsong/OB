@@ -1,0 +1,24 @@
+﻿<div class="pageLink">
+    @{
+        int page = ViewBag.Page;
+        int total = ViewBag.TotalPage;
+        int showCount = 5;
+
+        @Ajax.ActionLink("<<", (string)ViewBag.Action + "/0/" + 1, (object)ViewBag.RV, new AjaxOptions { UpdateTargetId = "AjaxBody" }, new { @class = "page" });
+        @Ajax.ActionLink("<", (string)ViewBag.Action + "/0/" + ((page - 1) <= 0 ? 1 : (page - 1)), (object)ViewBag.RV, new AjaxOptions { UpdateTargetId = "AjaxBody" }, new { @class = "page" });
+                                                                                                                                                                                                if (page > (showCount + 1))
+                                                                                                                                                                                                {
+        <a>...</a>
+                                                                                                                                                                                                }
+                                                                                                                                                                                                for (int i = (page - showCount <= 1 ? 1 : page - showCount); i <= (page + showCount >= total ? total : page + showCount); i++)
+                                                                                                                                                                                                {
+        @Ajax.ActionLink(i.ToString(), (string)ViewBag.Action + "/0/" + i, (object)ViewBag.RV, new AjaxOptions { UpdateTargetId = "AjaxBody" }, new { @class = (i == page) ? "page selected" : "page" });
+                                                                                                                                                                                                }
+                                                                                                                                                                                                if (page < (total - showCount))
+                                                                                                                                                                                                {
+        <a>...</a>
+                                                                                                                                                                                                }
+        @Ajax.ActionLink(">", (string)ViewBag.Action + "/0/" + ((page + 1) > total ? total : (page + 1)), (object)ViewBag.RV, new AjaxOptions { UpdateTargetId = "AjaxBody" }, new { @class = "page" });
+        @Ajax.ActionLink(">>", (string)ViewBag.Action + "/0/" + total, (object)ViewBag.RV, new AjaxOptions { UpdateTargetId = "AjaxBody" }, new { @class = "page" });
+    }
+</div>

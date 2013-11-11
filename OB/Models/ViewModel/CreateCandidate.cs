@@ -26,6 +26,10 @@ namespace OB.Models.ViewModel
         public string ConfirmPassword { get; set; }
 
         [Required]
+        [Display(Name = "邮箱")]
+        public string Mail { get; set; }
+
+        [Required]
         [Display(Name = "中文名")]
         public string ChineseName { get; set; }
 

@@ -15,6 +15,7 @@ using OB.Lib;
 using OB.Models.ViewModel;
 using System.Data.Objects;
 using System.Data.Entity.Infrastructure;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -64,17 +65,26 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult HRAdminList()
+        public ActionResult HRAdminList(string filter = "")
         {
             ViewBag.Path1 = "用户";
-            var users = Common.UserList("HRAdmin", db);
-            return View(users);
+            ViewBag.Action = "GetHRAdmin";
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult GetHRAdmin(int page = 1, string keyword = "")
+        {
+            var users = Common.UserList("HRAdmin", db, keyword).OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<User>.Page(this, "GetHRAdmin", rv, users, page));
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult CandidateList()
+        public ActionResult CandidateList(string filter = "")
         {
             ViewBag.Path1 = "用户";
+            ViewBag.Filter = filter;
             var users = Common.HRCandidateList(db);
             return View(users);
         }
@@ -100,7 +110,7 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HRAdmin" });
 
@@ -117,10 +127,11 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult HRList()
+        public ActionResult HRList(string filter = "")
         {
             ViewBag.Path1 = "用户";
-            var users = Common.UserList("HR", db);
+            ViewBag.Filter = filter;
+            var users = Common.UserList("HR", db, filter);
             return View(users);
         }
 
@@ -145,7 +156,7 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password);
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HR" });
 
@@ -188,7 +199,7 @@ namespace OB.Controllers
                     using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
                     {
                         // start transaction
-                        WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password);
+                        WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password, new { Mail = createCandidate.Mail });
                         Roles.AddUsersToRoles(new[] { createCandidate.UserName }, new[] { "Candidate" });
                         var user = db.User.Where(a => a.Name == createCandidate.UserName).Single();
                         var employee = new Employee { UserId = user.Id, User = user, EmployeeStatus = EmployeeStatus.新增未通知, ChineseName = createCandidate.ChineseName, ClientId = createCandidate.ClientId };
@@ -247,13 +258,15 @@ namespace OB.Controllers
         public ActionResult Manage(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "你的密码已更改。"
+                message == ManageMessageId.ChangePasswordSuccess ? "你的密码,邮箱已更改。"
                 : message == ManageMessageId.SetPasswordSuccess ? "已设置你的密码。"
                 : message == ManageMessageId.RemoveLoginSuccess ? "已删除外部登录。"
                 : "";
             ViewBag.HasLocalPassword = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             ViewBag.ReturnUrl = Url.Action("Manage");
-            return View();
+
+            LocalPasswordModel localPasswordModel = new LocalPasswordModel { Mail = (db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single()).Mail };
+            return View(localPasswordModel);
         }
 
         //
@@ -274,7 +287,13 @@ namespace OB.Controllers
                     bool changePasswordSucceeded;
                     try
                     {
-                        changePasswordSucceeded = WebSecurity.ChangePassword(User.Identity.Name, model.OldPassword, model.NewPassword);
+                        using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
+                        {
+                            changePasswordSucceeded = WebSecurity.ChangePassword(User.Identity.Name, model.OldPassword, model.NewPassword);
+                            db.User.Find(WebSecurity.CurrentUserId).Mail = model.Mail;
+                            db.SaveChanges();
+                            scope.Complete();
+                        }
                     }
                     catch (Exception)
                     {

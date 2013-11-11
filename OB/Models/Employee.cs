@@ -462,7 +462,7 @@ namespace OB.Models
                 Weight weight;
                 using (var db = new OBContext())
                 {
-                    weight = db.Weight.Where(a => a.WeightClientId == ClientId).Single();
+                    weight = db.Weight.Where(a => a.WeightClientId == ClientId).SingleOrDefault();
                     if (weight == null)
                     {
                         weight = db.Weight.Where(a => a.WeightClientId == null).Single();

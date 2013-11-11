@@ -98,17 +98,17 @@ namespace OB.Models.DAL
             Roles.CreateRole("Candidate");
 
             //admin
-            WebSecurity.CreateUserAndAccount("admin", "123456");
+            WebSecurity.CreateUserAndAccount("admin", "123456", new { Mail = "pennsong07@163.com" });
             Roles.AddUsersToRoles(new[] { "admin" }, new[] { "Admin" });
 
             //hradmin
-            WebSecurity.CreateUserAndAccount("hra1", "123456");
-            WebSecurity.CreateUserAndAccount("hra2", "123456");
+            WebSecurity.CreateUserAndAccount("hra1", "123456", new { Mail = "pennsong07@163.com" });
+            WebSecurity.CreateUserAndAccount("hra2", "123456", new { Mail = "pennsong07@163.com" });
             Roles.AddUsersToRoles(new[] { "hra1", "hra2" }, new[] { "HRAdmin" });
 
             //hr
-            WebSecurity.CreateUserAndAccount("hr1", "123456");
-            WebSecurity.CreateUserAndAccount("hr2", "123456");
+            WebSecurity.CreateUserAndAccount("hr1", "123456", new { Mail = "pennsong07@163.com" });
+            WebSecurity.CreateUserAndAccount("hr2", "123456", new { Mail = "pennsong07@163.com" });
             Roles.AddUsersToRoles(new[] { "hr1", "hr2" }, new[] { "HR" });
 
             //init data

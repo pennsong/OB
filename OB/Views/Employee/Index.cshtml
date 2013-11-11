@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OB.Models.Employee>
+﻿@model IPagedList<Employee>
 
 @{
     ViewBag.Title = "Index";
@@ -12,7 +12,7 @@
 <table>
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ChineseName)
+            @Html.DisplayNameFor(model => model.First().ChineseName)
         </th>
         <th></th>
     </tr>

@@ -759,6 +759,10 @@ ul#menu li a.selected {
     background-color: blue;
 }
 
+div.pageLink a.selected {
+    background-color: blue;
+}
+
 img.doc {
     height: 80px;
     width: 60px;

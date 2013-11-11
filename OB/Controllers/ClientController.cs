@@ -28,9 +28,18 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
+            ViewBag.Path1 = "参数设置";
+            ViewBag.Action = "GetClient";
+            return View();
+        }
 
-            var client = db.Client.Include(c => c.HRAdmin);
-            return View(client.ToList());
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult GetClient(int page = 1, string keyword = "")
+        {
+            keyword = keyword.ToUpper();
+            var clients = db.Client.Where(a => a.Name.ToUpper().Contains(keyword) || a.HRAdmin.Name.ToUpper().Contains(keyword)).OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<Client>.Page(this, "GetClient", rv, clients, page));
         }
 
         [Authorize(Roles = "HRAdmin")]

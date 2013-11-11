@@ -22,6 +22,8 @@ namespace OB.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        [Required]
+        public string Mail { get; set; }
 
         //public virtual Employee Employee { get; set; }
 
@@ -55,6 +57,10 @@ namespace OB.Models
         [Display(Name = "确认新密码")]
         [Compare("NewPassword", ErrorMessage = "新密码和确认密码不匹配。")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "邮箱")]
+        public string Mail { get; set; }
     }
 
     public class LoginModel
@@ -88,6 +94,10 @@ namespace OB.Models
         [Display(Name = "确认密码")]
         [Compare("Password", ErrorMessage = "密码和确认密码不匹配。")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "邮箱")]
+        public string Mail { get; set; }
     }
 
     public class ExternalLogin

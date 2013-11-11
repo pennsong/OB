@@ -23,8 +23,9 @@ namespace OB.Models.ViewModel
         [DisplayName("关系")]
         public string Relation { get; set; }
 
+        [Required]
         [DisplayName("性别")]
-        public int SexId { get; set; }
+        public Sex? Sex { get; set; }
 
         [MaxLength(100)]
         [DisplayName("公司")]
@@ -36,10 +37,8 @@ namespace OB.Models.ViewModel
 
         [MaxLength(100)]
         [DisplayName("联系电话")]
-        public string Phone { get; set; }       
+        public string Phone { get; set; }
 
         public bool Delete { get; set; }
-
-        public virtual Sex Sex { get; set; }
     }
 }
