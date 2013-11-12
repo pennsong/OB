@@ -814,6 +814,8 @@
     <Content Include="Views\Account\GetHRAdmin.cshtml" />
     <Content Include="Views\Shared\PageLink.cshtml" />
     <Content Include="Views\Client\GetClient.cshtml" />
+    <Content Include="Views\Account\GetHR.cshtml" />
+    <Content Include="Views\Account\GetCandidate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

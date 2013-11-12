@@ -25,7 +25,7 @@ namespace OB.Lib
 
     public class Common
     {
-        public static IList<User> HRCandidateList(OBContext context, string filter = "")
+        public static IQueryable<User> HRCandidateList(OBContext context, string filter = "")
         {
             filter = filter.ToUpper();
             var usernames = Roles.GetUsersInRole("Candidate");
@@ -38,9 +38,9 @@ namespace OB.Lib
 
             if (!String.IsNullOrWhiteSpace(filter))
             {
-                users.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+                users = users.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
             }
-            return users.ToList();
+            return users;
         }
 
         public static IQueryable<User> UserList(string role, OBContext context = null, string filter = "")

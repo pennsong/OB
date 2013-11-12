@@ -80,15 +80,6 @@ namespace OB.Controllers
             return PartialView(Common<User>.Page(this, "GetHRAdmin", rv, users, page));
         }
 
-        [Authorize(Roles = "HR")]
-        public ActionResult CandidateList(string filter = "")
-        {
-            ViewBag.Path1 = "用户";
-            ViewBag.Filter = filter;
-            var users = Common.HRCandidateList(db);
-            return View(users);
-        }
-
         [Authorize(Roles = "Admin")]
         public ActionResult CreateHRAdmin()
         {
@@ -130,9 +121,33 @@ namespace OB.Controllers
         public ActionResult HRList(string filter = "")
         {
             ViewBag.Path1 = "用户";
+            ViewBag.Action = "GetHR";
+            return View();
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        public PartialViewResult GetHR(int page = 1, string keyword = "")
+        {
+            var users = Common.UserList("HR", db, keyword).OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<User>.Page(this, "GetHR", rv, users, page));
+        }
+
+        [Authorize(Roles = "HR")]
+        public ActionResult CandidateList(string filter = "")
+        {
+            ViewBag.Path1 = "用户";
             ViewBag.Filter = filter;
-            var users = Common.UserList("HR", db, filter);
-            return View(users);
+            ViewBag.Action = "GetCandidate";
+            return View();
+        }
+
+        [Authorize(Roles = "HR")]
+        public PartialViewResult GetCandidate(int page = 1, string keyword = "")
+        {
+            var users = Common.HRCandidateList(db, keyword).OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<User>.Page(this, "GetCandidate", rv, users, page));
         }
 
         [Authorize(Roles = "HRAdmin")]

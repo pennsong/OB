@@ -1,28 +1,28 @@
-﻿@model IEnumerable<OB.Models.User>
+﻿@{
+    ViewBag.Title = "候选人列表";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        UpdateTargetId = "AjaxBody",
+        Url = Url.Action((string)ViewBag.Action),
+    }; }
 
-@{
-    ViewBag.Title = "CandidateList";
-}
-
-<h2>CandidateList</h2>
+<h2>@ViewBag.Title</h2>
 
 <p>
     @Html.ActionLink("Create New", "CreateCandidate")
 </p>
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-    </tr>
+@using (Ajax.BeginForm(ajaxOpts))
+{
+    <div>
+        @Html.TextBox("keyword")
+        <button type="submit">查询</button>
+    </div>
+}
 
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-        </tr>
-    }
+<div id="AjaxBody">
+    @Html.Action((string)ViewBag.Action)
+</div>
 
-</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -17,7 +17,7 @@ namespace OB.Controllers
 
         //
         // GET: /AccumulationType/
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             return View(db.AccumulationType.ToList());
