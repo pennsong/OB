@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
+using OB.Lib;
 
 namespace OB.Controllers
 {
@@ -15,13 +16,22 @@ namespace OB.Controllers
     {
         private OBContext db = new OBContext();
 
-        //
-        // GET: /AccumulationType/
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            return View(db.AccumulationType.ToList());
+            ViewBag.Path1 = "参数设置";
+            ViewBag.Action = "GetAccumulationType";
+            return View();
         }
+
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult GetAccumulationType(int page = 1, string keyword = "")
+        {
+            var records = Common.GetAccumulationTypeQuery(db, keyword).OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<AccumulationType>.Page(this, "GetAccumulationType", rv, records, page));
+        }
+
 
         //
         // GET: /AccumulationType/Details/5

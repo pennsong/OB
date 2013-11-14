@@ -26,7 +26,7 @@
                     @Html.DisplayFor(modelItem => item.HRAdmin.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id, rv = Url.RouteUrl(Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)) }) |
             @Html.ActionLink("Details", "Details", new { id = item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id = item.Id })
                 </td>

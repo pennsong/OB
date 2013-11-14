@@ -28,7 +28,7 @@
             @Html.LabelFor(model => model.HRAdminId, "HRAdmin")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(ViewBag.HRAdminList, "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.UserList("HRAdmin"), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.HRAdminId)
         </div>
 
@@ -39,7 +39,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", (object)ViewBag.RV)
 </div>
 
 @section Scripts {

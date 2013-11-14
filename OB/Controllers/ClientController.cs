@@ -37,17 +37,28 @@ namespace OB.Controllers
         public PartialViewResult GetClient(int page = 1, string keyword = "")
         {
             keyword = keyword.ToUpper();
-            var clients = db.Client.Where(a => a.Name.ToUpper().Contains(keyword) || a.HRAdmin.Name.ToUpper().Contains(keyword)).OrderBy(a => a.Name);
+            var results = Common.GetClient(db, keyword);
+            results = results.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<Client>.Page(this, "GetClient", rv, clients, page));
+            return PartialView(Common<Client>.Page(this, "GetClient", rv, results, page));
         }
 
         [Authorize(Roles = "HRAdmin")]
         public ActionResult HRAdminClientIndex()
         {
+            ViewBag.Path1 = "参数设置";
+            ViewBag.Action = "GetHRAdminClient";
+            return View();
+        }
 
-            var client = db.Client.Where(a => a.HRAdminId == WebSecurity.CurrentUserId);
-            return View(client.ToList());
+        [Authorize(Roles = "HRAdmin")]
+        public PartialViewResult GetHRAdminClient(int page = 1, string keyword = "")
+        {
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new { keyword = keyword };
+            return PartialView(Common<Client>.Page(this, "GetHRAdminClient", rv, results, page));
         }
 
         //
@@ -68,7 +79,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
-            ViewBag.HRAdminId = new SelectList(Common.UserList("HRAdmin", db), "Id", "Name");
+            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
             return View();
         }
 
@@ -95,14 +106,14 @@ namespace OB.Controllers
                     }
                 }
             }
-            ViewBag.HRAdminId = new SelectList(Common.UserList("HRAdmin", db), "Id", "Name");
+            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
             return View(client);
         }
 
         //
         // GET: /Client/Edit/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int id = 0)
+        public ActionResult Edit(int id = 0, string rv = "")
         {
             Client client = db.Client.Find(id);
             if (client == null)
@@ -110,7 +121,8 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.HRAdminList = Common.UserList("HRAdmin", db);
+            ViewBag.RV = rv;
+            ViewBag.HRAdminList = Common.UserQuery("HRAdmin", db);
 
             return View(client);
         }
@@ -138,23 +150,24 @@ namespace OB.Controllers
                     }
                 }
             }
-            ViewBag.HRAdminId = new SelectList(Common.UserList("HRAdmin", db), "Id", "Name");
+            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
             return View(client);
         }
 
         [Authorize(Roles = "HRAdmin")]
         public ActionResult EditClientHR(int id = 0)
         {
-            Client client = db.Client.Where(a => a.Id == id && a.HRAdminId == WebSecurity.CurrentUserId).SingleOrDefault();
-            if (client == null)
+            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db);
+            var result = results.Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
                 return HttpNotFound();
             }
             var editClientHr = new EditClientHR
             {
-                ClientId = client.Id,
-                ClientName = client.Name,
-                HRIds = client.HRs.Select(a => a.Id).ToList()
+                ClientId = result.Id,
+                ClientName = result.Name,
+                HRIds = result.HRs.Select(a => a.Id).ToList()
             };
             return View(editClientHr);
         }
@@ -164,18 +177,22 @@ namespace OB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditClientHR(EditClientHR editClientHR)
         {
-            Client client = db.Client.Include(a => a.HRs).Where(a => a.Id == editClientHR.ClientId && a.HRAdminId == WebSecurity.CurrentUserId).SingleOrDefault();
-            if (client == null)
+            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db);
+            var result = results.Include(a => a.HRs).Where(a => a.Id == editClientHR.ClientId).SingleOrDefault();
+            if (result == null)
             {
                 return HttpNotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var t = db.User.Where(a => editClientHR.HRIds.Any(b => b == a.Id)).ToList();
-                    client.HRs = t;
+                    if (editClientHR.HRIds == null)
+                    {
+                        editClientHR.HRIds = new List<int> { };
+                    }
+                    var hrs = Common.UserQuery("HR", db).Where(a => editClientHR.HRIds.Any(b => b == a.Id)).ToList();
+                    result.HRs = hrs;
                     db.SaveChanges();
                     return RedirectToAction("HRAdminClientIndex");
                 }

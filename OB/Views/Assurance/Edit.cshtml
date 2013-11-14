@@ -6,7 +6,8 @@
 
 <h2>Edit</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -14,13 +15,13 @@
         <legend>Assurance</legend>
 
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ClientId)
 
-        <div class="editor-label">
+        <div class="display-label">
             @Html.LabelFor(model => model.ClientId, "Client")
         </div>
-        <div class="editor-field">
-            @Html.DropDownList("ClientId", String.Empty)
-            @Html.ValidationMessageFor(model => model.ClientId)
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Client.Name)
         </div>
 
         <div class="editor-label">

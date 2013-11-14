@@ -23,6 +23,7 @@ namespace OB.Models.DAL
         public DbSet<Certificate> Certificate { get; set; }
         public DbSet<City> City { get; set; }
         public DbSet<Client> Client { get; set; }
+        public DbSet<ClientCitySupplierHukou> ClientCitySupplierHukou { get; set; }
         public DbSet<ClientPensionCityDocument> ClientPensionCityDocument { get; set; }
         public DbSet<ContractType> ContractType { get; set; }
         public DbSet<CustomField> CustomField { get; set; }
@@ -35,6 +36,7 @@ namespace OB.Models.DAL
         public DbSet<Level> Level { get; set; }
         public DbSet<PensionType> PensionType { get; set; }
         public DbSet<Position> Position { get; set; }
+        public DbSet<Supplier> Supplier { get; set; }
         public DbSet<Weight> Weight { get; set; }
         public DbSet<Work> Work { get; set; }
         public DbSet<Zhangtao> Zhangtao { get; set; }
@@ -76,6 +78,7 @@ namespace OB.Models.DAL
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_ClientCity ON ClientPensionCityDocument(ClientId, PensionCityId)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON ContractType(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Client ON CustomField(ClientId)");
+            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_ClientCitySupplierHukou ON ClientCitySupplierHukou(ClientId, CityId, SupplierId, HukouType)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Department(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Document(ClientId, Name)");
             //none for Education
@@ -84,6 +87,7 @@ namespace OB.Models.DAL
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Level(ClientId, Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON PensionType(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Position(ClientId, Name)");
+            context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Supplier(Name)");
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Client ON Weight(WeightClientId)");
             //none for Work
             context.Database.ExecuteSqlCommand("CREATE UNIQUE INDEX index_Name ON Zhangtao(ClientId, Name)");

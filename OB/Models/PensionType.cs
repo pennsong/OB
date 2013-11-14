@@ -14,5 +14,7 @@ namespace OB.Models
         [DisplayName("名称")]
         [MaxLength(50)]
         public string Name { get; set; }
+
+        public virtual ICollection<ClientCitySupplierHukou> ClientCitySupplierHukous { get; set; }
     }
 }

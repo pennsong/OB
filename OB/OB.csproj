@@ -206,6 +206,7 @@
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\PensionTypeController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
+    <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\WeightController.cs" />
     <Compile Include="Controllers\WorkController.cs" />
     <Compile Include="Controllers\ZhangtaoController.cs" />
@@ -252,6 +253,8 @@
     <Compile Include="Models\ClientPensionCityDocument.cs" />
     <Compile Include="Models\Weight.cs" />
     <Compile Include="Models\CustomField.cs" />
+    <Compile Include="Models\ClientCitySupplierHukou.cs" />
+    <Compile Include="Models\Supplier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -816,6 +819,14 @@
     <Content Include="Views\Client\GetClient.cshtml" />
     <Content Include="Views\Account\GetHR.cshtml" />
     <Content Include="Views\Account\GetCandidate.cshtml" />
+    <Content Include="Views\AccumulationType\GetAccumulationType.cshtml" />
+    <Content Include="Views\Assurance\GetAssurance.cshtml" />
+    <Content Include="Views\Supplier\Index.cshtml" />
+    <Content Include="Views\Supplier\Details.cshtml" />
+    <Content Include="Views\Supplier\Create.cshtml" />
+    <Content Include="Views\Supplier\Edit.cshtml" />
+    <Content Include="Views\Supplier\Delete.cshtml" />
+    <Content Include="Views\Client\GetHRAdminClient.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
