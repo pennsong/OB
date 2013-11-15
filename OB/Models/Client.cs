@@ -39,5 +39,10 @@ namespace OB.Models
         public virtual ICollection<Zhangtao> Zhangtaos { get; set; }
 
         public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
+
+        public override string ToString()
+        {
+            return Id + "-" + Name;
+        }
     }
 }

@@ -26,10 +26,11 @@ namespace OB.Controllers
         //
         // GET: /Client/
         [Authorize(Roles = "Admin")]
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, string keyword = "")
         {
             ViewBag.Path1 = "参数设置";
             ViewBag.Action = "GetClient";
+            ViewBag.RV = new { page = page, keyword = keyword };
             return View();
         }
 
@@ -64,22 +65,31 @@ namespace OB.Controllers
         //
         // GET: /Client/Details/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Details(int id = 0)
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
         {
             Client client = db.Client.Find(id);
             if (client == null)
             {
                 return HttpNotFound();
             }
+
+            ViewBag.ReturnUrl = returnUrl;
+
             return View(client);
         }
 
         //
         // GET: /Client/Create
         [Authorize(Roles = "Admin")]
-        public ActionResult Create()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
         {
             ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -88,7 +98,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Client client)
+        public ActionResult CreateSave(Client client, string returnUrl = "Index")
         {
             if (ModelState.IsValid)
             {
@@ -96,7 +106,9 @@ namespace OB.Controllers
                 {
                     db.Client.Add(client);
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "新建成功!" };
+                    TempData["msg"] = msg;
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (DbUpdateException ex)
                 {
@@ -107,13 +119,17 @@ namespace OB.Controllers
                 }
             }
             ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
-            return View(client);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", client);
         }
 
         //
         // GET: /Client/Edit/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int id = 0, string rv = "")
+        [HttpPost]
+        [ValidateInput(false)]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
             Client client = db.Client.Find(id);
             if (client == null)
@@ -121,7 +137,7 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
 
-            ViewBag.RV = rv;
+            ViewBag.ReturnUrl = returnUrl;
             ViewBag.HRAdminList = Common.UserQuery("HRAdmin", db);
 
             return View(client);
@@ -132,7 +148,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Client client)
+        public ActionResult EditSave(Client client, string returnUrl = "Index")
         {
             if (ModelState.IsValid)
             {
@@ -140,7 +156,9 @@ namespace OB.Controllers
                 {
                     db.Entry(client).State = EntityState.Modified;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "保存成功!" };
+                    TempData["msg"] = msg;
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (DbUpdateException ex)
                 {
@@ -151,7 +169,9 @@ namespace OB.Controllers
                 }
             }
             ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
-            return View(client);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", client);
         }
 
         [Authorize(Roles = "HRAdmin")]
@@ -206,27 +226,33 @@ namespace OB.Controllers
         //
         // GET: /Client/Delete/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Delete(int id = 0)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
             Client client = db.Client.Find(id);
             if (client == null)
             {
                 return HttpNotFound();
             }
+
+            ViewBag.ReturnUrl = returnUrl;
             return View(client);
         }
 
         //
         // POST: /Client/Delete/5
         [Authorize(Roles = "Admin")]
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id, string returnUrl = "Index")
         {
             Client client = db.Client.Find(id);
             db.Client.Remove(client);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "删除成功!" };
+            TempData["msg"] = msg;
+            return Redirect(Url.Content(returnUrl));
         }
 
         protected override void Dispose(bool disposing)

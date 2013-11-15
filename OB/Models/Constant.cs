@@ -5,6 +5,13 @@ using System.Web;
 
 namespace OB.Models
 {
+    public enum MsgType
+    {
+        OK = 10,
+        WARN = 20,
+        ERROR = 30,
+    }
+
     public enum EmployeeStatus
     {
         新增未通知 = 10,

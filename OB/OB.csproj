@@ -238,6 +238,7 @@
     <Compile Include="Models\ViewModel\CreateCandidate.cs" />
     <Compile Include="Models\ViewModel\EditClientPensionCityDocument.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeDoc.cs" />
+    <Compile Include="Models\ViewModel\Msg.cs" />
     <Compile Include="Models\ViewModel\Offer.cs" />
     <Compile Include="Models\ViewModel\OnPosition.cs" />
     <Compile Include="Models\Work.cs" />
@@ -827,6 +828,7 @@
     <Content Include="Views\Supplier\Edit.cshtml" />
     <Content Include="Views\Supplier\Delete.cshtml" />
     <Content Include="Views\Client\GetHRAdminClient.cshtml" />
+    <Content Include="Views\Shared\Msg.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

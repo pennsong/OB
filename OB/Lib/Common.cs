@@ -2,6 +2,7 @@
 using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,7 +17,9 @@ namespace OB.Lib
         public static IQueryable<T> Page(Controller c, string action, object rv, IQueryable<T> q, int page = 1, int size = 2)
         {
             c.ViewBag.Action = action;
-            c.ViewBag.TotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
+            var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
+            page = page > tmpTotalPage ? tmpTotalPage : page;
+            c.ViewBag.TotalPage = tmpTotalPage;
             c.ViewBag.Page = page;
             c.ViewBag.RV = rv;
             return q.Skip((page - 1) * size).Take(size);
@@ -25,6 +28,21 @@ namespace OB.Lib
 
     public class Common
     {
+        static dynamic Combine(dynamic item1, dynamic item2)
+        {
+            var dictionary1 = (IDictionary<string, object>)item1;
+            var dictionary2 = (IDictionary<string, object>)item2;
+            var result = new ExpandoObject();
+            var d = result as IDictionary<string, object>; //work with the Expando as a Dictionary
+
+            foreach (var pair in dictionary1.Concat(dictionary2))
+            {
+                d[pair.Key] = pair.Value;
+            }
+
+            return result;
+        }
+
         public static IQueryable<User> GetUserList(OBContext context, string filter = "")
         {
             filter = filter.ToUpper();

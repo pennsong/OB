@@ -4,13 +4,13 @@
     {
         UpdateTargetId = "AjaxBody",
         Url = Url.Action((string)ViewBag.Action),
-    }; }
+    };
+    
+}
 
 <h2>@ViewBag.Title</h2>
+@Html.Partial("Msg")
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 @using (Ajax.BeginForm(ajaxOpts))
 {
     <div>
@@ -20,9 +20,12 @@
 }
 
 <div id="AjaxBody">
-    @Html.Action((string)ViewBag.Action)
+    @Html.Action((string)ViewBag.Action, (object)ViewBag.RV)
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $("#msg").delay(3000).fadeOut(500);
+    </script>
 }
