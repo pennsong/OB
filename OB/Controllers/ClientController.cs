@@ -22,21 +22,21 @@ namespace OB.Controllers
         //
         // GET: /Client/
         [Authorize(Roles = "Admin")]
-        public ActionResult Index(int page = 1, string keyword = "")
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "参数设置";
             ViewBag.Action = "GetClient";
-            ViewBag.RV = new { page = page, keyword = keyword };
+            ViewBag.RV = new { page = page, keyword = keyword, includeSoftDeleted = includeSoftDeleted };
             return View();
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetClient(int page = 1, string keyword = "")
+        public PartialViewResult GetClient(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
-            var results = Common.GetClientQuery(db, true, keyword);
+            var results = Common.GetClientQuery(db, includeSoftDeleted, keyword);
             results = results.OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
+            var rv = new { keyword = keyword, includeSoftDeleted = includeSoftDeleted };
             return PartialView(Common<Client>.Page(this, "GetClient", rv, results, page));
         }
 
