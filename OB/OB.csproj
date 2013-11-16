@@ -225,6 +225,11 @@
     <Compile Include="Models\EmployeeDoc.cs" />
     <Compile Include="Models\Constant.cs" />
     <Compile Include="Models\Base\SoftDelete.cs" />
+    <Compile Include="Models\FrameLog\ChangeSet.cs" />
+    <Compile Include="Models\FrameLog\ChangeSetFactory.cs" />
+    <Compile Include="Models\FrameLog\ExampleContextAdapter.cs" />
+    <Compile Include="Models\FrameLog\ObjectChange.cs" />
+    <Compile Include="Models\FrameLog\PropertyChange.cs" />
     <Compile Include="Models\ViewModel\EditClientHR.cs" />
     <Compile Include="Models\ViewModel\EditEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeFront.cs" />
@@ -831,6 +836,7 @@
     <Content Include="Views\Client\GetHRAdminClient.cshtml" />
     <Content Include="Views\Shared\Msg.cshtml" />
     <Content Include="Views\Client\Restore.cshtml" />
+    <Content Include="Views\Client\History.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -840,6 +846,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FrameLog\FrameLog.csproj">
+      <Project>{f7858103-4b4d-4cd3-8142-d99afe5e6f66}</Project>
+      <Name>FrameLog</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -857,7 +869,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>14970</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:17216/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

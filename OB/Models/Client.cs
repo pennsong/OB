@@ -1,4 +1,6 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using FrameLog.Contexts;
+using OB.Models.Base;
 using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Client : SoftDelete
+    public class Client : SoftDelete, IHasLoggingReference, ICloneable, IDisplayable
     {
         public int Id { get; set; }
         [Required]
@@ -41,9 +43,42 @@ namespace OB.Models
 
         public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
 
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
+        public object Clone()
+        {
+            return Copy();
+        }
+        public Client Copy()
+        {
+            return new Client()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                HRAdminId = this.HRAdminId,
+            };
+        }
+
         public override string ToString()
         {
             return Id + "-" + Name;
+        }
+
+        public string DisV
+        {
+            get
+            {
+                return Dis();
+            }
+        }
+
+        public string Dis()
+        {
+            return Id + "-" + Name + "-" + (HRAdmin == null ? "无" : HRAdmin.Name);
         }
     }
 }

@@ -1,9 +1,14 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using FrameLog.Contexts;
+using FrameLog.History;
+using OB.Models.Base;
+using OB.Models.FrameLog;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.Objects;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -16,7 +21,9 @@ namespace OB.Models.DAL
         public OBContext()
             : base("OB")
         {
+            Logger = new FrameLogModule<ChangeSet, User>(new ChangeSetFactory(), FrameLogContext);
         }
+
         public DbSet<User> User { get; set; }
 
         public DbSet<AccumulationType> AccumulationType { get; set; }
@@ -58,6 +65,21 @@ namespace OB.Models.DAL
             modelBuilder.Entity<Client>().HasOptional(c => c.HRAdmin).WithMany(i => i.HRAdminClients).HasForeignKey(c => c.HRAdminId);
         }
 
+        #region logging
+        public DbSet<ChangeSet> ChangeSets { get; set; }
+        public DbSet<ObjectChange> ObjectChanges { get; set; }
+        public DbSet<PropertyChange> PropertyChanges { get; set; }
+
+        public readonly FrameLogModule<ChangeSet, User> Logger;
+        public IFrameLogContext<ChangeSet, User> FrameLogContext
+        {
+            get { return new ExampleContextAdapter(this); }
+        }
+        public HistoryExplorer<ChangeSet, User> HistoryExplorer
+        {
+            get { return new HistoryExplorer<ChangeSet, User>(FrameLogContext); }
+        }
+
         public void PPSave()
         {
             //Do soft deletes
@@ -70,9 +92,9 @@ namespace OB.Models.DAL
                     deletableEntity.Entity.IsDeleted = true; //This will set the entity's state to modified for the next time we query the ChangeTracker
                 }
             }
-            this.SaveChanges();
-            //Logger.SaveChanges(author, SaveOptions.AcceptAllChangesAfterSave);
+            Logger.SaveChanges(this.User.Find(WebSecurity.CurrentUserId), SaveOptions.AcceptAllChangesAfterSave);
         }
+        #endregion
     }
 
     public class OBInitializer : DropCreateDatabaseIfModelChanges<OBContext>

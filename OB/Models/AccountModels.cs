@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FrameLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,7 +19,7 @@ namespace OB.Models
         public DbSet<User> User { get; set; }
     }
 
-    public class User
+    public class User : IHasLoggingReference
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -29,6 +30,17 @@ namespace OB.Models
 
         public virtual ICollection<Client> HRAdminClients { get; set; }
         public virtual ICollection<Client> HRClients { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
     public class RegisterExternalLoginModel
