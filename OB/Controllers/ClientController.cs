@@ -317,7 +317,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetClientQuery(db, true, "").Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetClientQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.Rd(this, MsgType.ERROR);
@@ -337,7 +337,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetClientQuery(db, true, "").Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            var result = Common.GetClientQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
             if (result == null)
             {
                 Common.Rd(this, MsgType.ERROR);

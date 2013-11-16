@@ -56,7 +56,7 @@ namespace OB.Controllers
         public ActionResult Create()
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, ""), "Id", "Name");
+            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId), "Id", "Name");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace OB.Controllers
                 try
                 {
                     //确认客户id在用户权限范围内
-                    var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
+                    var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == assurance.ClientId).SingleOrDefault();
                     if (result == null)
                     {
                         throw new UnauthorizedAccessException();
@@ -96,7 +96,7 @@ namespace OB.Controllers
                 }
             }
 
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, ""), "Id", "Name", assurance.ClientId);
+            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId), "Id", "Name", assurance.ClientId);
             return View(assurance);
         }
 
@@ -114,7 +114,7 @@ namespace OB.Controllers
             try
             {
                 //确认客户id在用户权限范围内
-                var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
+                var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == assurance.ClientId).SingleOrDefault();
                 if (result == null)
                 {
                     throw new UnauthorizedAccessException();
