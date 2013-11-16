@@ -1,12 +1,12 @@
 ﻿@model OB.Models.Client
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Restore";
 }
 
-<h2>Delete</h2>
+<h2>Restore</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to Restore this?</h3>
 
 <fieldset>
     <legend>Client</legend>
@@ -27,13 +27,13 @@
 </fieldset>
 
 <div>
-    @using (Html.BeginForm("DeleteSave", "Client"))
+    @using (Html.BeginForm("RestoreSave", "Client"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
-        <input type="submit" value="确认删除" />
+        <input type="submit" value="确认恢复" />
     }
     <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
 </div>

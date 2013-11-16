@@ -20,12 +20,12 @@
 }
 
 <div id="AjaxBody">
-    @Html.Action((string)ViewBag.Action, (object)ViewBag.RV)
+    @Html.Action((string)ViewBag.Action, Html.RouteValues((object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }))
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
-        $("#msg").delay(3000).fadeOut(500);
+        //$("#msg").delay(3000).fadeOut(500);
     </script>
 }

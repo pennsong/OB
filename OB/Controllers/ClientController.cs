@@ -18,10 +18,6 @@ namespace OB.Controllers
     public class ClientController : Controller
     {
         private OBContext db = new OBContext();
-        public ClientController()
-        {
-            ViewBag.Path1 = "参数设置";
-        }
 
         //
         // GET: /Client/
@@ -38,17 +34,18 @@ namespace OB.Controllers
         public PartialViewResult GetClient(int page = 1, string keyword = "")
         {
             keyword = keyword.ToUpper();
-            var results = Common.GetClient(db, keyword);
+            var results = Common.GetClientQuery(db, true, keyword);
             results = results.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
             return PartialView(Common<Client>.Page(this, "GetClient", rv, results, page));
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult HRAdminClientIndex()
+        public ActionResult HRAdminClientIndex(int page = 1, string keyword = "")
         {
             ViewBag.Path1 = "参数设置";
             ViewBag.Action = "GetHRAdminClient";
+            ViewBag.RV = new { page = page, keyword = keyword };
             return View();
         }
 
@@ -56,7 +53,7 @@ namespace OB.Controllers
         public PartialViewResult GetHRAdminClient(int page = 1, string keyword = "")
         {
             keyword = keyword.ToUpper();
-            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, keyword);
+            var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, keyword);
             results = results.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
             return PartialView(Common<Client>.Page(this, "GetHRAdminClient", rv, results, page));
@@ -66,19 +63,22 @@ namespace OB.Controllers
         // GET: /Client/Details/5
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public ActionResult Details(int id = 0, string returnUrl = "Index")
         {
-            Client client = db.Client.Find(id);
-            if (client == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.Rd(this, MsgType.ERROR, "没有找到对应记录!");
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
 
             ViewBag.ReturnUrl = returnUrl;
 
-            return View(client);
+            return View(result);
         }
 
         //
@@ -88,7 +88,7 @@ namespace OB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(string returnUrl = "Index")
         {
-            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
+            ViewBag.Path1 = "参数设置";
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -98,49 +98,52 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateSave(Client client, string returnUrl = "Index")
+        public ActionResult CreateSave(Client record, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            //end
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Client.Add(client);
-                    db.SaveChanges();
-                    Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "新建成功!" };
-                    TempData["msg"] = msg;
+                    db.Client.Add(record);
+                    db.PPSave();
+                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (DbUpdateException e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
             ViewBag.ReturnUrl = returnUrl;
-            return View("Create", client);
+            return View("Create", record);
         }
 
         //
         // GET: /Client/Edit/5
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        [ValidateInput(false)]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
-            Client client = db.Client.Find(id);
-            if (client == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
 
             ViewBag.ReturnUrl = returnUrl;
-            ViewBag.HRAdminList = Common.UserQuery("HRAdmin", db);
 
-            return View(client);
+            return View(result);
         }
 
         //
@@ -148,80 +151,104 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSave(Client client, string returnUrl = "Index")
+        public ActionResult EditSave(Client record, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Entry(client).State = EntityState.Modified;
-                    db.SaveChanges();
-                    Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "保存成功!" };
-                    TempData["msg"] = msg;
+                    result.Name = record.Name;
+                    result.HRAdminId = record.HRAdminId;
+                    db.PPSave();
+                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (DbUpdateException e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-            ViewBag.HRAdminId = new SelectList(Common.UserQuery("HRAdmin", db), "Id", "Name");
             ViewBag.ReturnUrl = returnUrl;
 
-            return View("Edit", client);
-        }
-
-        [Authorize(Roles = "HRAdmin")]
-        public ActionResult EditClientHR(int id = 0)
-        {
-            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db);
-            var result = results.Where(a => a.Id == id).SingleOrDefault();
-            if (result == null)
-            {
-                return HttpNotFound();
-            }
-            var editClientHr = new EditClientHR
-            {
-                ClientId = result.Id,
-                ClientName = result.Name,
-                HRIds = result.HRs.Select(a => a.Id).ToList()
-            };
-            return View(editClientHr);
+            return View("Edit", record);
         }
 
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditClientHR(EditClientHR editClientHR)
+        public ActionResult EditClientHR(int id = 0, string returnUrl = "HRAdminClientIndex")
         {
-            var results = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db);
-            var result = results.Include(a => a.HRs).Where(a => a.Id == editClientHR.ClientId).SingleOrDefault();
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId);
+            var result = results.Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                return HttpNotFound();
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
+
+            var record = new EditClientHR
+            {
+                ClientId = result.Id,
+                ClientName = result.Name,
+                HRIds = result.HRs.Select(a => a.Id).ToList()
+            };
+            ViewBag.ReturnUrl = returnUrl;
+            return View(record);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditClientHRSave(EditClientHR record, string returnUrl = "HRAdminClientIndex")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId);
+            var result = results.Include(a => a.HRs).Where(a => a.Id == record.ClientId).SingleOrDefault();
+            if (result == null)
+            {
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    if (editClientHR.HRIds == null)
+                    if (record.HRIds == null)
                     {
-                        editClientHR.HRIds = new List<int> { };
+                        record.HRIds = new List<int> { };
                     }
-                    var hrs = Common.UserQuery("HR", db).Where(a => editClientHR.HRIds.Any(b => b == a.Id)).ToList();
+                    var hrs = Common.GetUserQuery("HR", db).Where(a => record.HRIds.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
-                    db.SaveChanges();
-                    return RedirectToAction("HRAdminClientIndex");
+                    db.PPSave();
+                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    ModelState.AddModelError(string.Empty, e.Message);
                 }
             }
-            return View(editClientHR);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("EditClientHR", record);
         }
         //
         // GET: /Client/Delete/5
@@ -230,14 +257,19 @@ namespace OB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
-            Client client = db.Client.Find(id);
-            if (client == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
 
             ViewBag.ReturnUrl = returnUrl;
-            return View(client);
+
+            return View(result);
         }
 
         //
@@ -245,13 +277,85 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id, string returnUrl = "Index")
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
         {
-            Client client = db.Client.Find(id);
-            db.Client.Remove(client);
-            db.SaveChanges();
-            Msg msg = new Msg { MsgType = MsgType.OK, Content = "客户信息:" + client.ToString() + "删除成功!" };
-            TempData["msg"] = msg;
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                db.Client.Remove(result);
+                db.PPSave();
+                Common.Rd(this, MsgType.OK, "客户信息:" + result.ToString() + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db, true, "").Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(Client record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db, true, "").Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.Rd(this, MsgType.ERROR);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.Rd(this, MsgType.OK, "客户信息:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "恢复失败!");
+            }
             return Redirect(Url.Content(returnUrl));
         }
 

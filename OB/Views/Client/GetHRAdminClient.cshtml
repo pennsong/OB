@@ -20,7 +20,16 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "EditClientHR", new { id = item.Id }) |
+                    <div class="groupOperation">
+                        @using (Html.BeginForm("EditClientHR", "Client"))
+                        {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", Url.Action("HRAdminClientIndex", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            <input type="submit" value="编辑" />
+                        }
+                    </div>
                     @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                 </td>
             </tr>

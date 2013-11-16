@@ -224,6 +224,7 @@
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\EmployeeDoc.cs" />
     <Compile Include="Models\Constant.cs" />
+    <Compile Include="Models\Base\SoftDelete.cs" />
     <Compile Include="Models\ViewModel\EditClientHR.cs" />
     <Compile Include="Models\ViewModel\EditEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeFront.cs" />
@@ -829,6 +830,7 @@
     <Content Include="Views\Supplier\Delete.cshtml" />
     <Content Include="Views\Client\GetHRAdminClient.cshtml" />
     <Content Include="Views\Shared\Msg.cshtml" />
+    <Content Include="Views\Client\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

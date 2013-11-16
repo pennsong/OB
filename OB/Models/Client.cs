@@ -1,4 +1,5 @@
-﻿using OB.Models.DAL;
+﻿using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +10,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Client
+    public class Client : SoftDelete
     {
         public int Id { get; set; }
         [Required]

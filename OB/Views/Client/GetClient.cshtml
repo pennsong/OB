@@ -20,6 +20,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.HRAdmin.Name)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -35,30 +38,47 @@
                     @Html.DisplayFor(modelItem => item.HRAdmin.Name)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                </td>
+                <td>
                     <div class="groupOperation">
-                        @using (Html.BeginForm("Edit", "Client"))
-                        {    
+                        @if (item.IsDeleted)
+                        {
+                            using (Html.BeginForm("Restore", "Client"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            <input type="submit" value="恢复" />
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("Edit", "Client"))
+                            {    
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
                             @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
                             <input type="submit" value="编辑" />
-                        }
-                        @using (Html.BeginForm("Details", "Client"))
-                        {    
+                            }
+                            using (Html.BeginForm("Details", "Client"))
+                            {    
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
                             @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
                             <input type="submit" value="详情" />
-                        }
-                        @using (Html.BeginForm("Delete", "Client"))
-                        {    
+                            }
+                            using (Html.BeginForm("Delete", "Client"))
+                            {    
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
                             @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
                             <input type="submit" value="删除" />
+                            }
                         }
                     </div>
                 </td>

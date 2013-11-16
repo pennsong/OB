@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Linq;
@@ -54,6 +56,22 @@ namespace OB.Models.DAL
 
             modelBuilder.Entity<Client>().HasMany(c => c.HRs).WithMany(i => i.HRClients).Map(t => t.MapLeftKey("ClientId").MapRightKey("UserId").ToTable("ClientHr"));
             modelBuilder.Entity<Client>().HasOptional(c => c.HRAdmin).WithMany(i => i.HRAdminClients).HasForeignKey(c => c.HRAdminId);
+        }
+
+        public void PPSave()
+        {
+            //Do soft deletes
+            foreach (var deletableEntity in ChangeTracker.Entries<SoftDelete>())
+            {
+                if (deletableEntity.State == EntityState.Deleted)
+                {
+                    //Deleted - set the deleted flag
+                    deletableEntity.State = EntityState.Unchanged; //We need to set this to unchanged here, because setting it to modified seems to set ALL of its fields to modified
+                    deletableEntity.Entity.IsDeleted = true; //This will set the entity's state to modified for the next time we query the ChangeTracker
+                }
+            }
+            this.SaveChanges();
+            //Logger.SaveChanges(author, SaveOptions.AcceptAllChangesAfterSave);
         }
     }
 

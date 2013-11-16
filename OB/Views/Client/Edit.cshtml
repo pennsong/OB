@@ -28,7 +28,7 @@
             @Html.LabelFor(model => model.HRAdminId, "HRAdmin")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.UserList("HRAdmin"), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.GetUserList("HRAdmin"), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.HRAdminId)
         </div>
 

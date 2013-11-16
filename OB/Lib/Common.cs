@@ -1,5 +1,6 @@
 ﻿using OB.Models;
 using OB.Models.DAL;
+using OB.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -22,25 +23,17 @@ namespace OB.Lib
             c.ViewBag.TotalPage = tmpTotalPage;
             c.ViewBag.Page = page;
             c.ViewBag.RV = rv;
-            return q.Skip((page - 1) * size).Take(size);
+            return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);
         }
     }
 
     public class Common
     {
-        static dynamic Combine(dynamic item1, dynamic item2)
+        //带消息提示的返回索引页面
+        public static void Rd(Controller controller, MsgType msgType, string msg = "权限范围内没有找到对应记录")
         {
-            var dictionary1 = (IDictionary<string, object>)item1;
-            var dictionary2 = (IDictionary<string, object>)item2;
-            var result = new ExpandoObject();
-            var d = result as IDictionary<string, object>; //work with the Expando as a Dictionary
-
-            foreach (var pair in dictionary1.Concat(dictionary2))
-            {
-                d[pair.Key] = pair.Value;
-            }
-
-            return result;
+            Msg message = new Msg { MsgType = msgType, Content = msg };
+            controller.TempData["msg"] = message;
         }
 
         public static IQueryable<User> GetUserList(OBContext context, string filter = "")
@@ -119,7 +112,7 @@ namespace OB.Lib
             return result;
         }
 
-        public static IQueryable<Assurance> GetHRAdminAssurance(int userHRAdmin, OBContext db = null, string keyword = "")
+        public static IQueryable<Assurance> GetHRAdminAssuranceQuery(int userHRAdmin, OBContext db = null, string keyword = "")
         {
             if (db == null)
             {
@@ -134,7 +127,7 @@ namespace OB.Lib
             }
         }
 
-        public static IQueryable<Assurance> GetClientAssurance(int client, OBContext db = null)
+        public static IQueryable<Assurance> GetClientAssuranceQuery(int client, OBContext db = null)
         {
             if (db == null)
             {
@@ -166,37 +159,17 @@ namespace OB.Lib
             return result;
         }
 
-        public static IQueryable<Client> GetClient(OBContext db = null, string keyword = "")
+        public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
         {
-            if (db == null)
-            {
-                using (var db2 = new OBContext())
-                {
-                    return _GetClient(db2, keyword);
-                }
-            }
-            else
-            {
-                return _GetClient(db, keyword);
-            }
+            return _GetClient(db, includeSoftDeleted, 0, keyword);
         }
 
-        public static IQueryable<Client> GetHRAdminClient(int userHRAdmin, OBContext db = null, string keyword = "")
+        public static IQueryable<Client> GetHRAdminClientQuery(OBContext db, int userHRAdmin, string keyword = "")
         {
-            if (db == null)
-            {
-                using (var db2 = new OBContext())
-                {
-                    return _GetClient(db2, keyword, userHRAdmin);
-                }
-            }
-            else
-            {
-                return _GetClient(db, keyword, userHRAdmin);
-            }
+            return _GetClient(db, false, userHRAdmin, keyword);
         }
 
-        private static IQueryable<Client> _GetClient(OBContext db, string keyword = "", int userHRAdmin = 0)
+        private static IQueryable<Client> _GetClient(OBContext db, bool includeSoftDeleted = false, int userHRAdmin = 0, string keyword = "")
         {
             keyword = keyword.ToUpper();
 
@@ -207,23 +180,28 @@ namespace OB.Lib
                 result = result.Where(a => db.User.Where(b => b.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.Id));
             }
 
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+
             return result;
         }
 
-        public static List<User> UserList(string role, string filter = "")
+        public static List<User> GetUserList(string role, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return _UserQuery(role, db, filter).ToList();
+                return _GetUser(role, db, filter).ToList();
             }
         }
 
-        public static IQueryable<User> UserQuery(string role, OBContext db, string filter = "")
+        public static IQueryable<User> GetUserQuery(string role, OBContext db, string filter = "")
         {
-            return _UserQuery(role, db, filter);
+            return _GetUser(role, db, filter);
         }
 
-        private static IQueryable<User> _UserQuery(string role, OBContext db, string filter = "")
+        private static IQueryable<User> _GetUser(string role, OBContext db, string filter = "")
         {
             filter = filter.ToUpper();
 

@@ -4,28 +4,28 @@
         int total = ViewBag.TotalPage;
         int showCount = 5;
 
-        @Ajax.ActionLink("<<", (string)ViewBag.Action, Html.RouteValues(new { page = 1 }, (object)ViewBag.RV), new AjaxOptions { UpdateTargetId = "AjaxBody" });
-        @Ajax.ActionLink("<", (string)ViewBag.Action, Html.RouteValues(new { page = ((page - 1) <= 0 ? 1 : (page - 1)) }, (object)ViewBag.RV), new AjaxOptions { UpdateTargetId = "AjaxBody" });
-                                                                                                                                                                                               if (page > (showCount + 1))
-                                                                                                                                                                                               {
+        @Ajax.ActionLink("<<", (string)ViewBag.Action, Html.RouteValues(new { page = 1 }, (object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }), new AjaxOptions { UpdateTargetId = "AjaxBody" });
+        @Ajax.ActionLink("<", (string)ViewBag.Action, Html.RouteValues(new { page = ((page - 1) <= 0 ? 1 : (page - 1)) }, (object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }), new AjaxOptions { UpdateTargetId = "AjaxBody" });
+                                                                                                                                                                                                                                               if (page > (showCount + 1))
+                                                                                                                                                                                                                                               {
         <a>...</a>
-                                                                                                                                                                                               }
-                                                                                                                                                                                               for (int i = (page - showCount <= 1 ? 1 : page - showCount); i <= (page + showCount >= total ? total : page + showCount); i++)
-                                                                                                                                                                                               {
-                                                                                                                                                                                                   if (i == page)
-                                                                                                                                                                                                   {
+                                                                                                                                                                                                                                               }
+                                                                                                                                                                                                                                               for (int i = (page - showCount <= 1 ? 1 : page - showCount); i <= (page + showCount >= total ? total : page + showCount); i++)
+                                                                                                                                                                                                                                               {
+                                                                                                                                                                                                                                                   if (i == page)
+                                                                                                                                                                                                                                                   {
         <span>@i</span>
-                                                                                                                                                                                                   }
-                                                                                                                                                                                                   else
-                                                                                                                                                                                                   {
-        @Ajax.ActionLink(i.ToString(), (string)ViewBag.Action, Html.RouteValues(new { page = i }, (object)ViewBag.RV), new AjaxOptions { UpdateTargetId = "AjaxBody" });
-                                                                                                                                                                                                   }
-                                                                                                                                                                                               }
-                                                                                                                                                                                               if (page < (total - showCount))
-                                                                                                                                                                                               {
+                                                                                                                                                                                                                                                   }
+                                                                                                                                                                                                                                                   else
+                                                                                                                                                                                                                                                   {
+        @Ajax.ActionLink(i.ToString(), (string)ViewBag.Action, Html.RouteValues(new { page = i }, (object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }), new AjaxOptions { UpdateTargetId = "AjaxBody" });
+                                                                                                                                                                                                                                                   }
+                                                                                                                                                                                                                                               }
+                                                                                                                                                                                                                                               if (page < (total - showCount))
+                                                                                                                                                                                                                                               {
         <a>...</a>
-                                                                                                                                                                                               }
-        @Ajax.ActionLink(">", (string)ViewBag.Action, Html.RouteValues(new { page = ((page + 1) > total ? total : (page + 1)) }, (object)ViewBag.RV), new AjaxOptions { UpdateTargetId = "AjaxBody" });
-        @Ajax.ActionLink(">>", (string)ViewBag.Action, Html.RouteValues(new { page = total }, (object)ViewBag.RV), new AjaxOptions { UpdateTargetId = "AjaxBody" });
+                                                                                                                                                                                                                                               }
+        @Ajax.ActionLink(">", (string)ViewBag.Action, Html.RouteValues(new { page = ((page + 1) > total ? total : (page + 1)) }, (object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }), new AjaxOptions { UpdateTargetId = "AjaxBody" });
+        @Ajax.ActionLink(">>", (string)ViewBag.Action, Html.RouteValues(new { page = total }, (object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }), new AjaxOptions { UpdateTargetId = "AjaxBody" });
     }
 </div>

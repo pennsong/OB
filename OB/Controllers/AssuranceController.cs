@@ -31,7 +31,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         public PartialViewResult GetAssurance(int page = 1, string keyword = "")
         {
-            var records = Common.GetHRAdminAssurance(WebSecurity.CurrentUserId, db, keyword);
+            var records = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, keyword);
             records = records.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
             return PartialView(Common<Assurance>.Page(this, "GetAssurance", rv, records, page));
@@ -56,7 +56,7 @@ namespace OB.Controllers
         public ActionResult Create()
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, ""), "Id", "Name");
+            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, ""), "Id", "Name");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace OB.Controllers
                 try
                 {
                     //确认客户id在用户权限范围内
-                    var result = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
+                    var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
                     if (result == null)
                     {
                         throw new UnauthorizedAccessException();
@@ -96,7 +96,7 @@ namespace OB.Controllers
                 }
             }
 
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, ""), "Id", "Name", assurance.ClientId);
+            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, ""), "Id", "Name", assurance.ClientId);
             return View(assurance);
         }
 
@@ -114,7 +114,7 @@ namespace OB.Controllers
             try
             {
                 //确认客户id在用户权限范围内
-                var result = Common.GetHRAdminClient(WebSecurity.CurrentUserId, db, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
+                var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, "").Where(a => a.Id == assurance.ClientId).SingleOrDefault();
                 if (result == null)
                 {
                     throw new UnauthorizedAccessException();
@@ -141,7 +141,7 @@ namespace OB.Controllers
                 try
                 {
                     //确认客户id在用户权限范围内
-                    var resultOld = Common.GetHRAdminAssurance(WebSecurity.CurrentUserId, db, "").Where(a => a.Id == assurance.Id).SingleOrDefault();
+                    var resultOld = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, "").Where(a => a.Id == assurance.Id).SingleOrDefault();
                     if (resultOld == null)
                     {
                         throw new UnauthorizedAccessException();

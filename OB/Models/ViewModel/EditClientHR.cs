@@ -19,5 +19,10 @@ namespace OB.Models.ViewModel
         public string ClientName { get; set; }
 
         public ICollection<int> HRIds { get; set; }
+
+        public override string ToString()
+        {
+            return ClientId + "-" + ClientName;
+        }
     }
 }
