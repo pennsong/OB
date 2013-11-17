@@ -60,7 +60,8 @@ namespace OB.Controllers
                 try
                 {
                     db.Document.Add(document);
-                    db.SaveChanges();
+                    //db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)

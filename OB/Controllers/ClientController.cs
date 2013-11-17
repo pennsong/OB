@@ -372,6 +372,19 @@ namespace OB.Controllers
             return PartialView(db.HistoryExplorer.ChangesTo(result));
         }
 
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult HistoryHR(int id)
+        {
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                return PartialView();
+            }
+            //end
+            return PartialView(db.HistoryExplorer.ChangesTo(result, a => a.HRs));
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

@@ -5,8 +5,9 @@
 }
 
 <h2>EditClientHR</h2>
+@Html.Partial("Msg")
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditClientHRSave", "Client"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)

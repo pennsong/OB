@@ -1,0 +1,17 @@
+﻿@model IEnumerable<FrameLog.History.IChange<Client, User>>
+
+@{
+    ViewBag.Title = "History";
+}
+
+<h2>History</h2>
+
+
+@foreach (var change in Model)
+{
+
+    <div>@change.Author</div>
+    <div>@change.Timestamp</div>
+    <div>@string.Join(", ", change.Value)</div>
+
+}
