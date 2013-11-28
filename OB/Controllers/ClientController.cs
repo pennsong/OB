@@ -112,9 +112,9 @@ namespace OB.Controllers
                     Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException e)
+                catch (Exception e)
                 {
-                    if (e.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
@@ -173,9 +173,9 @@ namespace OB.Controllers
                     Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException e)
+                catch (Exception e)
                 {
-                    if (e.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
@@ -236,7 +236,7 @@ namespace OB.Controllers
                     {
                         record.HRIds = new List<int> { };
                     }
-                    var hrs = Common.GetUserQuery("HR", db).Where(a => record.HRIds.Any(b => b == a.Id)).ToList();
+                    var hrs = Common.GetUserQuery(db, "HR").Where(a => record.HRIds.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
                     db.PPSave();
                     Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
@@ -382,7 +382,8 @@ namespace OB.Controllers
                 return PartialView();
             }
             //end
-            return PartialView(db.HistoryExplorer.ChangesTo(result, a => a.HRs));
+            var changes = db.HistoryExplorer.ChangesTo(result, a => a.HRs).ToList();
+            return PartialView(changes);
         }
 
         protected override void Dispose(bool disposing)

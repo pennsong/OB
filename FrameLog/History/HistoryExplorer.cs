@@ -36,6 +36,16 @@ namespace FrameLog.History
             string propertyName = property.GetPropertyName();
             string reference = db.GetReferenceForObject(model);
 
+            var i = db.ObjectChanges
+                //.Where(o => o.TypeName == typeName)
+                //.Where(o => o.ObjectReference == reference)
+    .SelectMany(o => o.PropertyChanges)
+                //.Where(p => p.PropertyName == propertyName).OrderByDescending(p => p.ObjectChange.ChangeSet.Timestamp)
+                .AsEnumerable().Select(p => p).ToList();
+
+
+            System.Diagnostics.Debug.WriteLine("total:" + i.Count());
+
             return db.ObjectChanges
                 .Where(o => o.TypeName == typeName)
                 .Where(o => o.ObjectReference == reference)
@@ -147,9 +157,12 @@ namespace FrameLog.History
         {
             if (type.IsPrimitive || type == typeof(string))
                 return Convert.ChangeType(raw, type);
-            else if (type == typeof(int?))//可为空的外键
+            else if (typeof(DateTime?).IsAssignableFrom(type))
+                return bindDateTime(raw);
+            else if (type == typeof(int?))
             {
-                if (raw == null)
+                //可为空的外键
+                if (String.IsNullOrEmpty(raw))
                 {
                     return null;
                 }
@@ -158,12 +171,18 @@ namespace FrameLog.History
                     return Convert.ChangeType(raw, typeof(int));
                 }
             }
-            else if (typeof(DateTime?).IsAssignableFrom(type))
-                return bindDateTime(raw);
             else if (isCollectionType(type))
             {
-                type = typeof(Collection<>).MakeGenericType(type.GetGenericArguments().First());
-                return bindCollection(raw, type);
+                if (String.IsNullOrEmpty(raw))
+                {
+                    //empty list
+                    return null;
+                }
+                else
+                {
+                    type = typeof(Collection<>).MakeGenericType(type.GetGenericArguments().First());
+                    return bindCollection(raw, type);
+                }
             }
             else
             {

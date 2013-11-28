@@ -1,4 +1,6 @@
 ﻿using FrameLog;
+using FrameLog.Contexts;
+using OB.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -19,7 +21,7 @@ namespace OB.Models
         public DbSet<User> User { get; set; }
     }
 
-    public class User : IHasLoggingReference
+    public class User : SoftDelete, IHasLoggingReference, ICloneable, IDisplayable
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -37,9 +39,36 @@ namespace OB.Models
             get { return Id; }
         }
 
+        public object Clone()
+        {
+            return Copy();
+        }
+        public User Copy()
+        {
+            return new User()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Mail = this.Mail,
+            };
+        }
+
         public override string ToString()
         {
             return Name;
+        }
+
+        public string DisV
+        {
+            get
+            {
+                return Dis();
+            }
+        }
+
+        public string Dis()
+        {
+            return Id + "-" + Name + "-" + Mail;
         }
     }
 

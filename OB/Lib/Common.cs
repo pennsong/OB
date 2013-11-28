@@ -190,28 +190,32 @@ namespace OB.Lib
             return result;
         }
 
-        public static List<User> GetUserList(string role, string filter = "")
+        public static List<User> GetUserList(string role, bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return _GetUser(role, db, filter).ToList();
+                return _GetUser(db, role, includeSoftDeleted, filter).ToList();
             }
         }
 
-        public static IQueryable<User> GetUserQuery(string role, OBContext db, string filter = "")
+        public static IQueryable<User> GetUserQuery(OBContext db, string role, bool includeSoftDeleted = false, string filter = "")
         {
-            return _GetUser(role, db, filter);
+            return _GetUser(db, role, includeSoftDeleted, filter);
         }
 
-        private static IQueryable<User> _GetUser(string role, OBContext db, string filter = "")
+        private static IQueryable<User> _GetUser(OBContext db, string role, bool includeSoftDeleted = false, string filter = "")
         {
             filter = filter.ToUpper();
 
             var usernames = Roles.GetUsersInRole(role);
 
-            var users = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
 
-            return users;
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
         }
         //end common get record
     }

@@ -9,9 +9,10 @@
 
 @foreach (var change in Model)
 {
-
-    <div>@change.Author</div>
-    <div>@change.Timestamp</div>
-    <div>@string.Join(", ", change.Value)</div>
-
+    <div>
+        @string.Format("{0}:{1}:{2}",
+                        change.Author,
+                        change.Timestamp,
+                        change.Value == null ? "无" : string.Join(", ", change.Value))
+    </div>
 }

@@ -142,17 +142,17 @@ namespace OB.Models.DAL
             Roles.CreateRole("Candidate");
 
             //admin
-            WebSecurity.CreateUserAndAccount("admin", "123456", new { Mail = "pennsong07@163.com" });
+            WebSecurity.CreateUserAndAccount("admin", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
             Roles.AddUsersToRoles(new[] { "admin" }, new[] { "Admin" });
 
             //hradmin
-            WebSecurity.CreateUserAndAccount("hra1", "123456", new { Mail = "pennsong07@163.com" });
-            WebSecurity.CreateUserAndAccount("hra2", "123456", new { Mail = "pennsong07@163.com" });
+            WebSecurity.CreateUserAndAccount("hra1", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
+            WebSecurity.CreateUserAndAccount("hra2", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
             Roles.AddUsersToRoles(new[] { "hra1", "hra2" }, new[] { "HRAdmin" });
 
             //hr
-            WebSecurity.CreateUserAndAccount("hr1", "123456", new { Mail = "pennsong07@163.com" });
-            WebSecurity.CreateUserAndAccount("hr2", "123456", new { Mail = "pennsong07@163.com" });
+            WebSecurity.CreateUserAndAccount("hr1", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
+            WebSecurity.CreateUserAndAccount("hr2", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
             Roles.AddUsersToRoles(new[] { "hr1", "hr2" }, new[] { "HR" });
 
             //init data
