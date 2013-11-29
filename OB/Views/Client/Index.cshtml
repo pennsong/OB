@@ -1,16 +1,17 @@
 ﻿@{
+    string action = ((RouteValueDictionary)ViewBag.RV).Where(a => a.Key == "actionAjax").Select(a => a.Value).SingleOrDefault().ToString();
+
     ViewBag.Title = "客户列表";
     AjaxOptions ajaxOpts = new AjaxOptions
     {
         UpdateTargetId = "AjaxBody",
-        Url = Url.Action((string)ViewBag.Action),
+        Url = Url.Action(action),
     };
     
 }
 
 <h2>@ViewBag.Title</h2>
 @Html.Partial("Msg")
-
 @using (Ajax.BeginForm(ajaxOpts))
 {
     <table>
@@ -24,6 +25,7 @@
             <td></td>
         </tr>
         <tr>
+            @Html.Hidden("actionAjax", action)
             <td>
                 @Html.TextBox("keyword")
             </td>
@@ -36,9 +38,8 @@
         </tr>
     </table>
 }
-
 <div id="AjaxBody">
-    @Html.Action((string)ViewBag.Action, Html.RouteValues((object)ViewBag.RV, new { time = DateTime.Now.ToLongTimeString() }))
+    @Html.Action(action, (RouteValueDictionary)(ViewBag.RV))
 </div>
 
 @section Scripts {

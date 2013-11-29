@@ -230,7 +230,7 @@
     <Compile Include="Models\FrameLog\ExampleContextAdapter.cs" />
     <Compile Include="Models\FrameLog\ObjectChange.cs" />
     <Compile Include="Models\FrameLog\PropertyChange.cs" />
-    <Compile Include="Models\ViewModel\EditClientHR.cs" />
+    <Compile Include="Models\ViewModel\HRAdminEditClient.cs" />
     <Compile Include="Models\ViewModel\EditEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeFront.cs" />
     <Compile Include="Models\ViewModel\EditSingleEmployeeDoc.cs" />
@@ -758,7 +758,7 @@
     <Content Include="Views\Client\Create.cshtml" />
     <Content Include="Views\Client\Edit.cshtml" />
     <Content Include="Views\Client\Delete.cshtml" />
-    <Content Include="Views\Client\EditClientHR.cshtml" />
+    <Content Include="Views\Client\HRAdminEditClient.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\Employee\EditEmployeeEducation.cshtml" />
     <Content Include="Views\Employee\EmployeeAbstract.cshtml" />

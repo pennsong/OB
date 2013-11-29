@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class City
+    public class City: SoftDelete
     {
         public int Id { get; set; }
         [Required]

@@ -17,13 +17,27 @@ namespace OB.Lib
 {
     public class Common<T>
     {
-        public static IQueryable<T> Page(Controller c, string action, object rv, IQueryable<T> q, int page = 1, int size = 2)
+        public static IQueryable<T> PageTest(Controller c, RouteValueDictionary rv, IQueryable<T> q, int size = 2)
         {
-            c.ViewBag.Action = action;
+            var tmpPage = rv.Where(a => a.Key == "page").Select(a => a.Value).SingleOrDefault();
+            int page = int.Parse(tmpPage.ToString());
             var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
             page = page > tmpTotalPage ? tmpTotalPage : page;
-            c.ViewBag.TotalPage = tmpTotalPage;
-            c.ViewBag.Page = page;
+            rv.Add("totalPage", tmpTotalPage);
+            rv["page"] = page;
+
+            c.ViewBag.RV = rv;
+            return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);
+        }
+
+        public static IQueryable<T> Page(Controller c, object rv, IQueryable<T> q, int size = 2)
+        {
+            var rvObj = (object)rv;
+            int page = int.Parse(rvObj.GetType().GetProperty("page").GetValue(rvObj, null).ToString());
+
+            var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
+            page = page > tmpTotalPage ? tmpTotalPage : page;
+
             c.ViewBag.RV = rv;
             return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);
         }
@@ -217,6 +231,34 @@ namespace OB.Lib
             }
             return result;
         }
+
+        // city
+        public static List<City> GetCityList(bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return _GetCity(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetCityQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            return _GetCity(db, includeSoftDeleted, filter);
+        }
+
+        private static IQueryable<City> _GetCity(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.City.Where(a => a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+
         //end common get record
     }
 }

@@ -12,6 +12,7 @@ using System.Web.Security;
 using OB.Lib;
 using OB.Models.ViewModel;
 using WebMatrix.WebData;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -25,19 +26,18 @@ namespace OB.Controllers
         public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.Action = "GetClient";
-            ViewBag.RV = new { page = page, keyword = keyword, includeSoftDeleted = includeSoftDeleted };
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetClient" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetClient(int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetClient(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
             var results = Common.GetClientQuery(db, includeSoftDeleted, keyword);
             results = results.OrderBy(a => a.Name);
-            var rv = new { keyword = keyword, includeSoftDeleted = includeSoftDeleted };
-            return PartialView(Common<Client>.Page(this, "GetClient", rv, results, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<Client>.PageTest(this, rv, results));
         }
 
         [Authorize(Roles = "HRAdmin")]
@@ -56,7 +56,7 @@ namespace OB.Controllers
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, keyword);
             results = results.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<Client>.Page(this, "GetHRAdminClient", rv, results, page));
+            return PartialView(Common<Client>.Page(this, rv, results, page));
         }
 
         //
@@ -189,7 +189,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditClientHR(int id = 0, string returnUrl = "HRAdminClientIndex")
+        public ActionResult HRAdminEditClient(int id = 0, string returnUrl = "HRAdminClientIndex")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
@@ -202,7 +202,7 @@ namespace OB.Controllers
             }
             //end
 
-            var record = new EditClientHR
+            var record = new HRAdminEditClient
             {
                 ClientId = result.Id,
                 ClientName = result.Name,
@@ -215,7 +215,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditClientHRSave(EditClientHR record, string returnUrl = "HRAdminClientIndex")
+        public ActionResult HRAdminEditClientSave(HRAdminEditClient record, string returnUrl = "HRAdminClientIndex")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
@@ -383,6 +383,20 @@ namespace OB.Controllers
             }
             //end
             var changes = db.HistoryExplorer.ChangesTo(result, a => a.HRs).ToList();
+            return PartialView(changes);
+        }
+
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult HistoryTaxCity(int id)
+        {
+            //检查记录在权限范围内
+            var result = Common.GetClientQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                return PartialView();
+            }
+            //end
+            var changes = db.HistoryExplorer.ChangesTo(result, a => a.TaxCities).ToList();
             return PartialView(changes);
         }
 

@@ -7,6 +7,10 @@ namespace OB.Models.Base
 {
     public class SoftDelete
     {
+        public SoftDelete()
+        {
+            IsDeleted = false;
+        }
         public bool IsDeleted { get; set; }
     }
 }

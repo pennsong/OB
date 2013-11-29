@@ -4,7 +4,7 @@
     {    
         @Html.AntiForgeryToken()
 
-        @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+        @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
         <input type="submit" value="新建" />
     }
 </p>
@@ -49,7 +49,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
                             <input type="submit" value="恢复" />
                             }
                         }
@@ -60,7 +60,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
                             <input type="submit" value="编辑" />
                             }
                             using (Html.BeginForm("Details", "Client"))
@@ -68,7 +68,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
                             <input type="submit" value="详情" />
                             }
                             using (Html.BeginForm("Delete", "Client"))
@@ -76,7 +76,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action("Index", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
                             <input type="submit" value="删除" />
                             }
                         }

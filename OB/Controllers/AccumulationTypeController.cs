@@ -29,7 +29,7 @@ namespace OB.Controllers
         {
             var records = Common.GetAccumulationTypeQuery(db, keyword).OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<AccumulationType>.Page(this, "GetAccumulationType", rv, records, page));
+            return PartialView(Common<AccumulationType>.Page(this, rv, records, page));
         }
 
 

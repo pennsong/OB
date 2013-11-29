@@ -34,7 +34,7 @@ namespace OB.Controllers
             var records = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, keyword);
             records = records.OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<Assurance>.Page(this, "GetAssurance", rv, records, page));
+            return PartialView(Common<Assurance>.Page(this, rv, records, page));
         }
         //
         // GET: /Assurance/Details/5

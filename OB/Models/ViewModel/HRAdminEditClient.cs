@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace OB.Models.ViewModel
 {
-    public class EditClientHR
+    public class HRAdminEditClient
     {
         [HiddenInput(DisplayValue = true)]
         [DisplayName("客户ID")]
@@ -19,6 +19,7 @@ namespace OB.Models.ViewModel
         public string ClientName { get; set; }
 
         public ICollection<int> HRIds { get; set; }
+        public ICollection<int> TaxCities { get; set; }
 
         public override string ToString()
         {

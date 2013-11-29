@@ -14,11 +14,6 @@ namespace OB.Models
 {
     public class Client : SoftDelete, IHasLoggingReference, ICloneable, IDisplayable
     {
-        public Client()
-        {
-            HRs = new List<User>();
-        }
-
         public int Id { get; set; }
         [Required]
         [DisplayName("名称")]

@@ -36,16 +36,6 @@ namespace FrameLog.History
             string propertyName = property.GetPropertyName();
             string reference = db.GetReferenceForObject(model);
 
-            var i = db.ObjectChanges
-                //.Where(o => o.TypeName == typeName)
-                //.Where(o => o.ObjectReference == reference)
-    .SelectMany(o => o.PropertyChanges)
-                //.Where(p => p.PropertyName == propertyName).OrderByDescending(p => p.ObjectChange.ChangeSet.Timestamp)
-                .AsEnumerable().Select(p => p).ToList();
-
-
-            System.Diagnostics.Debug.WriteLine("total:" + i.Count());
-
             return db.ObjectChanges
                 .Where(o => o.TypeName == typeName)
                 .Where(o => o.ObjectReference == reference)

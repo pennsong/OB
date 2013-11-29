@@ -47,7 +47,6 @@ namespace OB.Models
         {
             return new User()
             {
-                Id = this.Id,
                 Name = this.Name,
                 Mail = this.Mail,
             };

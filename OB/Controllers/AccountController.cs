@@ -77,7 +77,7 @@ namespace OB.Controllers
         {
             var users = Common.GetUserQuery(db, "HRAdmin", false, keyword).OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, "GetHRAdmin", rv, users, page));
+            return PartialView(Common<User>.Page(this, rv, users, page));
         }
 
         [Authorize(Roles = "Admin")]
@@ -130,7 +130,7 @@ namespace OB.Controllers
         {
             var users = Common.GetUserQuery(db, "HR", true, keyword).OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, "GetHR", rv, users, page));
+            return PartialView(Common<User>.Page(this, rv, users, page));
         }
 
         [Authorize(Roles = "HR")]
@@ -147,7 +147,7 @@ namespace OB.Controllers
         {
             var users = Common.HRCandidateList(db, keyword).OrderBy(a => a.Name);
             var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, "GetCandidate", rv, users, page));
+            return PartialView(Common<User>.Page(this, rv, users, page));
         }
 
         [Authorize(Roles = "HRAdmin")]
