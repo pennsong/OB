@@ -10,6 +10,7 @@ using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
 using OB.Lib;
 using WebMatrix.WebData;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -29,12 +30,13 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetAssurance(int page = 1, string keyword = "")
+        public PartialViewResult GetAssurance(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             var records = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, keyword);
             records = records.OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<Assurance>.Page(this, rv, records, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+
+            return PartialView(Common<Assurance>.Page(this, rv, records));
         }
         //
         // GET: /Assurance/Details/5

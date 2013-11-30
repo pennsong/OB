@@ -1,0 +1,18 @@
+﻿@model IEnumerable<FrameLog.History.IChange<ICollection<City>, User>>
+
+@{
+    ViewBag.Title = "History";
+}
+
+<h2>History</h2>
+
+
+@foreach (var change in Model)
+{
+    <div>
+        @string.Format("{0}:{1}:{2}",
+                        change.Author,
+                        change.Timestamp,
+                        change.Value == null ? "无" : string.Join(", ", change.Value))
+    </div>
+}

@@ -17,7 +17,7 @@ namespace OB.Lib
 {
     public class Common<T>
     {
-        public static IQueryable<T> PageTest(Controller c, RouteValueDictionary rv, IQueryable<T> q, int size = 2)
+        public static IQueryable<T> Page(Controller c, RouteValueDictionary rv, IQueryable<T> q, int size = 2)
         {
             var tmpPage = rv.Where(a => a.Key == "page").Select(a => a.Value).SingleOrDefault();
             int page = int.Parse(tmpPage.ToString());
@@ -25,18 +25,6 @@ namespace OB.Lib
             page = page > tmpTotalPage ? tmpTotalPage : page;
             rv.Add("totalPage", tmpTotalPage);
             rv["page"] = page;
-
-            c.ViewBag.RV = rv;
-            return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);
-        }
-
-        public static IQueryable<T> Page(Controller c, object rv, IQueryable<T> q, int size = 2)
-        {
-            var rvObj = (object)rv;
-            int page = int.Parse(rvObj.GetType().GetProperty("page").GetValue(rvObj, null).ToString());
-
-            var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
-            page = page > tmpTotalPage ? tmpTotalPage : page;
 
             c.ViewBag.RV = rv;
             return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);

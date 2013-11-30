@@ -5,7 +5,7 @@ namespace OB.Models.FrameLog
     public class PropertyChange : IPropertyChange<User>
     {
         public int Id { get; set; }
-        public ObjectChange ObjectChange { get; set; }
+        public virtual ObjectChange ObjectChange { get; set; }
         public string PropertyName { get; set; }
         public string Value { get; set; }
         public int? ValueAsInt { get; set; }

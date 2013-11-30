@@ -20,5 +20,10 @@ namespace OB.Models
         public virtual ICollection<Client> TaxCityClients { get; set; }
         public virtual ICollection<Client> PensionCityClients { get; set; }
         public virtual ICollection<Client> AccumulationCityClients { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace OB.Models.FrameLog
     {
         public int Id { get; set; }
         public DateTime Timestamp { get; set; }
-        public User Author { get; set; }
+        public virtual User Author { get; set; }
         public virtual List<ObjectChange> ObjectChanges { get; set; }
 
         IEnumerable<IObjectChange<User>> IChangeSet<User>.ObjectChanges

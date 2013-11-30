@@ -37,7 +37,7 @@ namespace OB.Controllers
             var results = Common.GetClientQuery(db, includeSoftDeleted, keyword);
             results = results.OrderBy(a => a.Name);
             var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-            return PartialView(Common<Client>.PageTest(this, rv, results));
+            return PartialView(Common<Client>.Page(this, rv, results));
         }
 
         [Authorize(Roles = "HRAdmin")]
@@ -50,13 +50,13 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetHRAdminClient(int page = 1, string keyword = "")
+        public PartialViewResult GetHRAdminClient(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, keyword);
             results = results.OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<Client>.Page(this, rv, results, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminClientIndex" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<Client>.Page(this, rv, results));
         }
 
         //
@@ -206,7 +206,8 @@ namespace OB.Controllers
             {
                 ClientId = result.Id,
                 ClientName = result.Name,
-                HRIds = result.HRs.Select(a => a.Id).ToList()
+                HRIds = result.HRs.Select(a => a.Id).ToList(),
+                TaxCities = result.TaxCities.Select(a => a.Id).ToList(),
             };
             ViewBag.ReturnUrl = returnUrl;
             return View(record);
@@ -220,7 +221,7 @@ namespace OB.Controllers
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId);
-            var result = results.Include(a => a.HRs).Where(a => a.Id == record.ClientId).SingleOrDefault();
+            var result = results.Include(a => a.HRs).Include(a => a.TaxCities).Where(a => a.Id == record.ClientId).SingleOrDefault();
             if (result == null)
             {
                 Common.Rd(this, MsgType.ERROR);
@@ -236,8 +237,14 @@ namespace OB.Controllers
                     {
                         record.HRIds = new List<int> { };
                     }
+                    if (record.TaxCities == null)
+                    {
+                        record.TaxCities = new List<int> { };
+                    }
                     var hrs = Common.GetUserQuery(db, "HR").Where(a => record.HRIds.Any(b => b == a.Id)).ToList();
+                    var taxCities = Common.GetCityQuery(db).Where(a => record.TaxCities.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
+                    result.TaxCities = taxCities;
                     db.PPSave();
                     Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));

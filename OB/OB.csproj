@@ -838,6 +838,7 @@
     <Content Include="Views\Client\Restore.cshtml" />
     <Content Include="Views\Client\History.cshtml" />
     <Content Include="Views\Client\HistoryHR.cshtml" />
+    <Content Include="Views\Client\HistoryTaxCity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

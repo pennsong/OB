@@ -73,11 +73,12 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetHRAdmin(int page = 1, string keyword = "")
+        public PartialViewResult GetHRAdmin(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             var users = Common.GetUserQuery(db, "HRAdmin", false, keyword).OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, rv, users, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminClientIndex" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+
+            return PartialView(Common<User>.Page(this, rv, users));
         }
 
         [Authorize(Roles = "Admin")]
@@ -126,11 +127,11 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetHR(int page = 1, string keyword = "")
+        public PartialViewResult GetHR(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             var users = Common.GetUserQuery(db, "HR", true, keyword).OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, rv, users, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<User>.Page(this, rv, users));
         }
 
         [Authorize(Roles = "HR")]
@@ -143,11 +144,12 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HR")]
-        public PartialViewResult GetCandidate(int page = 1, string keyword = "")
+        public PartialViewResult GetCandidate(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             var users = Common.HRCandidateList(db, keyword).OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<User>.Page(this, rv, users, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+
+            return PartialView(Common<User>.Page(this, rv, users));
         }
 
         [Authorize(Roles = "HRAdmin")]

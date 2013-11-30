@@ -9,6 +9,7 @@ using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
 using OB.Lib;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -25,11 +26,11 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetAccumulationType(int page = 1, string keyword = "")
+        public PartialViewResult GetAccumulationType(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             var records = Common.GetAccumulationTypeQuery(db, keyword).OrderBy(a => a.Name);
-            var rv = new { keyword = keyword };
-            return PartialView(Common<AccumulationType>.Page(this, rv, records, page));
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<AccumulationType>.Page(this, rv, records));
         }
 
 
