@@ -1,10 +1,13 @@
 ﻿@model IEnumerable<Client>
+@{
+    var returnUrl = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));  
+}
 <p>
     @using (Html.BeginForm("Create", "Client"))
     {    
         @Html.AntiForgeryToken()
-        var url = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
-        @Html.Hidden("returnUrl", url)
+        //不能使用Html.Hidden("returnUrl", returnUrl)returnUrl string, 会只给对应变量赋值
+        <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
         <input type="submit" value="新建" />
     }
 </p>
@@ -49,7 +52,8 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+                                //不能使用Html.Hidden("returnUrl", returnUrl)returnUrl string, 会只给对应变量赋值
+                            <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
                             <input type="submit" value="恢复" />
                             }
                         }
@@ -60,7 +64,8 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+                                //不能使用Html.Hidden("returnUrl", returnUrl)returnUrl string, 会只给对应变量赋值
+                            <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
                             <input type="submit" value="编辑" />
                             }
                             using (Html.BeginForm("Details", "Client"))
@@ -68,7 +73,8 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+                                //不能使用Html.Hidden("returnUrl", returnUrl)returnUrl string, 会只给对应变量赋值
+                            <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
                             <input type="submit" value="详情" />
                             }
                             using (Html.BeginForm("Delete", "Client"))
@@ -76,7 +82,8 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+                                //不能使用Html.Hidden("returnUrl", returnUrl)returnUrl string, 会只给对应变量赋值
+                            <input type="hidden" id="returnUrl" name="returnUrl" value="@returnUrl" />
                             <input type="submit" value="删除" />
                             }
                         }
