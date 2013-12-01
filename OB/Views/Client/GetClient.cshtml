@@ -3,8 +3,8 @@
     @using (Html.BeginForm("Create", "Client"))
     {    
         @Html.AntiForgeryToken()
-
-        @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+        var url = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
+        @Html.Hidden("returnUrl", url)
         <input type="submit" value="新建" />
     }
 </p>
