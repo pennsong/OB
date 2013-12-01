@@ -30,3 +30,4 @@ $tf*/
 UploadedFolder/
 App_Data/*.mdf
 App_Data/*.ldf
+*.orig
