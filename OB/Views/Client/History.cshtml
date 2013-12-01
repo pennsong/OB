@@ -9,12 +9,6 @@
 {
     <div>@item.Author</div>
     <div>@item.Timestamp</div>
-    <div>@item.Value.DisV</div>@*
-    var change = item.Value;
-    foreach (System.ComponentModel.PropertyDescriptor descriptor in System.ComponentModel.TypeDescriptor.GetProperties(change))
-    {
-        string name = descriptor.Name;
-        object value = descriptor.GetValue(change);
-    <div>@string.Format("{0}={1}", name, value)</div>
-    }
-}*@
+    <div>@item.Value.DisV</div>
+
+}

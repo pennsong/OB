@@ -31,12 +31,12 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetClient(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetClient(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
             var results = Common.GetClientQuery(db, includeSoftDeleted, keyword);
             results = results.OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return PartialView(Common<Client>.Page(this, rv, results));
         }
 
@@ -44,18 +44,17 @@ namespace OB.Controllers
         public ActionResult HRAdminClientIndex(int page = 1, string keyword = "")
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.Action = "GetHRAdminClient";
-            ViewBag.RV = new { page = page, keyword = keyword };
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminClientIndex" }, { "actionAjax", "GetHRAdminClient" }, { "page", page }, { "keyword", keyword } };
             return View();
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetHRAdminClient(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetHRAdminClient(string returnRoot, string actionAjax = "", int page = 1, string keyword = "")
         {
             keyword = keyword.ToUpper();
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId, keyword);
             results = results.OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminClientIndex" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword } };
             return PartialView(Common<Client>.Page(this, rv, results));
         }
 
@@ -71,7 +70,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR, "没有找到对应记录!");
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -109,7 +108,7 @@ namespace OB.Controllers
                 {
                     db.Client.Add(record);
                     db.PPSave();
-                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "新建成功!");
+                    Common.RMOk(this, "记录:" + record.ToString() + "新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -136,7 +135,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -158,7 +157,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db).Where(a => a.Id == record.Id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -170,7 +169,7 @@ namespace OB.Controllers
                     result.Name = record.Name;
                     result.HRAdminId = record.HRAdminId;
                     db.PPSave();
-                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
+                    Common.RMOk(this, "记录:" + record.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -197,7 +196,7 @@ namespace OB.Controllers
             var result = results.Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -224,7 +223,7 @@ namespace OB.Controllers
             var result = results.Include(a => a.HRs).Include(a => a.TaxCities).Where(a => a.Id == record.ClientId).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -246,7 +245,7 @@ namespace OB.Controllers
                     result.HRs = hrs;
                     result.TaxCities = taxCities;
                     db.PPSave();
-                    Common.Rd(this, MsgType.OK, "记录:" + record.ToString() + "保存成功!");
+                    Common.RMOk(this, "记录:" + record.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -269,7 +268,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -291,7 +290,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -300,18 +299,18 @@ namespace OB.Controllers
             {
                 db.Client.Remove(result);
                 db.PPSave();
-                Common.Rd(this, MsgType.OK, "客户信息:" + result.ToString() + "删除成功!");
+                Common.RMOk(this, "客户信息:" + result.ToString() + "删除成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)
             {
                 if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
                 {
-                    Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
                 }
                 else
                 {
-                    Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "删除失败!");
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
                 }
             }
             return Redirect(Url.Content(returnUrl));
@@ -327,7 +326,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -347,7 +346,7 @@ namespace OB.Controllers
             var result = Common.GetClientQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
             if (result == null)
             {
-                Common.Rd(this, MsgType.ERROR);
+                Common.RMError(this);
                 return Redirect(Url.Content(returnUrl));
             }
             //end
@@ -356,12 +355,12 @@ namespace OB.Controllers
             {
                 result.IsDeleted = false;
                 db.PPSave();
-                Common.Rd(this, MsgType.OK, "客户信息:" + result.ToString() + "恢复成功!");
+                Common.RMOk(this, "客户信息:" + result.ToString() + "恢复成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)
             {
-                Common.Rd(this, MsgType.ERROR, "记录" + result.ToString() + "恢复失败!");
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
             }
             return Redirect(Url.Content(returnUrl));
         }
@@ -370,7 +369,7 @@ namespace OB.Controllers
         public PartialViewResult History(int id)
         {
             //检查记录在权限范围内
-            var result = Common.GetClientQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetClientQuery(db, true).Include(a => a.HRAdmin).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 return PartialView();

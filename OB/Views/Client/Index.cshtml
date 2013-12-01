@@ -1,5 +1,6 @@
 ﻿@{
     string action = ((RouteValueDictionary)ViewBag.RV).Where(a => a.Key == "actionAjax").Select(a => a.Value).SingleOrDefault().ToString();
+    string returnRoot = ((RouteValueDictionary)ViewBag.RV).Where(a => a.Key == "returnRoot").Select(a => a.Value).SingleOrDefault().ToString();
 
     ViewBag.Title = "客户列表";
     AjaxOptions ajaxOpts = new AjaxOptions
@@ -11,7 +12,7 @@
 }
 
 <h2>@ViewBag.Title</h2>
-@Html.Partial("Msg")
+
 @using (Ajax.BeginForm(ajaxOpts))
 {
     <table>
@@ -25,6 +26,7 @@
             <td></td>
         </tr>
         <tr>
+            @Html.Hidden("returnRoot", returnRoot)
             @Html.Hidden("actionAjax", action)
             <td>
                 @Html.TextBox("keyword")
@@ -41,10 +43,6 @@
 <div id="AjaxBody">
     @Html.Action(action, (RouteValueDictionary)(ViewBag.RV))
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script>
-        //$("#msg").delay(3000).fadeOut(500);
-    </script>
 }

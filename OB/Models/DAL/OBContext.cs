@@ -80,7 +80,7 @@ namespace OB.Models.DAL
             get { return new HistoryExplorer<ChangeSet, User>(FrameLogContext); }
         }
 
-        public void PPSave()
+        public void PPSave(bool admin = false)
         {
             //Do soft deletes
             foreach (var deletableEntity in ChangeTracker.Entries<SoftDelete>())
@@ -92,7 +92,16 @@ namespace OB.Models.DAL
                     deletableEntity.Entity.IsDeleted = true; //This will set the entity's state to modified for the next time we query the ChangeTracker
                 }
             }
-            Logger.SaveChanges(this.User.Find(WebSecurity.CurrentUserId), SaveOptions.AcceptAllChangesAfterSave);
+            if (!admin)
+            {
+                Logger.SaveChanges(this.User.Find(WebSecurity.CurrentUserId), SaveOptions.AcceptAllChangesAfterSave);
+            }
+            else
+            {
+                //默认使用admin记录log
+                var user = this.User.Find(1);
+                Logger.SaveChanges(user, SaveOptions.AcceptAllChangesAfterSave);
+            }
         }
         #endregion
     }
@@ -154,6 +163,7 @@ namespace OB.Models.DAL
             WebSecurity.CreateUserAndAccount("hr1", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
             WebSecurity.CreateUserAndAccount("hr2", "123456", new { Mail = "pennsong07@163.com", IsDeleted = false });
             Roles.AddUsersToRoles(new[] { "hr1", "hr2" }, new[] { "HR" });
+            context.SaveChanges();
 
             //init data
             var accumulationType = new List<AccumulationType>{

@@ -45,6 +45,7 @@
     <div id="body">
         @RenderSection("featured", required: false)
         <section class="content-wrapper main-content clear-fix">
+            @Html.Partial("Msg")
             @RenderBody()
         </section>
     </div>
@@ -57,6 +58,9 @@
     </footer>
 
     @Scripts.Render("~/bundles/jquery")
+    <script>
+        $("#msg").delay(3000).fadeOut(500);
+    </script>
     @RenderSection("scripts", required: false)
 </body>
 </html>

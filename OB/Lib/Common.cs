@@ -34,9 +34,21 @@ namespace OB.Lib
     public class Common
     {
         //带消息提示的返回索引页面
-        public static void Rd(Controller controller, MsgType msgType, string msg = "权限范围内没有找到对应记录")
+        public static void RMError(Controller controller, string msg = "权限范围内没有找到对应记录")
         {
-            Msg message = new Msg { MsgType = msgType, Content = msg };
+            Msg message = new Msg { MsgType = MsgType.ERROR, Content = msg };
+            controller.TempData["msg"] = message;
+        }
+
+        public static void RMOk(Controller controller, string msg = "操作成功!")
+        {
+            Msg message = new Msg { MsgType = MsgType.OK, Content = msg };
+            controller.TempData["msg"] = message;
+        }
+
+        public static void RMWarn(Controller controller, string msg)
+        {
+            Msg message = new Msg { MsgType = MsgType.WARN, Content = msg };
             controller.TempData["msg"] = message;
         }
 

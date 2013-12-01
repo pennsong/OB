@@ -60,12 +60,13 @@ namespace OB.Models
                 Id = this.Id,
                 Name = this.Name,
                 HRAdminId = this.HRAdminId,
+                HRAdmin = this.HRAdmin,
             };
         }
 
         public override string ToString()
         {
-            return Id + "-" + Name;
+            return Name;
         }
 
         public string DisV
@@ -78,7 +79,7 @@ namespace OB.Models
 
         public string Dis()
         {
-            return Id + "-" + Name + "-" + (HRAdmin == null ? "无" : HRAdmin.Name);
+            return Name + "-" + (HRAdmin == null ? "无" : HRAdmin.Name);
         }
     }
 }

@@ -26,7 +26,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action("HRAdminClientIndex", Html.RouteValues(new { page = ViewBag.Page }, (object)ViewBag.RV)))
+                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
                             <input type="submit" value="编辑" />
                         }
                     </div>
