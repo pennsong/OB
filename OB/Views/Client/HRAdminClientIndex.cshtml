@@ -1,6 +1,6 @@
 ﻿@{
-    string action = ((RouteValueDictionary)ViewBag.RV).Where(a => a.Key == "actionAjax").Select(a => a.Value).SingleOrDefault().ToString();
-    string returnRoot = ((RouteValueDictionary)ViewBag.RV).Where(a => a.Key == "returnRoot").Select(a => a.Value).SingleOrDefault().ToString();
+    string action = (((RouteValueDictionary)(ViewBag.RV))["actionAjax"]).ToString();
+    string returnRoot = (((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString();
 
     ViewBag.Title = "客户列表";
     AjaxOptions ajaxOpts = new AjaxOptions

@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<Client>
-
+@{
+    string returnUrl = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
+}
 @Html.Partial("PageLink")
 
 <table>
@@ -26,7 +28,7 @@
                             @Html.AntiForgeryToken()
 
                             @Html.Hidden("id", item.Id)
-                            @Html.Hidden("returnUrl", Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV)))
+                            @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="编辑" />
                         }
                     </div>
