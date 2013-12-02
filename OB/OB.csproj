@@ -784,7 +784,6 @@
     <Content Include="Views\Home\CandidateIndex.cshtml" />
     <Content Include="Views\Home\AnonymousIndex.cshtml" />
     <Content Include="Views\Account\CreateHRAdmin.cshtml" />
-    <Content Include="Views\Account\HRAdminList.cshtml" />
     <Content Include="Views\Home\AdminDataSetting.cshtml" />
     <Content Include="Views\Account\HRList.cshtml" />
     <Content Include="Views\Account\CreateHR.cshtml" />
@@ -821,7 +820,6 @@
     <Content Include="Views\Employee\EmployeeDetail.cshtml" />
     <Content Include="Views\Employee\BackDetail.cshtml" />
     <Content Include="Views\Employee\EmployeeDoc.cshtml" />
-    <Content Include="Views\Account\GetHRAdmin.cshtml" />
     <Content Include="Views\Shared\PageLink.cshtml" />
     <Content Include="Views\Client\GetClient.cshtml" />
     <Content Include="Views\Account\GetHR.cshtml" />
@@ -839,6 +837,8 @@
     <Content Include="Views\Client\History.cshtml" />
     <Content Include="Views\Client\HistoryHR.cshtml" />
     <Content Include="Views\Client\HistoryTaxCity.cshtml" />
+    <Content Include="Views\Account\GetHRAdmin.cshtml" />
+    <Content Include="Views\Account\HRAdminIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

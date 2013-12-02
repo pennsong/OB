@@ -21,7 +21,7 @@ namespace OB.Models
         public DbSet<User> User { get; set; }
     }
 
-    public class User : SoftDelete, IHasLoggingReference, ICloneable, IDisplayable
+    public class User : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -39,35 +39,9 @@ namespace OB.Models
             get { return Id; }
         }
 
-        public object Clone()
-        {
-            return Copy();
-        }
-        public User Copy()
-        {
-            return new User()
-            {
-                Name = this.Name,
-                Mail = this.Mail,
-            };
-        }
-
         public override string ToString()
         {
             return Name;
-        }
-
-        public string DisV
-        {
-            get
-            {
-                return Dis();
-            }
-        }
-
-        public string Dis()
-        {
-            return Id + "-" + Name + "-" + Mail;
         }
     }
 

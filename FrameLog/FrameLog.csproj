@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Contexts\DbContextAdapter.cs" />
-    <Compile Include="Contexts\IDisplayable.cs" />
     <Compile Include="Contexts\IFrameLogContext.cs" />
     <Compile Include="Contexts\IHistoryContext.cs" />
     <Compile Include="Contexts\ObjectContextAdapter.cs" />

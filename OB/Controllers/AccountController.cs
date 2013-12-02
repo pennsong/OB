@@ -65,26 +65,30 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult HRAdminList(string filter = "")
+        public ActionResult HRAdminIndex(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "用户";
-            ViewBag.Action = "GetHRAdmin";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminIndex" }, { "actionAjax", "GetHRAdmin" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult GetHRAdmin(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetHRAdmin(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var users = Common.GetUserQuery(db, "HRAdmin", false, keyword).OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRAdminClientIndex" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-
-            return PartialView(Common<User>.Page(this, rv, users));
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRAdminQuery(db, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<User>.Page(this, rv, results));
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult CreateHRAdmin()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateHRAdmin(string returnUrl = "HRAdminIndex")
         {
             ViewBag.Path1 = "用户";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -94,7 +98,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateHRAdmin(RegisterModel model)
+        public ActionResult CreateHRAdminSave(RegisterModel model, string returnUrl = "HRAdminIndex")
         {
             ViewBag.Path1 = "用户";
             if (ModelState.IsValid)
@@ -102,11 +106,12 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail });
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail, IsDeleted = false });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HRAdmin" });
 
-                    return RedirectToAction("HRAdminList", "Account");
+                    Common.RMOk(this, "用户:'" + model.UserName + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
                 {
@@ -115,7 +120,8 @@ namespace OB.Controllers
             }
 
             // 如果我们进行到这一步时某个地方出错，则重新显示表单
-            return View(model);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("CreateHRAdmin", model);
         }
 
         [Authorize(Roles = "HRAdmin")]

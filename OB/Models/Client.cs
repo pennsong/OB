@@ -12,7 +12,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Client : SoftDelete, IHasLoggingReference, ICloneable, IDisplayable
+    public class Client : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
         [Required]
@@ -49,37 +49,9 @@ namespace OB.Models
             get { return Id; }
         }
 
-        public object Clone()
-        {
-            return Copy();
-        }
-        public Client Copy()
-        {
-            return new Client()
-            {
-                Id = this.Id,
-                Name = this.Name,
-                HRAdminId = this.HRAdminId,
-                HRAdmin = this.HRAdmin,
-            };
-        }
-
         public override string ToString()
         {
             return Name;
-        }
-
-        public string DisV
-        {
-            get
-            {
-                return Dis();
-            }
-        }
-
-        public string Dis()
-        {
-            return Name + "-" + (HRAdmin == null ? "无" : HRAdmin.Name);
         }
     }
 }

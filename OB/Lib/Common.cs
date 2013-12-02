@@ -232,6 +232,36 @@ namespace OB.Lib
             return result;
         }
 
+        //user
+        // hradmin
+        public static List<User> GetHRAdminList(string role, bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return _GetHRAdminQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<User> GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            return _GetHRAdminQuery(db, includeSoftDeleted, filter);
+        }
+
+        private static IQueryable<User> _GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var usernames = Roles.GetUsersInRole("HRAdmin");
+
+            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+
         // city
         public static List<City> GetCityList(bool includeSoftDeleted = false, string filter = "")
         {

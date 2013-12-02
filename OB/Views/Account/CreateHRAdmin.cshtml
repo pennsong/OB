@@ -1,19 +1,19 @@
 ﻿@model OB.Models.RegisterModel
+
 @{
-    ViewBag.Title = "新建HRAdmin";
+    ViewBag.Title = "Create";
 }
 
-<hgroup class="title">
-    <h2>@ViewBag.Title</h2>
-</hgroup>
+<h2>Create</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("CreateHRAdminSave", "Account"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
     <fieldset>
         <legend>新建HRAdmin</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         <ol>
             <li>
                 @Html.LabelFor(m => m.UserName)
@@ -32,9 +32,13 @@
                 @Html.TextBoxFor(m => m.Mail)
             </li>
         </ol>
-        <input type="submit" value="新建" />
+        <input type="submit" value="保存" />
     </fieldset>
 }
+
+<div>
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

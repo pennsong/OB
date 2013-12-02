@@ -366,19 +366,6 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public PartialViewResult History(int id)
-        {
-            //检查记录在权限范围内
-            var result = Common.GetClientQuery(db, true).Include(a => a.HRAdmin).Where(a => a.Id == id).SingleOrDefault();
-            if (result == null)
-            {
-                return PartialView();
-            }
-            //end
-            return PartialView(db.HistoryExplorer.ChangesTo(result));
-        }
-
-        [Authorize(Roles = "Admin")]
         public PartialViewResult HistoryHR(int id)
         {
             //检查记录在权限范围内
