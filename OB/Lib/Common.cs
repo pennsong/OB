@@ -109,25 +109,6 @@ namespace OB.Lib
         }
 
         //common get record
-        public static List<AccumulationType> GetAccumulationTypeList(OBContext db, string keyword = "")
-        {
-            return _GetAccumulationType(db, keyword).ToList();
-        }
-
-        public static IQueryable<AccumulationType> GetAccumulationTypeQuery(OBContext db, string keyword = "")
-        {
-            return _GetAccumulationType(db, keyword);
-        }
-
-        private static IQueryable<AccumulationType> _GetAccumulationType(OBContext db, string keyword = "")
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.AccumulationType.Where(a => a.Name.ToUpper().Contains(keyword));
-
-            return result;
-        }
-
         public static IQueryable<Assurance> GetHRAdminAssuranceQuery(int userHRAdmin, OBContext db = null, string keyword = "")
         {
             if (db == null)
@@ -387,6 +368,29 @@ namespace OB.Lib
         }
         // end city
 
+        //accumulation type
+        public static List<AccumulationType> GetAccumulationTypeList(bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetAccumulationTypeQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<AccumulationType> GetAccumulationTypeQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.AccumulationType.Where(a => a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end accumulation type
+        
         //end common get record
     }
 }

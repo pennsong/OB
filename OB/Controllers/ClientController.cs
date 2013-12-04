@@ -97,7 +97,7 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateSave(Client record, string returnUrl = "Index")
+        public ActionResult CreateSave(Client model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
@@ -106,9 +106,9 @@ namespace OB.Controllers
             {
                 try
                 {
-                    db.Client.Add(record);
+                    db.Client.Add(model);
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + record.ToString() + "新建成功!");
+                    Common.RMOk(this, "记录:" + model.ToString() + "新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -120,7 +120,7 @@ namespace OB.Controllers
                 }
             }
             ViewBag.ReturnUrl = returnUrl;
-            return View("Create", record);
+            return View("Create", model);
         }
 
         //
@@ -150,11 +150,11 @@ namespace OB.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSave(Client record, string returnUrl = "Index")
+        public ActionResult EditSave(Client model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetClientQuery(db).Where(a => a.Id == record.Id).SingleOrDefault();
+            var result = Common.GetClientQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -166,10 +166,10 @@ namespace OB.Controllers
             {
                 try
                 {
-                    result.Name = record.Name;
-                    result.HRAdminId = record.HRAdminId;
+                    result.Name = model.Name;
+                    result.HRAdminId = model.HRAdminId;
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + record.ToString() + "保存成功!");
+                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -182,7 +182,7 @@ namespace OB.Controllers
             }
             ViewBag.ReturnUrl = returnUrl;
 
-            return View("Edit", record);
+            return View("Edit", model);
         }
 
         [Authorize(Roles = "HRAdmin")]

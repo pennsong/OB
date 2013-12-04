@@ -17,10 +17,15 @@
         @Html.DisplayFor(model => model.Name)
     </div>
 </fieldset>
-@using (Html.BeginForm()) {
-    @Html.AntiForgeryToken()
-    <p>
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-}
+
+<div>
+    @using (Html.BeginForm("DeleteSave", "AccumulationType"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+
+        <input type="submit" value="确认删除" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
+</div>

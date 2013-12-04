@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class AccumulationType
+    public class AccumulationType: SoftDelete
     {
         public int Id { get; set; }
         [Required]
@@ -16,5 +17,10 @@ namespace OB.Models
         public string Name { get; set; }
 
         public virtual ICollection<ClientCitySupplierHukou> ClientCitySupplierHukous { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
