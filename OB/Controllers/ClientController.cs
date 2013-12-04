@@ -206,6 +206,7 @@ namespace OB.Controllers
                 ClientId = result.Id,
                 ClientName = result.Name,
                 HRIds = result.HRs.Select(a => a.Id).ToList(),
+                PensionCities = result.PensionCities.Select(a => a.Id).ToList(),
                 TaxCities = result.TaxCities.Select(a => a.Id).ToList(),
             };
             ViewBag.ReturnUrl = returnUrl;
@@ -220,7 +221,7 @@ namespace OB.Controllers
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId);
-            var result = results.Include(a => a.HRs).Include(a => a.TaxCities).Where(a => a.Id == record.ClientId).SingleOrDefault();
+            var result = results.Include(a => a.HRs).Include(a => a.PensionCities).Include(a => a.TaxCities).Where(a => a.Id == record.ClientId).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -236,13 +237,19 @@ namespace OB.Controllers
                     {
                         record.HRIds = new List<int> { };
                     }
+                    if (record.PensionCities == null)
+                    {
+                        record.PensionCities = new List<int> { };
+                    }
                     if (record.TaxCities == null)
                     {
                         record.TaxCities = new List<int> { };
                     }
                     var hrs = Common.GetUserQuery(db, "HR").Where(a => record.HRIds.Any(b => b == a.Id)).ToList();
                     var taxCities = Common.GetCityQuery(db).Where(a => record.TaxCities.Any(b => b == a.Id)).ToList();
+                    var pensionCities = Common.GetCityQuery(db).Where(a => record.PensionCities.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
+                    result.PensionCities = pensionCities;
                     result.TaxCities = taxCities;
                     db.PPSave();
                     Common.RMOk(this, "记录:" + record.ToString() + "保存成功!");

@@ -125,43 +125,30 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult HRList(string filter = "")
+        public ActionResult HRIndex(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "用户";
-            ViewBag.Action = "GetHR";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HRIndex" }, { "actionAjax", "GetHR" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetHR(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetHR(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var users = Common.GetUserQuery(db, "HR", true, keyword).OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-            return PartialView(Common<User>.Page(this, rv, users));
-        }
-
-        [Authorize(Roles = "HR")]
-        public ActionResult CandidateList(string filter = "")
-        {
-            ViewBag.Path1 = "用户";
-            ViewBag.Filter = filter;
-            ViewBag.Action = "GetCandidate";
-            return View();
-        }
-
-        [Authorize(Roles = "HR")]
-        public PartialViewResult GetCandidate(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
-        {
-            var users = Common.HRCandidateList(db, keyword).OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-
-            return PartialView(Common<User>.Page(this, rv, users));
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRQuery(db, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<User>.Page(this, rv, results));
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult CreateHR()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateHR(string returnUrl = "HRIndex")
         {
             ViewBag.Path1 = "用户";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -171,7 +158,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateHR(RegisterModel model)
+        public ActionResult CreateHRSave(RegisterModel model, string returnUrl = "HRIndex")
         {
             ViewBag.Path1 = "用户";
             if (ModelState.IsValid)
@@ -179,11 +166,12 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail });
+                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail, IsDeleted = false });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HR" });
 
-                    return RedirectToAction("HRList", "Account");
+                    Common.RMOk(this, "用户:'" + model.UserName + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
                 {
@@ -192,16 +180,35 @@ namespace OB.Controllers
             }
 
             // 如果我们进行到这一步时某个地方出错，则重新显示表单
-            return View(model);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("CreateHR", model);
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult CreateCandidate()
+        public ActionResult CandidateIndex(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "用户";
-            ViewBag.ClientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.ToList();
-            ViewBag.CityList = db.City.ToList();
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "CandidateIndex" }, { "actionAjax", "GetCandidate" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return View();
+        }
 
+        [Authorize(Roles = "HR")]
+        public PartialViewResult GetCandidate(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        {
+            keyword = keyword.ToUpper();
+            var results = Common.GetCandidateQuery(db, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<User>.Page(this, rv, results));
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateCandidate(string returnUrl = "CandidateIndex")
+        {
+            ViewBag.Path1 = "用户";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -211,7 +218,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCandidate(CreateCandidate createCandidate)
+        public ActionResult CreateCandidateSave(CreateCandidate createCandidate, string returnUrl = "CandidateIndex")
         {
             ViewBag.Path1 = "用户";
             if (ModelState.IsValid)
@@ -221,18 +228,19 @@ namespace OB.Controllers
                 {
                     using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
                     {
-                        // start transaction
-                        WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password, new { Mail = createCandidate.Mail });
+                        // transaction
+                        WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password, new { Mail = createCandidate.Mail, IsDeleted = false });
                         Roles.AddUsersToRoles(new[] { createCandidate.UserName }, new[] { "Candidate" });
                         var user = db.User.Where(a => a.Name == createCandidate.UserName).Single();
                         var employee = new Employee { UserId = user.Id, User = user, EmployeeStatus = EmployeeStatus.新增未通知, ChineseName = createCandidate.ChineseName, ClientId = createCandidate.ClientId };
                         db.Employee.Add(employee);
 
-                        db.SaveChanges();
+                        db.PPSave();
                         scope.Complete();
-
-                        return RedirectToAction("CandidateList", "Account");
+                        // end transaction
                     }
+                    Common.RMOk(this, "用户:'" + createCandidate.UserName + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
                 {
@@ -240,10 +248,9 @@ namespace OB.Controllers
                 }
             }
 
-            ViewBag.ClientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.ToList();
-            ViewBag.CityList = db.City.ToList();
             // 如果我们进行到这一步时某个地方出错，则重新显示表单
-            return View(createCandidate);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("CreateCandidate", createCandidate);
         }
 
         //

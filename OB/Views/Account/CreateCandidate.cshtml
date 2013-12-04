@@ -3,17 +3,16 @@
     ViewBag.Title = "新建Candidate";
 }
 
-<hgroup class="title">
-    <h2>@ViewBag.Title</h2>
-</hgroup>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("CreateCandidateSave", "Account"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary()
 
     <fieldset>
         <legend>新建Candidate</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         <ol>
             <li>
                 @Html.LabelFor(m => m.UserName)
@@ -37,17 +36,56 @@
             </li>
             <li>
                 @Html.LabelFor(m => m.ClientId)
-                @Html.DropDownListFor(m => m.ClientId, new SelectList(ViewBag.ClientList, "Id", "Name"), String.Empty)
+                @Html.DropDownListFor(m => m.ClientId, new SelectList(Common.GetHRClientList(WebSecurity.CurrentUserId), "Id", "Name"), String.Empty)
             </li>
             <li>
                 @Html.LabelFor(m => m.PensionCityId)
-                @Html.DropDownListFor(m => m.PensionCityId, new SelectList(ViewBag.CityList, "Id", "Name"), String.Empty)
+                @if (Model == null || Model.ClientId == null)
+                {
+                    @Html.DropDownListFor(m => m.PensionCityId, new[] { new SelectListItem() { Text = String.Empty, Value = "" } })
+
+                }
+                else
+                {
+                    @Html.DropDownListFor(m => m.PensionCityId, new SelectList(Common.GetClientPensionCityList(Model.ClientId), "Id", "Name"), String.Empty)
+                }
             </li>
         </ol>
-        <input type="submit" value="新建" />
+        <input type="submit" value="保存" />
     </fieldset>
 }
 
+<div>
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $("#ClientId").change(function () {
+                GetClientPensionCity($(this).val());
+            });
+
+            function GetClientPensionCity(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/ClientPensionCity/" + id,
+                    success: function (data) {
+                        var target = $("#PensionCityId");
+                        target.empty(); // remove old options
+                        target.append("<option value=''></option>");
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].key == id) {
+                                target.append("<option value=" + data[i].Id + " selected>" + data[i].Name + "</option>");
+                            }
+                            else {
+                                target.append("<option value=" + data[i].Id + ">" + data[i].Name + "</option>");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 }

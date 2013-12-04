@@ -19,6 +19,7 @@ namespace OB.Models.ViewModel
         public string ClientName { get; set; }
 
         public ICollection<int> HRIds { get; set; }
+        public ICollection<int> PensionCities { get; set; }
         public ICollection<int> TaxCities { get; set; }
 
         public override string ToString()

@@ -135,7 +135,7 @@ namespace OB.Controllers
             ViewBag.Path3 = path3;
             var menus = new List<Menu> { 
                 new Menu{Name="首页", Controller ="Home", Action="Index"},
-                new Menu{Name = "用户", Controller="Account", Action="HRList"},
+                new Menu{Name = "用户", Controller="Account", Action="HRIndex"},
                 new Menu{Name = "参数设置", Controller="Home", Action="HRAdminDataSetting"},
             };
 
@@ -149,7 +149,7 @@ namespace OB.Controllers
             ViewBag.Path3 = path3;
             var menus = new List<Menu> { 
                 new Menu{Name="首页", Controller ="Home", Action="Index"},
-                new Menu{Name = "用户", Controller="Account", Action="CandidateList"},
+                new Menu{Name = "用户", Controller="Account", Action="CandidateIndex"},
                 new Menu{Name = "员工管理", Controller="Employee", Action="HREmployeeIndex"},
             };
 

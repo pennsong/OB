@@ -1,4 +1,16 @@
 ﻿@model IEnumerable<User>
+@{
+    string returnUrl = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
+}
+<p>
+    @using (Html.BeginForm("CreateCandidate", "Account"))
+    {    
+        @Html.AntiForgeryToken()
+
+        @Html.Hidden("returnUrl", returnUrl)
+        <input type="submit" value="新建" />
+    }
+</p>
 
 @Html.Partial("PageLink")
 
@@ -10,6 +22,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Mail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeleted)
             </th>
             <th></th>
         </tr>
@@ -26,9 +41,49 @@
                     @Html.DisplayFor(modelItem => item.Mail)
                 </td>
                 <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    @Html.DisplayFor(modelItem => item.IsDeleted)
+                </td>
+                <td>
+                    <div class="groupOperation">
+                        @if (item.IsDeleted)
+                        {
+                            using (Html.BeginForm("Restore", "Account"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="恢复" />
+                            }
+                        }
+                        else
+                        {
+                            using (Html.BeginForm("Edit", "Account"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="编辑" />
+                            }
+                            using (Html.BeginForm("Details", "Account"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="详情" />
+                            }
+                            using (Html.BeginForm("Delete", "Account"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="删除" />
+                            }
+                        }
+                    </div>
                 </td>
             </tr>
         }

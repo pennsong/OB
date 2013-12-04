@@ -204,6 +204,7 @@
     <Compile Include="Controllers\FamilyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LevelController.cs" />
+    <Compile Include="Controllers\WebApi\ClientPensionCityController.cs" />
     <Compile Include="Controllers\PensionTypeController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="Models\ViewModel\EditEmployeeFront.cs" />
     <Compile Include="Models\ViewModel\EditSingleEmployeeDoc.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeBack.cs" />
+    <Compile Include="Models\ViewModel\IdName.cs" />
     <Compile Include="Models\ViewModel\Menu.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeEducation.cs" />
     <Compile Include="Models\ViewModel\EditEmployeeWork.cs" />
@@ -785,11 +787,10 @@
     <Content Include="Views\Home\AnonymousIndex.cshtml" />
     <Content Include="Views\Account\CreateHRAdmin.cshtml" />
     <Content Include="Views\Home\AdminDataSetting.cshtml" />
-    <Content Include="Views\Account\HRList.cshtml" />
     <Content Include="Views\Account\CreateHR.cshtml" />
     <Content Include="Views\Home\HRAdminDataSetting.cshtml" />
     <Content Include="Views\Client\HRAdminClientIndex.cshtml" />
-    <Content Include="Views\Account\CandidateList.cshtml" />
+    <Content Include="Views\Account\CandidateIndex.cshtml" />
     <Content Include="Views\Account\CreateCandidate.cshtml" />
     <Content Include="Views\ClientPensionCityDocument\Index.cshtml" />
     <Content Include="Views\ClientPensionCityDocument\Details.cshtml" />
@@ -839,6 +840,7 @@
     <Content Include="Views\Client\HistoryTaxCity.cshtml" />
     <Content Include="Views\Account\GetHRAdmin.cshtml" />
     <Content Include="Views\Account\HRAdminIndex.cshtml" />
+    <Content Include="Views\Account\HRIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

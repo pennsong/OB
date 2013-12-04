@@ -231,23 +231,18 @@ namespace OB.Lib
             }
             return result;
         }
-
+        /////////////////////////////////////////////////////
         //user
         // hradmin
         public static List<User> GetHRAdminList(string role, bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return _GetHRAdminQuery(db, includeSoftDeleted, filter).ToList();
+                return GetHRAdminQuery(db, includeSoftDeleted, filter).ToList();
             }
         }
 
         public static IQueryable<User> GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
-        {
-            return _GetHRAdminQuery(db, includeSoftDeleted, filter);
-        }
-
-        private static IQueryable<User> _GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
         {
             filter = filter.ToUpper();
 
@@ -261,22 +256,124 @@ namespace OB.Lib
             }
             return result;
         }
+        // end hradmin
 
-        // city
+        // hr
+        public static List<User> GetHRList(string role, bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetHRQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<User> GetHRQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var usernames = Roles.GetUsersInRole("HR");
+
+            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end hr
+
+        // candidate
+        public static List<User> GetCandidateList(string role, bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetCandidateQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<User> GetCandidateQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var usernames = Roles.GetUsersInRole("Candidate");
+
+            var curUserHRClients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id);
+
+            var result = from a in db.User
+                         join b in db.Employee
+                         on a.Id equals b.UserId
+                         where usernames.Contains(a.Name) && curUserHRClients.Contains(b.ClientId)
+                         select a;
+
+            result = result.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end candidate
+        //end user
+
+        //client
+        public static List<Client> GetHRClientList(int userId, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetHRClientQuery(db, userId, filter).ToList();
+            }
+        }
+
+        public static IQueryable<Client> GetHRClientQuery(OBContext db, int userId, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var userHRClients = db.User.Where(a => a.Id == userId).Single().HRClients.Select(a => a.Id);
+
+            var result = db.Client.Where(a => a.Name.ToUpper().Contains(filter)).Where(a => userHRClients.Contains(a.Id));
+
+            if (true)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end client
+
+        //city
+        // client pension city
+        public static List<City> GetClientPensionCityList(int clientId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetClientPensionCityQuery(db, clientId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetClientPensionCityQuery(OBContext db, int clientId)
+        {
+            var client = db.Client.Where(a => a.Id == clientId).SingleOrDefault();
+            if (client == null)
+            {
+                return null;
+            }
+            var clientCities = client.PensionCities.Select(a => a.Id);
+            var result = GetCityQuery(db).Where(a => clientCities.Contains(a.Id));
+            return result;
+        }
+        // end client pension city
+
         public static List<City> GetCityList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return _GetCity(db, includeSoftDeleted, filter).ToList();
+                return GetCityQuery(db, includeSoftDeleted, filter).ToList();
             }
         }
 
         public static IQueryable<City> GetCityQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
-        {
-            return _GetCity(db, includeSoftDeleted, filter);
-        }
-
-        private static IQueryable<City> _GetCity(OBContext db, bool includeSoftDeleted = false, string filter = "")
         {
             filter = filter.ToUpper();
 
@@ -288,6 +385,7 @@ namespace OB.Lib
             }
             return result;
         }
+        // end city
 
         //end common get record
     }
