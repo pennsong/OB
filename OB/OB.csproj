@@ -191,7 +191,6 @@
     <Compile Include="Controllers\AccumulationTypeController.cs" />
     <Compile Include="Controllers\AssuranceController.cs" />
     <Compile Include="Controllers\BudgetCenterController.cs" />
-    <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\ClientPensionCityDocumentController.cs" />
     <Compile Include="Controllers\ContractTypeController.cs" />
@@ -211,6 +210,7 @@
     <Compile Include="Controllers\WorkController.cs" />
     <Compile Include="Controllers\ZhangtaoController.cs" />
     <Compile Include="Controllers\CertificateController.cs" />
+    <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -695,11 +695,6 @@
     <Content Include="Views\AccumulationType\Create.cshtml" />
     <Content Include="Views\AccumulationType\Edit.cshtml" />
     <Content Include="Views\AccumulationType\Delete.cshtml" />
-    <Content Include="Views\City\Index.cshtml" />
-    <Content Include="Views\City\Details.cshtml" />
-    <Content Include="Views\City\Create.cshtml" />
-    <Content Include="Views\City\Edit.cshtml" />
-    <Content Include="Views\City\Delete.cshtml" />
     <Content Include="Views\ContractType\Index.cshtml" />
     <Content Include="Views\ContractType\Details.cshtml" />
     <Content Include="Views\ContractType\Create.cshtml" />
@@ -844,6 +839,13 @@
     <Content Include="Views\Certificate\GetCertificate.cshtml" />
     <Content Include="Views\Certificate\Index.cshtml" />
     <Content Include="Views\Certificate\Restore.cshtml" />
+    <Content Include="Views\City\Create.cshtml" />
+    <Content Include="Views\City\Delete.cshtml" />
+    <Content Include="Views\City\Details.cshtml" />
+    <Content Include="Views\City\Edit.cshtml" />
+    <Content Include="Views\City\GetCity.cshtml" />
+    <Content Include="Views\City\Index.cshtml" />
+    <Content Include="Views\City\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

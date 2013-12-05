@@ -8,6 +8,11 @@ using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
+using System.Web.Security;
+using OB.Lib;
+using OB.Models.ViewModel;
+using WebMatrix.WebData;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -17,123 +22,257 @@ namespace OB.Controllers
 
         //
         // GET: /City/
-
-        public ActionResult Index()
+        [Authorize(Roles = "Admin")]
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            return View(db.City.ToList());
+            ViewBag.Path1 = "参数设置";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetCity" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public PartialViewResult GetCity(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        {
+            keyword = keyword.ToUpper();
+            var results = Common.GetCityQuery(db, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<City>.Page(this, rv, results));
         }
 
         //
         // GET: /City/Details/5
-
-        public ActionResult Details(int id = 0)
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
         {
-            City city = db.City.Find(id);
-            if (city == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(city);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
         //
         // GET: /City/Create
-
-        public ActionResult Create()
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
         // POST: /City/Create
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(City city)
+        public ActionResult CreateSave(City model, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            //end
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.City.Add(city);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    db.City.Add(model);
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + model.ToString() + "新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-
-            return View(city);
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", model);
         }
 
         //
         // GET: /City/Edit/5
-
-        public ActionResult Edit(int id = 0)
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
-            City city = db.City.Find(id);
-            if (city == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(city);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
         //
         // POST: /City/Edit/5
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(City city)
+        public ActionResult EditSave(City model, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Entry(city).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    result.Name = model.Name;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-            return View(city);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", model);
         }
 
         //
         // GET: /City/Delete/5
-
-        public ActionResult Delete(int id = 0)
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
-            City city = db.City.Find(id);
-            if (city == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(city);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
         //
         // POST: /City/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
         {
-            City city = db.City.Find(id);
-            db.City.Remove(city);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                db.City.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(City record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetCityQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
         }
 
         protected override void Dispose(bool disposing)

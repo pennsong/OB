@@ -2,11 +2,13 @@
 
 @{
     ViewBag.Name = "城市";
-    ViewBag.Title = "详情";
+    ViewBag.Title = "恢复";
 }
 
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
+
+<h3>您确定要恢复此条记录么?</h3>
 
 <fieldset>
     <legend>@ViewBag.Name</legend>
@@ -18,14 +20,15 @@
         @Html.DisplayFor(model => model.Name)
     </div>
 </fieldset>
-<p>
-    @using (Html.BeginForm("Edit", "City"))
-    {    
-        @Html.AntiForgeryToken()
 
+<div>
+    @using (Html.BeginForm("RestoreSave", "City"))
+    {
+        @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
-        <input type="submit" value="编辑" />
+
+        <input type="submit" value="确认恢复" />
     }
-    <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
-</p>
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>
