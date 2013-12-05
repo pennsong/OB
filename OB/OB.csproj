@@ -720,11 +720,6 @@
     <Content Include="Views\Assurance\Create.cshtml" />
     <Content Include="Views\Assurance\Edit.cshtml" />
     <Content Include="Views\Assurance\Delete.cshtml" />
-    <Content Include="Views\BudgetCenter\Index.cshtml" />
-    <Content Include="Views\BudgetCenter\Details.cshtml" />
-    <Content Include="Views\BudgetCenter\Create.cshtml" />
-    <Content Include="Views\BudgetCenter\Edit.cshtml" />
-    <Content Include="Views\BudgetCenter\Delete.cshtml" />
     <Content Include="Views\Family\Index.cshtml" />
     <Content Include="Views\Family\Details.cshtml" />
     <Content Include="Views\Family\Create.cshtml" />
@@ -826,7 +821,6 @@
     <Content Include="Views\Account\GetHR.cshtml" />
     <Content Include="Views\Account\GetCandidate.cshtml" />
     <Content Include="Views\AccumulationType\GetAccumulationType.cshtml" />
-    <Content Include="Views\Assurance\GetAssurance.cshtml" />
     <Content Include="Views\Supplier\Index.cshtml" />
     <Content Include="Views\Supplier\Details.cshtml" />
     <Content Include="Views\Supplier\Create.cshtml" />
@@ -835,12 +829,19 @@
     <Content Include="Views\Client\GetHRAdminClient.cshtml" />
     <Content Include="Views\Shared\Msg.cshtml" />
     <Content Include="Views\Client\Restore.cshtml" />
-    <Content Include="Views\Client\History.cshtml" />
-    <Content Include="Views\Client\HistoryHR.cshtml" />
-    <Content Include="Views\Client\HistoryTaxCity.cshtml" />
     <Content Include="Views\Account\GetHRAdmin.cshtml" />
     <Content Include="Views\Account\HRAdminIndex.cshtml" />
     <Content Include="Views\Account\HRIndex.cshtml" />
+    <Content Include="Views\AccumulationType\Restore.cshtml" />
+    <Content Include="Views\Assurance\GetAssurance.cshtml" />
+    <Content Include="Views\Assurance\Restore.cshtml" />
+    <Content Include="Views\BudgetCenter\Create.cshtml" />
+    <Content Include="Views\BudgetCenter\Delete.cshtml" />
+    <Content Include="Views\BudgetCenter\Details.cshtml" />
+    <Content Include="Views\BudgetCenter\Edit.cshtml" />
+    <Content Include="Views\BudgetCenter\GetBudgetCenter.cshtml" />
+    <Content Include="Views\BudgetCenter\Index.cshtml" />
+    <Content Include="Views\BudgetCenter\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -110,7 +110,7 @@ namespace OB.Controllers
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HRAdmin" });
 
-                    Common.RMOk(this, "用户:'" + model.UserName + "'新建成功!");
+                    Common.RMOk(this, "记录:'" + model.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
@@ -170,7 +170,7 @@ namespace OB.Controllers
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HR" });
 
-                    Common.RMOk(this, "用户:'" + model.UserName + "'新建成功!");
+                    Common.RMOk(this, "记录:'" + model.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
@@ -239,7 +239,7 @@ namespace OB.Controllers
                         scope.Complete();
                         // end transaction
                     }
-                    Common.RMOk(this, "用户:'" + createCandidate.UserName + "'新建成功!");
+                    Common.RMOk(this, "记录:'" + createCandidate.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)

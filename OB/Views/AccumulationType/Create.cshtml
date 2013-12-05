@@ -1,10 +1,12 @@
 ﻿@model OB.Models.AccumulationType
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Name = "公积金类型";
+    ViewBag.Title = "新建";
 }
 
-<h2>Create</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
 @using (Html.BeginForm("CreateSave", "AccumulationType"))
 {
@@ -12,7 +14,7 @@
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>AccumulationType</legend>
+        <legend>@ViewBag.Name</legend>
         @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)
@@ -23,7 +25,7 @@
         </div>
 
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }

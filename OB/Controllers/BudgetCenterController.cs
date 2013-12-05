@@ -8,6 +8,9 @@ using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
+using OB.Lib;
+using WebMatrix.WebData;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -17,128 +20,247 @@ namespace OB.Controllers
 
         //
         // GET: /BudgetCenter/
-
-        public ActionResult Index()
+        [Authorize(Roles = "HRAdmin")]
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var budgetcenter = db.BudgetCenter.Include(b => b.Client);
-            return View(budgetcenter.ToList());
+            ViewBag.Path1 = "参数设置";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetBudgetCenter" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return View();
         }
 
-        //
-        // GET: /BudgetCenter/Details/5
-
-        public ActionResult Details(int id = 0)
+        [Authorize(Roles = "HRAdmin")]
+        public PartialViewResult GetBudgetCenter(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            BudgetCenter budgetcenter = db.BudgetCenter.Find(id);
-            if (budgetcenter == null)
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<BudgetCenter>.Page(this, rv, results));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(budgetcenter);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
-        //
-        // GET: /BudgetCenter/Create
-
-        public ActionResult Create()
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
         {
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name");
+            ViewBag.Path1 = "参数设置";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
-        // POST: /BudgetCenter/Create
+        // POST: /Account/Register
 
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(BudgetCenter budgetcenter)
+        public ActionResult CreateSave(BudgetCenter model, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.BudgetCenter.Add(budgetcenter);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    db.BudgetCenter.Add(model);
+                    db.PPSave();
+                    Common.RMOk(this, "记录:'" + model.Name + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
 
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", budgetcenter.ClientId);
-            return View(budgetcenter);
+            // 如果我们进行到这一步时某个地方出错，则重新显示表单
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", model);
         }
 
-        //
-        // GET: /BudgetCenter/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-            BudgetCenter budgetcenter = db.BudgetCenter.Find(id);
-            if (budgetcenter == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", budgetcenter.ClientId);
-            return View(budgetcenter);
-        }
-
-        //
-        // POST: /BudgetCenter/Edit/5
-
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(BudgetCenter budgetcenter)
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditSave(BudgetCenter model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Entry(budgetcenter).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    result.Name = model.Name;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", budgetcenter.ClientId);
-            return View(budgetcenter);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", model);
         }
 
-        //
-        // GET: /BudgetCenter/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            BudgetCenter budgetcenter = db.BudgetCenter.Find(id);
-            if (budgetcenter == null)
-            {
-                return HttpNotFound();
-            }
-            return View(budgetcenter);
-        }
-
-        //
-        // POST: /BudgetCenter/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
-            BudgetCenter budgetcenter = db.BudgetCenter.Find(id);
-            db.BudgetCenter.Remove(budgetcenter);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                db.BudgetCenter.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(BudgetCenter record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminBudgetCenterQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
         }
 
         protected override void Dispose(bool disposing)

@@ -1,24 +1,26 @@
 ﻿@model OB.Models.Assurance
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Name = "商业保险";
+    ViewBag.Title = "编辑";
 }
 
-<h2>Edit</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditSave", "Assurance"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>Assurance</legend>
-
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.ClientId)
 
         <div class="display-label">
-            @Html.LabelFor(model => model.ClientId, "Client")
+            @Html.LabelFor(model => model.ClientId)
         </div>
         <div class="display-field">
             @Html.DisplayFor(model => model.Client.Name)
@@ -33,13 +35,13 @@
         </div>
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {

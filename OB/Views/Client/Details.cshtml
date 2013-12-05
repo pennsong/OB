@@ -1,13 +1,15 @@
 ﻿@model OB.Models.Client
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Name = "客户";
+    ViewBag.Title = "详情";
 }
 
-<h2>Details</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
 <fieldset>
-    <legend>Client</legend>
+    <legend>@ViewBag.Name</legend>
 
     <div class="display-label">
         @Html.DisplayNameFor(model => model.Name)

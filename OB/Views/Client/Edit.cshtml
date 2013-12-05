@@ -1,10 +1,12 @@
 ﻿@model OB.Models.Client
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Name = "客户";
+    ViewBag.Title = "编辑";
 }
 
-<h2>Edit</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
 @using (Html.BeginForm("EditSave", "Client"))
 {
@@ -12,7 +14,7 @@
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>Client</legend>
+        <legend>@ViewBag.Name</legend>
         @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         @Html.HiddenFor(model => model.Id)
 
@@ -33,7 +35,7 @@
         </div>
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }

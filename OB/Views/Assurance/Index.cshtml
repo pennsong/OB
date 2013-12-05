@@ -1,28 +1,48 @@
 ﻿@{
-    ViewBag.Title = "保险类型列表";
+    string action = (((RouteValueDictionary)(ViewBag.RV))["actionAjax"]).ToString();
+    string returnRoot = (((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString();
+
+    ViewBag.Title = "商业保险";
     AjaxOptions ajaxOpts = new AjaxOptions
     {
         UpdateTargetId = "AjaxBody",
-        Url = Url.Action((string)ViewBag.Action),
-    }; }
+        Url = Url.Action(action),
+    };
+    
+}
 
 <h2>@ViewBag.Title</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
 @using (Ajax.BeginForm(ajaxOpts))
 {
-    <div>
-        @Html.TextBox("keyword")
-        <button type="submit">查询</button>
-    </div>
+    <table>
+        <tr>
+            <td>
+                <span class="searchLabel">关键词</span>
+            </td>
+            <td>
+                <span class="searchLabel">包含已删除项目</span>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            @Html.Hidden("returnRoot", returnRoot)
+            @Html.Hidden("actionAjax", action)
+            <td>
+                @Html.TextBox("keyword")
+            </td>
+            <td>
+                @Html.CheckBox("includeSoftDeleted", false)
+            </td>
+            <td>
+                <button type="submit">查询</button>
+            </td>
+        </tr>
+    </table>
 }
-
 <div id="AjaxBody">
-    @Html.Action((string)ViewBag.Action)
+    @Html.Action(action, (RouteValueDictionary)(ViewBag.RV))
 </div>
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

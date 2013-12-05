@@ -60,7 +60,7 @@ namespace OB.Controllers
                 {
                     db.AccumulationType.Add(model);
                     db.PPSave();
-                    Common.RMOk(this, "公积金类型:'" + model.Name + "'新建成功!");
+                    Common.RMOk(this, "记录:'" + model.Name + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -190,17 +190,76 @@ namespace OB.Controllers
             }
             return Redirect(Url.Content(returnUrl));
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetAccumulationTypeQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(AccumulationType record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetAccumulationTypeQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
         //
         // GET: /AccumulationType/Details/5
 
-        public ActionResult Details(int id = 0)
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
         {
-            AccumulationType accumulationtype = db.AccumulationType.Find(id);
-            if (accumulationtype == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetAccumulationTypeQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(accumulationtype);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
         protected override void Dispose(bool disposing)

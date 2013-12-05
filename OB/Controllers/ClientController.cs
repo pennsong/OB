@@ -306,7 +306,7 @@ namespace OB.Controllers
             {
                 db.Client.Remove(result);
                 db.PPSave();
-                Common.RMOk(this, "客户信息:" + result.ToString() + "删除成功!");
+                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)
@@ -362,7 +362,7 @@ namespace OB.Controllers
             {
                 result.IsDeleted = false;
                 db.PPSave();
-                Common.RMOk(this, "客户信息:" + result.ToString() + "恢复成功!");
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)

@@ -1,7 +1,7 @@
-﻿@model OB.Models.Client
+﻿@model OB.Models.Assurance
 
 @{
-    ViewBag.Name = "客户";
+    ViewBag.Name = "商业保险";
     ViewBag.Title = "恢复";
 }
 
@@ -19,17 +19,10 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
     </div>
-
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.HRAdmin.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.HRAdmin.Name)
-    </div>
 </fieldset>
 
 <div>
-    @using (Html.BeginForm("RestoreSave", "Client"))
+    @using (Html.BeginForm("RestoreSave", "Assurance"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)

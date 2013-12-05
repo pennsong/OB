@@ -1,9 +1,9 @@
-﻿@model IEnumerable<Assurance>
+﻿@model IEnumerable<BudgetCenter>
 @{
     string returnUrl = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
 }
 <p>
-    @using (Html.BeginForm("Create", "Assurance"))
+    @using (Html.BeginForm("Create", "BudgetCenter"))
     {    
         @Html.AntiForgeryToken()
 
@@ -41,7 +41,7 @@
                     <div class="groupOperation">
                         @if (item.IsDeleted)
                         {
-                            using (Html.BeginForm("Restore", "Assurance"))
+                            using (Html.BeginForm("Restore", "BudgetCenter"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -52,7 +52,7 @@
                         }
                         else
                         {
-                            using (Html.BeginForm("Edit", "Assurance"))
+                            using (Html.BeginForm("Edit", "BudgetCenter"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -60,7 +60,7 @@
                             @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="编辑" />
                             }
-                            using (Html.BeginForm("Details", "Assurance"))
+                            using (Html.BeginForm("Details", "BudgetCenter"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -68,7 +68,7 @@
                             @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="详情" />
                             }
-                            using (Html.BeginForm("Delete", "Assurance"))
+                            using (Html.BeginForm("Delete", "BudgetCenter"))
                             {    
                             @Html.AntiForgeryToken()
 

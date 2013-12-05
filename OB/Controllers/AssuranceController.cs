@@ -20,178 +20,247 @@ namespace OB.Controllers
 
         //
         // GET: /Assurance/
-
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.Action = "GetAssurance";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetAssurance" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
         [Authorize(Roles = "HRAdmin")]
-        public PartialViewResult GetAssurance(string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        public PartialViewResult GetAssurance(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var records = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, keyword);
-            records = records.OrderBy(a => a.Name);
-            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-
-            return PartialView(Common<Assurance>.Page(this, rv, records));
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<Assurance>.Page(this, rv, results));
         }
-        //
-        // GET: /Assurance/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-            Assurance assurance = db.Assurance.Find(id);
-            if (assurance == null)
-            {
-                return HttpNotFound();
-            }
-            return View(assurance);
-        }
-
-        //
-        // GET: /Assurance/Create
-
-        [Authorize(Roles = "HRAdmin")]
-        public ActionResult Create()
-        {
-            ViewBag.Path1 = "参数设置";
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId), "Id", "Name");
-            return View();
-        }
-
-        //
-        // POST: /Assurance/Create
 
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Assurance assurance)
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateSave(Assurance model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    //确认客户id在用户权限范围内
-                    var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == assurance.ClientId).SingleOrDefault();
-                    if (result == null)
-                    {
-                        throw new UnauthorizedAccessException();
-                    }
-                    db.Assurance.Add(assurance);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    db.Assurance.Add(model);
+                    db.PPSave();
+                    Common.RMOk(this, "记录:'" + model.Name + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
-                catch (UnauthorizedAccessException ex)
-                {
-                    ModelState.AddModelError(string.Empty, "超出权限范围!");
-                }
             }
 
-            ViewBag.ClientId = new SelectList(Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId), "Id", "Name", assurance.ClientId);
-            return View(assurance);
+            // 如果我们进行到这一步时某个地方出错，则重新显示表单
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", model);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
         //
-        // GET: /Assurance/Edit/5
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult Edit(int id = 0)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditSave(Assurance model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
-            Assurance assurance = db.Assurance.Find(id);
-            if (assurance == null)
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    result.Name = model.Name;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
+                    }
+                }
+            }
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", model);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             try
             {
-                //确认客户id在用户权限范围内
-                var result = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == assurance.ClientId).SingleOrDefault();
-                if (result == null)
+                db.Assurance.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
                 {
-                    throw new UnauthorizedAccessException();
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
                 }
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                ModelState.AddModelError(string.Empty, "超出权限范围!");
-            }
-
-            return View(assurance);
+            return Redirect(Url.Content(returnUrl));
         }
 
-        //
-        // POST: /Assurance/Edit/5
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Assurance assurance)
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
-            if (ModelState.IsValid)
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                try
-                {
-                    //确认客户id在用户权限范围内
-                    var resultOld = Common.GetHRAdminAssuranceQuery(WebSecurity.CurrentUserId, db, "").Where(a => a.Id == assurance.Id).SingleOrDefault();
-                    if (resultOld == null)
-                    {
-                        throw new UnauthorizedAccessException();
-                    }
-
-                    resultOld.Name = assurance.Name;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch (DbUpdateException ex)
-                {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
-                    {
-                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
-                    }
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    ModelState.AddModelError(string.Empty, "超出权限范围!");
-                }
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(assurance);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
-        //
-        // GET: /Assurance/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            Assurance assurance = db.Assurance.Find(id);
-            if (assurance == null)
-            {
-                return HttpNotFound();
-            }
-            return View(assurance);
-        }
-
-        //
-        // POST: /Assurance/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult RestoreSave(Assurance record, string returnUrl = "Index")
         {
-            Assurance assurance = db.Assurance.Find(id);
-            db.Assurance.Remove(assurance);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminAssuranceQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
         }
 
         protected override void Dispose(bool disposing)

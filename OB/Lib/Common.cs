@@ -109,82 +109,6 @@ namespace OB.Lib
         }
 
         //common get record
-        public static IQueryable<Assurance> GetHRAdminAssuranceQuery(int userHRAdmin, OBContext db = null, string keyword = "")
-        {
-            if (db == null)
-            {
-                using (var db2 = new OBContext())
-                {
-                    return _GetAssurance(db2, keyword, 0, userHRAdmin);
-                }
-            }
-            else
-            {
-                return _GetAssurance(db, keyword, 0, userHRAdmin);
-            }
-        }
-
-        public static IQueryable<Assurance> GetClientAssuranceQuery(int client, OBContext db = null)
-        {
-            if (db == null)
-            {
-                using (var db2 = new OBContext())
-                {
-                    return _GetAssurance(db2, "", client, 0);
-                }
-            }
-            else
-            {
-                return _GetAssurance(db, "", client, 0);
-            }
-        }
-
-        private static IQueryable<Assurance> _GetAssurance(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.Assurance.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
-
-            if (client > 0)
-            {
-                result = result.Where(a => a.ClientId == 0);
-            }
-            if (userHRAdmin > 0)
-            {
-                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
-            }
-            return result;
-        }
-
-        public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
-        {
-            return _GetClient(db, includeSoftDeleted, 0, keyword);
-        }
-
-        public static IQueryable<Client> GetHRAdminClientQuery(OBContext db, int userHRAdmin, string keyword = "")
-        {
-            return _GetClient(db, false, userHRAdmin, keyword);
-        }
-
-        private static IQueryable<Client> _GetClient(OBContext db, bool includeSoftDeleted = false, int userHRAdmin = 0, string keyword = "")
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.Client.Where(a => a.Name.Contains(keyword));
-
-            if (userHRAdmin > 0)
-            {
-                result = result.Where(a => db.User.Where(b => b.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.Id));
-            }
-
-            if (!includeSoftDeleted)
-            {
-                result = result.Where(a => a.IsDeleted == false);
-            }
-
-            return result;
-        }
-
         public static List<User> GetUserList(string role, bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
@@ -299,6 +223,20 @@ namespace OB.Lib
         //end user
 
         //client
+        public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
+        {
+            keyword = keyword.ToUpper();
+
+            var result = db.Client.Where(a => a.Name.Contains(keyword));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+
+            return result;
+        }
+        // hrClient
         public static List<Client> GetHRClientList(int userId, string filter = "")
         {
             using (var db = new OBContext())
@@ -321,6 +259,33 @@ namespace OB.Lib
             }
             return result;
         }
+        // end hrClient
+
+        // hrAdminClient
+        public static List<Client> GetHRAdminClientList(int userId, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetHRAdminClientQuery(db, userId, filter).ToList();
+            }
+        }
+
+        public static IQueryable<Client> GetHRAdminClientQuery(OBContext db, int userId, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var userHRAdminClients = db.User.Where(a => a.Id == userId).Single().HRAdminClients.Select(a => a.Id);
+
+            var result = db.Client.Where(a => a.Name.ToUpper().Contains(filter)).Where(a => userHRAdminClients.Contains(a.Id));
+
+            if (true)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // hrAdminClient
+
         //end client
 
         //city
@@ -390,7 +355,79 @@ namespace OB.Lib
             return result;
         }
         //end accumulation type
-        
+
+        //assurance
+        // hradmin assurance
+        public static IQueryable<Assurance> GetHRAdminAssuranceQuery(OBContext db, int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.Assurance.Where(a => a.Name.ToUpper().Contains(filter) || a.Client.Name.ToUpper().Contains(filter));
+
+            result = result.Where(a => db.User.Where(c => c.Id == hrAdminUserId).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+
+        private static IQueryable<Assurance> _GetAssurance(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
+        {
+            keyword = keyword.ToUpper();
+
+            var result = db.Assurance.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
+
+            if (client > 0)
+            {
+                result = result.Where(a => a.ClientId == 0);
+            }
+            if (userHRAdmin > 0)
+            {
+                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+            }
+            return result;
+        }
+        // end hradmin assurance
+        //end assurance
+
+        //budgetCenter
+        // hradmin budgetCenter
+        public static IQueryable<BudgetCenter> GetHRAdminBudgetCenterQuery(OBContext db, int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.BudgetCenter.Where(a => a.Name.ToUpper().Contains(filter) || a.Client.Name.ToUpper().Contains(filter));
+
+            result = result.Where(a => db.User.Where(c => c.Id == hrAdminUserId).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+
+        private static IQueryable<BudgetCenter> _GetBudgetCenter(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
+        {
+            keyword = keyword.ToUpper();
+
+            var result = db.BudgetCenter.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
+
+            if (client > 0)
+            {
+                result = result.Where(a => a.ClientId == 0);
+            }
+            if (userHRAdmin > 0)
+            {
+                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+            }
+            return result;
+        }
+        // end hradmin budgetCenter
+        //end budgetCenter
+
         //end common get record
     }
 }
