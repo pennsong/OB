@@ -1,33 +1,48 @@
-﻿@model IEnumerable<OB.Models.Certificate>
+﻿@{
+    string action = (((RouteValueDictionary)(ViewBag.RV))["actionAjax"]).ToString();
+    string returnRoot = (((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString();
 
-@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "证件";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        UpdateTargetId = "AjaxBody",
+        Url = Url.Action(action),
+    };
+    
 }
 
-<h2>Index</h2>
+<h2>@ViewBag.Title</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
+@using (Ajax.BeginForm(ajaxOpts))
+{
+    <table>
+        <tr>
+            <td>
+                <span class="searchLabel">关键词</span>
+            </td>
+            <td>
+                <span class="searchLabel">包含已删除项目</span>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            @Html.Hidden("returnRoot", returnRoot)
+            @Html.Hidden("actionAjax", action)
+            <td>
+                @Html.TextBox("keyword")
+            </td>
+            <td>
+                @Html.CheckBox("includeSoftDeleted", false)
+            </td>
+            <td>
+                <button type="submit">查询</button>
+            </td>
+        </tr>
+    </table>
 }
-
-</table>
+<div id="AjaxBody">
+    @Html.Action(action, (RouteValueDictionary)(ViewBag.RV))
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -2,13 +2,13 @@
 
 @{
     ViewBag.Name = "证件";
-    ViewBag.Title = "删除";
+    ViewBag.Title = "恢复";
 }
 
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<h3>您确定要删除此条记录么?</h3>
+<h3>您确定要恢复此条记录么?</h3>
 
 <fieldset>
     <legend>@ViewBag.Name</legend>
@@ -22,13 +22,13 @@
 </fieldset>
 
 <div>
-    @using (Html.BeginForm("DeleteSave", "Certificate"))
+    @using (Html.BeginForm("RestoreSave", "Certificate"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
-        <input type="submit" value="确认删除" />
+        <input type="submit" value="确认恢复" />
     }
     <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>

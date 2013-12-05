@@ -191,7 +191,6 @@
     <Compile Include="Controllers\AccumulationTypeController.cs" />
     <Compile Include="Controllers\AssuranceController.cs" />
     <Compile Include="Controllers\BudgetCenterController.cs" />
-    <Compile Include="Controllers\CertificateController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\ClientPensionCityDocumentController.cs" />
@@ -211,6 +210,7 @@
     <Compile Include="Controllers\WeightController.cs" />
     <Compile Include="Controllers\WorkController.cs" />
     <Compile Include="Controllers\ZhangtaoController.cs" />
+    <Compile Include="Controllers\CertificateController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -765,11 +765,6 @@
     <Content Include="Views\Employee\EditorTemplates\EditFamily.cshtml" />
     <Content Include="Views\Employee\EditEmployeeFamily.cshtml" />
     <Content Include="Views\Employee\EditEmployeeFront.cshtml" />
-    <Content Include="Views\Certificate\Index.cshtml" />
-    <Content Include="Views\Certificate\Details.cshtml" />
-    <Content Include="Views\Certificate\Create.cshtml" />
-    <Content Include="Views\Certificate\Edit.cshtml" />
-    <Content Include="Views\Certificate\Delete.cshtml" />
     <Content Include="Views\Document\Index.cshtml" />
     <Content Include="Views\Document\Details.cshtml" />
     <Content Include="Views\Document\Create.cshtml" />
@@ -842,6 +837,13 @@
     <Content Include="Views\BudgetCenter\GetBudgetCenter.cshtml" />
     <Content Include="Views\BudgetCenter\Index.cshtml" />
     <Content Include="Views\BudgetCenter\Restore.cshtml" />
+    <Content Include="Views\Certificate\Create.cshtml" />
+    <Content Include="Views\Certificate\Delete.cshtml" />
+    <Content Include="Views\Certificate\Details.cshtml" />
+    <Content Include="Views\Certificate\Edit.cshtml" />
+    <Content Include="Views\Certificate\GetCertificate.cshtml" />
+    <Content Include="Views\Certificate\Index.cshtml" />
+    <Content Include="Views\Certificate\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

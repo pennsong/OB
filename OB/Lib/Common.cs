@@ -222,6 +222,22 @@ namespace OB.Lib
         // end candidate
         //end user
 
+        //certificate
+        public static IQueryable<Certificate> GetCertificateQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
+        {
+            keyword = keyword.ToUpper();
+
+            var result = db.Certificate.Where(a => a.Name.Contains(keyword));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+
+            return result;
+        }
+        //end certificate
+
         //client
         public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
         {
