@@ -81,11 +81,11 @@ namespace OB.Models
 
         [MaxLength(100)]
         [DisplayName("紧急联系人")]
-        public string EmergencyContract { get; set; }
+        public string EmergencyContact { get; set; }
 
         [MaxLength(100)]
         [DisplayName("紧急联系人电话")]
-        public string EmergencyContractPhone { get; set; }
+        public string EmergencyContactPhone { get; set; }
 
         [MaxLength(100)]
         [DisplayName("私人邮箱")]

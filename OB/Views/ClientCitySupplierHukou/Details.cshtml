@@ -24,6 +24,20 @@
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
     </div>
+
+    <div class="display-label multi">
+        @Html.DisplayNameFor(model => model.PensionTypes)
+    </div>
+    <div class="display-field multi">
+        @Html.DisplayFor(model => model.PensionTypes)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationTypes)
+    </div>
+    <div class="display-field multi">
+        @Html.DisplayFor(model => model.AccumulationTypes)
+    </div>
 </fieldset>
 <p>
     @using (Html.BeginForm("Edit", "ClientCitySupplierHukou"))

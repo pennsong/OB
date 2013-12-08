@@ -1,44 +1,81 @@
 ﻿@model OB.Models.ClientPensionCityDocument
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Name = "客户社保城市";
+    ViewBag.Title = "新建";
 }
 
-<h2>Create</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("CreateSave", "ClientPensionCityDocument"))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>ClientPensionCityDocument</legend>
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.ClientId, "Client")
+            @Html.LabelFor(model => model.ClientId)
         </div>
         <div class="editor-field">
-            @Html.DropDownList("ClientId", String.Empty)
+            @Html.DropDownListFor(model => model.ClientId, new SelectList(Common.GetHRAdminClientList(WebSecurity.CurrentUserId), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.ClientId)
         </div>
-
         <div class="editor-label">
-            @Html.LabelFor(model => model.PensionCityId, "PensionCity")
+            @Html.LabelFor(model => model.PensionCityId)
         </div>
         <div class="editor-field">
-            @Html.DropDownList("PensionCityId", String.Empty)
-            @Html.ValidationMessageFor(model => model.PensionCityId)
+            @if (Model == null || Model.ClientId == null)
+            {
+                @Html.DropDownListFor(m => m.PensionCityId, new[] { new SelectListItem() { Text = String.Empty, Value = "" } })
+
+            }
+            else
+            {
+                @Html.DropDownListFor(m => m.PensionCityId, new SelectList(Common.GetClientPensionCityList(Model.ClientId), "Id", "Name"), String.Empty)
+            }
         </div>
 
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $("#ClientId").change(function () {
+                GetClientPensionCity($(this).val());
+            });
+
+            function GetClientPensionCity(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/ClientPensionCity/" + id,
+                    success: function (data) {
+                        var target = $("#PensionCityId");
+                        target.empty(); // remove old options
+                        target.append("<option value=''></option>");
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].key == id) {
+                                target.append("<option value=" + data[i].Id + " selected>" + data[i].Name + "</option>");
+                            }
+                            else {
+                                target.append("<option value=" + data[i].Id + ">" + data[i].Name + "</option>");
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 }

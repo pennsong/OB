@@ -192,11 +192,8 @@
     <Compile Include="Controllers\AssuranceController.cs" />
     <Compile Include="Controllers\BudgetCenterController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
-    <Compile Include="Controllers\ClientPensionCityDocumentController.cs" />
-    <Compile Include="Controllers\ContractTypeController.cs" />
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
-    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\FamilyController.cs" />
@@ -212,6 +209,9 @@
     <Compile Include="Controllers\ClientCitySupplierHukouController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\PensionTypeController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\ClientPensionCityDocumentController.cs" />
+    <Compile Include="Controllers\ContractTypeController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -697,11 +697,6 @@
     <Content Include="Views\AccumulationType\Create.cshtml" />
     <Content Include="Views\AccumulationType\Edit.cshtml" />
     <Content Include="Views\AccumulationType\Delete.cshtml" />
-    <Content Include="Views\ContractType\Index.cshtml" />
-    <Content Include="Views\ContractType\Details.cshtml" />
-    <Content Include="Views\ContractType\Create.cshtml" />
-    <Content Include="Views\ContractType\Edit.cshtml" />
-    <Content Include="Views\ContractType\Delete.cshtml" />
     <Content Include="Views\Department\Index.cshtml" />
     <Content Include="Views\Department\Details.cshtml" />
     <Content Include="Views\Department\Create.cshtml" />
@@ -757,11 +752,6 @@
     <Content Include="Views\Employee\EditorTemplates\EditFamily.cshtml" />
     <Content Include="Views\Employee\EditEmployeeFamily.cshtml" />
     <Content Include="Views\Employee\EditEmployeeFront.cshtml" />
-    <Content Include="Views\Document\Index.cshtml" />
-    <Content Include="Views\Document\Details.cshtml" />
-    <Content Include="Views\Document\Create.cshtml" />
-    <Content Include="Views\Document\Edit.cshtml" />
-    <Content Include="Views\Document\Delete.cshtml" />
     <Content Include="Views\Home\AdminIndex.cshtml" />
     <Content Include="Views\Home\HRAdminIndex.cshtml" />
     <Content Include="Views\Home\HRIndex.cshtml" />
@@ -774,11 +764,6 @@
     <Content Include="Views\Client\HRAdminClientIndex.cshtml" />
     <Content Include="Views\Account\CandidateIndex.cshtml" />
     <Content Include="Views\Account\CreateCandidate.cshtml" />
-    <Content Include="Views\ClientPensionCityDocument\Index.cshtml" />
-    <Content Include="Views\ClientPensionCityDocument\Details.cshtml" />
-    <Content Include="Views\ClientPensionCityDocument\Create.cshtml" />
-    <Content Include="Views\ClientPensionCityDocument\Edit.cshtml" />
-    <Content Include="Views\ClientPensionCityDocument\Delete.cshtml" />
     <Content Include="Views\Employee\EditEmployeeDoc.cshtml" />
     <Content Include="Views\Employee\EditorTemplates\EditSingleEmployeeDoc.cshtml" />
     <Content Include="Views\Weight\Index.cshtml" />
@@ -859,6 +844,32 @@
     <Content Include="Views\PensionType\GetPensionType.cshtml" />
     <Content Include="Views\PensionType\Index.cshtml" />
     <Content Include="Views\PensionType\Restore.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\DisplayTemplates\PensionType.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\DisplayTemplates\AccumulationType.cshtml" />
+    <Content Include="Views\Document\Create.cshtml" />
+    <Content Include="Views\Document\Delete.cshtml" />
+    <Content Include="Views\Document\Details.cshtml" />
+    <Content Include="Views\Document\Edit.cshtml" />
+    <Content Include="Views\Document\GetDocument.cshtml" />
+    <Content Include="Views\Document\Index.cshtml" />
+    <Content Include="Views\Document\Restore.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Create.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Delete.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Details.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\DisplayTemplates\Document.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Edit.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\GetClientPensionCityDocument.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Index.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Restore.cshtml" />
+    <Content Include="Views\ClientPensionCityDocument\Abstract.cshtml" />
+    <Content Include="Views\ContractType\Create.cshtml" />
+    <Content Include="Views\ContractType\Delete.cshtml" />
+    <Content Include="Views\ContractType\Details.cshtml" />
+    <Content Include="Views\ContractType\Edit.cshtml" />
+    <Content Include="Views\ContractType\GetContractType.cshtml" />
+    <Content Include="Views\ContractType\Index.cshtml" />
+    <Content Include="Views\ContractType\Restore.cshtml" />
+    <Content Include="Views\ContractType\Abstract.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -355,6 +355,86 @@ namespace OB.Lib
         // end hrAdminClient
         //end ClientCitySupplierHukou
 
+        //document
+        // HRAdmin document
+        public static List<Document> GetHRAdminDocumentList(int userId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetHRAdminDocumentQuery(db, userId).ToList();
+            }
+        }
+
+        public static IQueryable<Document> GetHRAdminDocumentQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var user = db.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var clientIds = user.HRAdminClients.Select(a => a.Id);
+            var result = db.Document.Where(a => clientIds.Contains(a.ClientId));
+
+            result = result.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end HRAdmin document
+        // client document
+        public static List<Document> GetClientDocumentList(int clientId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetClientDocumentQuery(db, clientId).ToList();
+            }
+        }
+
+        public static IQueryable<Document> GetClientDocumentQuery(OBContext db, int clientId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.Document.Where(a => a.ClientId == clientId);
+
+            result = result.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end client document
+        //end document
+
+        //ClientPensionCityDocument
+        public static IQueryable<ClientPensionCityDocument> GetHRAdminClientPensionCityDocumentQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var user = db.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var clientIds = user.HRAdminClients.Select(a => a.Id);
+            var result = db.ClientPensionCityDocument.Where(a => clientIds.Contains(a.ClientId));
+
+            result = result.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.PensionCity.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end ClientPensionCityDocument
+
         //city
         // client pension city
         public static List<City> GetClientPensionCityList(int clientId)
@@ -504,6 +584,42 @@ namespace OB.Lib
         }
         // end hradmin assurance
         //end assurance
+
+        //contractType
+        // hradmin contractType
+        public static IQueryable<ContractType> GetHRAdminContractTypeQuery(OBContext db, int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.ContractType.Where(a => a.Name.ToUpper().Contains(filter) || a.Client.Name.ToUpper().Contains(filter));
+
+            result = result.Where(a => db.User.Where(c => c.Id == hrAdminUserId).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+
+        private static IQueryable<ContractType> _GetContractType(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
+        {
+            keyword = keyword.ToUpper();
+
+            var result = db.ContractType.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
+
+            if (client > 0)
+            {
+                result = result.Where(a => a.ClientId == 0);
+            }
+            if (userHRAdmin > 0)
+            {
+                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
+            }
+            return result;
+        }
+        // end hradmin contractType
+        //end contractType
 
         //budgetCenter
         // hradmin budgetCenter

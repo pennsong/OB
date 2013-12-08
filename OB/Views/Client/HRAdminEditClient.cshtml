@@ -15,8 +15,11 @@
         <legend>EditClientHR</legend>
         @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         @Html.EditorFor(model => model)
+        @Html.LabelFor(model => model.HRIds)
         @Html.ListBoxFor(model => model.HRIds, new MultiSelectList(OB.Lib.Common.GetUserList("HR"), "Id", "Name", Model.HRIds), new { @class = "multiselect2side", size = "10" })
+        @Html.LabelFor(model => model.PensionCities)
         @Html.ListBoxFor(model => model.PensionCities, new MultiSelectList(OB.Lib.Common.GetCityList(), "Id", "Name", Model.PensionCities), new { @class = "multiselect2side", size = "10" })
+        @Html.LabelFor(model => model.TaxCities)
         @Html.ListBoxFor(model => model.TaxCities, new MultiSelectList(OB.Lib.Common.GetCityList(), "Id", "Name", Model.TaxCities), new { @class = "multiselect2side", size = "10" })
 
         <p>

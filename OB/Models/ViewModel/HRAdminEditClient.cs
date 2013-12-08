@@ -18,8 +18,11 @@ namespace OB.Models.ViewModel
         [DisplayName("客户名称")]
         public string ClientName { get; set; }
 
+        [DisplayName("HR列表")]
         public ICollection<int> HRIds { get; set; }
+        [DisplayName("社保城市列表")]
         public ICollection<int> PensionCities { get; set; }
+        [DisplayName("计税城市列表")]
         public ICollection<int> TaxCities { get; set; }
 
         public override string ToString()

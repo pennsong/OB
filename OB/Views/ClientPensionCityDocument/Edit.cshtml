@@ -1,30 +1,38 @@
 ﻿@model OB.Models.ViewModel.EditClientPensionCityDocument
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Name = "客户社保城市";
+    ViewBag.Title = "编辑";
 }
 
-<h2>Edit</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@Html.Action("Abstract")
+
+@using (Html.BeginForm("EditSave", "ClientPensionCityDocument"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>ClientPensionCityDocument</legend>
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+        @Html.HiddenFor(model => model.ClientPensionCityDocumentId)
+        @Html.HiddenFor(model => model.ClientId)
 
-        @Html.EditorFor(model => model)
-        @Html.ListBoxFor(model => model.DocumentIds, new MultiSelectList(OB.Lib.Common.ClientDocumentList(Model.ClientName), "Id", "Name", Model.DocumentIds), new { @class = "multiselect2side", size = "10" })
-
+        <div>
+            @Html.LabelFor(model => model.DocumentIds)
+            @Html.ListBoxFor(model => model.DocumentIds, new MultiSelectList(OB.Lib.Common.GetClientDocumentList(Model.ClientId), "Id", "Name", Model.DocumentIds), new { @class = "multiselect2side", size = "10" })
+        </div>
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {
@@ -39,4 +47,3 @@
 @section Styles {
     @Styles.Render("~/Content/cw_css/jquery.multiselect2side.css")
 }
-

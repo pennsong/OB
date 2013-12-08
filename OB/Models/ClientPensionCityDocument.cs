@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class ClientPensionCityDocument
+    public class ClientPensionCityDocument : SoftDelete
     {
         public int Id { get; set; }
 
@@ -22,5 +23,10 @@ namespace OB.Models
 
         public virtual Client Client { get; set; }
         public virtual City PensionCity { get; set; }
+
+        public override string ToString()
+        {
+            return Client.Name + "_" + (PensionCity == null ? "无" : PensionCity.Name);
+        }
     }
 }

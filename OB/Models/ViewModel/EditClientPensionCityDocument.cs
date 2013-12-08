@@ -10,17 +10,11 @@ namespace OB.Models.ViewModel
 {
     public class EditClientPensionCityDocument
     {
-        [HiddenInput(DisplayValue = false)]
         public int ClientPensionCityDocumentId { get; set; }
 
-        [HiddenInput(DisplayValue = true)]
-        [DisplayName("客户名称")]
-        public string ClientName { get; set; }
+        public int ClientId { get; set; }
 
-        [HiddenInput(DisplayValue = true)]
-        [DisplayName("社保城市")]
-        public string PensionCityName { get; set; }
-
+        [DisplayName("资料列表")]
         public ICollection<int> DocumentIds { get; set; }
     }
 }

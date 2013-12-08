@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +8,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class CustomField
+    public class CustomField : SoftDelete
     {
         public int Id { get; set; }
 
@@ -156,5 +157,10 @@ namespace OB.Models
         public string HireInfo20 { get; set; }
 
         public virtual Client Client { get; set; }
+
+        public override string ToString()
+        {
+            return Client.Name + "定制化项目";
+        }
     }
 }

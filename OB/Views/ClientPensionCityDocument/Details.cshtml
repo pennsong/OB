@@ -1,29 +1,23 @@
 ﻿@model OB.Models.ClientPensionCityDocument
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Name = "客户社保城市";
+    ViewBag.Title = "详情";
 }
 
-<h2>Details</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>ClientPensionCityDocument</legend>
+@Html.Action("Abstract")
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Client.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Client.Name)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.PensionCity.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.PensionCity.Name)
-    </div>
-</fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @using (Html.BeginForm("Edit", "ClientPensionCityDocument"))
+    {    
+        @Html.AntiForgeryToken()
+
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+        <input type="submit" value="编辑" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
 </p>

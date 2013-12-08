@@ -1,0 +1,24 @@
+﻿@model OB.Models.ClientPensionCityDocument
+
+<fieldset>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ClientId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Client.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionCityId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionCity.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Documents)
+    </div>
+    <div class="display-field multi">
+        @Html.DisplayFor(model => model.Documents)
+    </div>
+</fieldset>

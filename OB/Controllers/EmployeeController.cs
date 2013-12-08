@@ -419,8 +419,8 @@ namespace OB.Controllers
                 employee.JuzhudiZipCode = editEmployeeFront.JuzhudiZipCode;
                 employee.Mobile1 = editEmployeeFront.Mobile1;
                 employee.Mobile2 = editEmployeeFront.Mobile2;
-                employee.EmergencyContract = editEmployeeFront.EmergencyContract;
-                employee.EmergencyContractPhone = editEmployeeFront.EmergencyContractPhone;
+                employee.EmergencyContact = editEmployeeFront.EmergencyContact;
+                employee.EmergencyContactPhone = editEmployeeFront.EmergencyContactPhone;
                 employee.PrivateMail = editEmployeeFront.PrivateMail;
                 employee.HujiAddress = editEmployeeFront.HujiAddress;
                 employee.HujiZipCode = editEmployeeFront.HujiZipCode;

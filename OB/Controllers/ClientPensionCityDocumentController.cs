@@ -7,8 +7,10 @@ using System.Web;
 using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
-using WebMatrix.WebData;
 using System.Data.Entity.Infrastructure;
+using OB.Lib;
+using WebMatrix.WebData;
+using System.Web.Routing;
 using OB.Models.ViewModel;
 
 namespace OB.Controllers
@@ -20,148 +22,264 @@ namespace OB.Controllers
         //
         // GET: /ClientPensionCityDocument/
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult Index()
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var clients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRAdminClients.Select(b => b.Id);
-            var clientpensioncitydocument = db.ClientPensionCityDocument.Include(c => c.Client).Include(c => c.PensionCity).Where(c => clients.Contains(c.ClientId));
-            return View(clientpensioncitydocument.ToList());
+            ViewBag.Path1 = "参数设置";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetClientPensionCityDocument" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return View();
         }
 
-        //
-        // GET: /ClientPensionCityDocument/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-            ClientPensionCityDocument clientpensioncitydocument = db.ClientPensionCityDocument.Find(id);
-            if (clientpensioncitydocument == null)
-            {
-                return HttpNotFound();
-            }
-            return View(clientpensioncitydocument);
-        }
-
-        //
-        // GET: /ClientPensionCityDocument/Create
         [Authorize(Roles = "HRAdmin")]
-        public ActionResult Create()
+        public PartialViewResult GetClientPensionCityDocument(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var clients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRAdminClients;
+            keyword = keyword.ToUpper();
+            var tmpResults = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
+            var results = tmpResults.OrderBy(a => a.PensionCity.Name).OrderBy(a => a.Client.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<ClientPensionCityDocument>.Page(this, rv, results));
+        }
 
-            ViewBag.ClientId = new SelectList(clients, "Id", "Name");
-            ViewBag.PensionCityId = new SelectList(db.City, "Id", "Name");
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
-        // POST: /ClientPensionCityDocument/Create
+        // POST: /Account/Register
+
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ClientPensionCityDocument clientpensioncitydocument)
+        public ActionResult CreateSave(ClientPensionCityDocument model, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.ClientPensionCityDocument.Add(clientpensioncitydocument);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    model.Client = db.Client.Find(model.ClientId);
+                    model.PensionCity = db.City.Find(model.PensionCityId);
+                    db.ClientPensionCityDocument.Add(model);
+                    db.PPSave();
+                    Common.RMOk(this, "记录:'" + model.ToString() + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
 
-            var clients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRAdminClients;
-            ViewBag.ClientId = new SelectList(clients, "Id", "Name");
-            ViewBag.PensionCityId = new SelectList(db.City, "Id", "Name");
-            //ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", clientpensioncitydocument.ClientId);
-            //ViewBag.PensionCityId = new SelectList(db.City, "Id", "Name", clientpensioncitydocument.PensionCityId);
-            return View(clientpensioncitydocument);
+            // 如果我们进行到这一步时某个地方出错，则重新显示表单
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", model);
         }
 
-        //
-        // GET: /ClientPensionCityDocument/Edit/5
-        [Authorize(Roles = "HRAdmin")]
-        public ActionResult Edit(int id = 0)
-        {
-            var clients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRAdminClients.Select(b => b.Id);
-
-            ClientPensionCityDocument clientpensioncitydocument = db.ClientPensionCityDocument.Include(a => a.Documents).Where(a => a.Id == id && clients.Contains(a.ClientId)).SingleOrDefault();
-            if (clientpensioncitydocument == null)
-            {
-                return HttpNotFound();
-            }
-            var editClientPensionCityDocument = new EditClientPensionCityDocument
-            {
-                ClientPensionCityDocumentId = clientpensioncitydocument.Id,
-                ClientName = clientpensioncitydocument.Client.Name,
-                PensionCityName = clientpensioncitydocument.PensionCityId == null ? "无" : clientpensioncitydocument.PensionCity.Name,
-                DocumentIds = clientpensioncitydocument.Documents.Select(a => a.Id).ToList()
-            };
-            return View(editClientPensionCityDocument);
-        }
-
-        //
-        // POST: /ClientPensionCityDocument/Edit/5
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(EditClientPensionCityDocument editClientPensionCityDocument)
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
-            var clients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRAdminClients.Select(b => b.Id);
-
-            ClientPensionCityDocument clientpensioncitydocument = db.ClientPensionCityDocument.Include(a => a.Documents).Where(a => a.Id == editClientPensionCityDocument.ClientPensionCityDocumentId && clients.Contains(a.ClientId)).SingleOrDefault();
-            if (clientpensioncitydocument == null)
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId).Include(a => a.Documents).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
+            //end
+
+            var model = new EditClientPensionCityDocument
+            {
+                ClientPensionCityDocumentId = result.Id,
+                ClientId = result.ClientId,
+                DocumentIds = result.Documents.Select(a => a.Id).ToList(),
+            };
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(model);
+        }
+
+        //
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditSave(EditClientPensionCityDocument model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId).Include(a => a.Documents).Where(a => a.Id == model.ClientPensionCityDocumentId).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var t = db.Document.Where(a => editClientPensionCityDocument.DocumentIds.Any(b => b == a.Id)).ToList();
-                    clientpensioncitydocument.Documents = t;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    if (model.DocumentIds == null)
+                    {
+                        model.DocumentIds = new List<int> { };
+                    }
+                    var documentIds = Common.GetClientDocumentQuery(db, model.ClientId).Where(a => model.DocumentIds.Any(b => b == a.Id)).ToList();
+                    result.Documents = documentIds;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + result.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    ModelState.AddModelError(string.Empty, ex.Message);
+                    ModelState.AddModelError(string.Empty, e.Message);
                 }
             }
-            return View(editClientPensionCityDocument);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", model);
         }
 
-        //
-        // GET: /ClientPensionCityDocument/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            ClientPensionCityDocument clientpensioncitydocument = db.ClientPensionCityDocument.Find(id);
-            if (clientpensioncitydocument == null)
-            {
-                return HttpNotFound();
-            }
-            return View(clientpensioncitydocument);
-        }
-
-        //
-        // POST: /ClientPensionCityDocument/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
-            ClientPensionCityDocument clientpensioncitydocument = db.ClientPensionCityDocument.Find(id);
-            db.ClientPensionCityDocument.Remove(clientpensioncitydocument);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                db.ClientPensionCityDocument.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(ClientPensionCityDocument record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminClientPensionCityDocumentQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult Abstract(int id)
+        {
+            var result = db.ClientPensionCityDocument.Find(id);
+            return PartialView(result);
         }
 
         protected override void Dispose(bool disposing)

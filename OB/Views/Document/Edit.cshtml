@@ -1,23 +1,25 @@
 ﻿@model OB.Models.Document
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Name = "客户资料";
+    ViewBag.Title = "编辑";
 }
 
-<h2>Edit</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditSave", "Document"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>Document</legend>
-
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.ClientId)
+
         <div class="display-label">
-            @Html.DisplayNameFor(model => model.ClientId)
+            @Html.LabelFor(model => model.ClientId)
         </div>
         <div class="display-field">
             @Html.DisplayFor(model => model.Client.Name)
@@ -36,15 +38,14 @@
             @Html.EditorFor(model => model.Weight)
             @Html.ValidationMessageFor(model => model.Weight)
         </div>
-
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {

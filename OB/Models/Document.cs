@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OB.Models.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ using System.Web.Mvc;
 
 namespace OB.Models
 {
-    public class Document
+    public class Document : SoftDelete
     {
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
@@ -30,5 +31,10 @@ namespace OB.Models
         public virtual Client Client { get; set; }
 
         public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
