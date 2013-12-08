@@ -1,4 +1,5 @@
 ﻿using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,7 @@ namespace OB.Models
     {
         public int Id { get; set; }
 
+        [DisplayName("客户")]
         public int ClientId { get; set; }
 
         [MaxLength(100)]
@@ -160,7 +162,14 @@ namespace OB.Models
 
         public override string ToString()
         {
-            return Client.Name + "定制化项目";
+            if (Client == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Client = db.Client.Find(ClientId);
+                }
+            }
+            return Client + "客户化项目";
         }
     }
 }

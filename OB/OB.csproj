@@ -192,13 +192,10 @@
     <Compile Include="Controllers\AssuranceController.cs" />
     <Compile Include="Controllers\BudgetCenterController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
-    <Compile Include="Controllers\CustomFieldController.cs" />
-    <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\EducationController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\FamilyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\WebApi\ClientPensionCityController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\WeightController.cs" />
@@ -212,6 +209,9 @@
     <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\ClientPensionCityDocumentController.cs" />
     <Compile Include="Controllers\ContractTypeController.cs" />
+    <Compile Include="Controllers\CustomFieldController.cs" />
+    <Compile Include="Controllers\DepartmentController.cs" />
+    <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -697,11 +697,6 @@
     <Content Include="Views\AccumulationType\Create.cshtml" />
     <Content Include="Views\AccumulationType\Edit.cshtml" />
     <Content Include="Views\AccumulationType\Delete.cshtml" />
-    <Content Include="Views\Department\Index.cshtml" />
-    <Content Include="Views\Department\Details.cshtml" />
-    <Content Include="Views\Department\Create.cshtml" />
-    <Content Include="Views\Department\Edit.cshtml" />
-    <Content Include="Views\Department\Delete.cshtml" />
     <Content Include="Views\Education\Index.cshtml" />
     <Content Include="Views\Education\Details.cshtml" />
     <Content Include="Views\Education\Create.cshtml" />
@@ -717,11 +712,6 @@
     <Content Include="Views\Family\Create.cshtml" />
     <Content Include="Views\Family\Edit.cshtml" />
     <Content Include="Views\Family\Delete.cshtml" />
-    <Content Include="Views\Level\Index.cshtml" />
-    <Content Include="Views\Level\Details.cshtml" />
-    <Content Include="Views\Level\Create.cshtml" />
-    <Content Include="Views\Level\Edit.cshtml" />
-    <Content Include="Views\Level\Delete.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\Details.cshtml" />
     <Content Include="Views\Position\Create.cshtml" />
@@ -771,11 +761,6 @@
     <Content Include="Views\Weight\Create.cshtml" />
     <Content Include="Views\Weight\Edit.cshtml" />
     <Content Include="Views\Weight\Delete.cshtml" />
-    <Content Include="Views\CustomField\Index.cshtml" />
-    <Content Include="Views\CustomField\Details.cshtml" />
-    <Content Include="Views\CustomField\Create.cshtml" />
-    <Content Include="Views\CustomField\Edit.cshtml" />
-    <Content Include="Views\CustomField\Delete.cshtml" />
     <Content Include="Views\Employee\FrontDetail.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Education.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Work.cshtml" />
@@ -870,6 +855,30 @@
     <Content Include="Views\ContractType\Index.cshtml" />
     <Content Include="Views\ContractType\Restore.cshtml" />
     <Content Include="Views\ContractType\Abstract.cshtml" />
+    <Content Include="Views\CustomField\Abstract.cshtml" />
+    <Content Include="Views\CustomField\Create.cshtml" />
+    <Content Include="Views\CustomField\Delete.cshtml" />
+    <Content Include="Views\CustomField\Details.cshtml" />
+    <Content Include="Views\CustomField\Edit.cshtml" />
+    <Content Include="Views\CustomField\GetCustomField.cshtml" />
+    <Content Include="Views\CustomField\Index.cshtml" />
+    <Content Include="Views\CustomField\Restore.cshtml" />
+    <Content Include="Views\Department\Abstract.cshtml" />
+    <Content Include="Views\Department\Create.cshtml" />
+    <Content Include="Views\Department\Delete.cshtml" />
+    <Content Include="Views\Department\Details.cshtml" />
+    <Content Include="Views\Department\Edit.cshtml" />
+    <Content Include="Views\Department\GetDepartment.cshtml" />
+    <Content Include="Views\Department\Index.cshtml" />
+    <Content Include="Views\Department\Restore.cshtml" />
+    <Content Include="Views\Level\Abstract.cshtml" />
+    <Content Include="Views\Level\Create.cshtml" />
+    <Content Include="Views\Level\Delete.cshtml" />
+    <Content Include="Views\Level\Details.cshtml" />
+    <Content Include="Views\Level\Edit.cshtml" />
+    <Content Include="Views\Level\GetLevel.cshtml" />
+    <Content Include="Views\Level\Index.cshtml" />
+    <Content Include="Views\Level\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

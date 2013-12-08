@@ -1,4 +1,5 @@
 ﻿using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,7 +24,14 @@ namespace OB.Models
 
         public override string ToString()
         {
-            return Name;
+            if (Client == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Client = db.Client.Find(ClientId);
+                }
+            }
+            return Client + "_" + Name;
         }
     }
 }

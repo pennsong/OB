@@ -1,23 +1,27 @@
 ﻿@model OB.Models.CustomField
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Name = "客户化项目";
+    ViewBag.Title = "新建";
 }
 
-<h2>Create</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("CreateSave", "CustomField"))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>CustomField</legend>
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.ClientId, "Client")
+            @Html.LabelFor(model => model.ClientId)
         </div>
         <div class="editor-field">
-            @Html.DropDownList("ClientId", String.Empty)
+            @Html.DropDownListFor(model => model.ClientId, new SelectList(Common.GetHRAdminClientList(WebSecurity.CurrentUserId), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.ClientId)
         </div>
 
@@ -302,13 +306,13 @@
         </div>
 
         <p>
-            <input type="submit" value="Create" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {
