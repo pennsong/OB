@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OB.Models.Base;
+using OB.Models.DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +9,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Weight
+    public class Weight : SoftDelete
     {
         public int Id { get; set; }
 
@@ -345,5 +347,17 @@ namespace OB.Models
         public int? HireInfo20 { get; set; }
 
         public virtual Client WeightClient { get; set; }
+
+        public override string ToString()
+        {
+            if (WeightClient == null)
+            {
+                using (var db = new OBContext())
+                {
+                    WeightClient = db.Client.Find(WeightClientId);
+                }
+            }
+            return WeightClient + "权重";
+        }
     }
 }

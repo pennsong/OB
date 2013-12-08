@@ -1,29 +1,22 @@
 ﻿@model OB.Models.Position
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Name = "客户职位";
+    ViewBag.Title = "详情";
 }
 
-<h2>Details</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>Position</legend>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Client.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Client.Name)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-</fieldset>
+@Html.Action("Abstract")
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
+    @using (Html.BeginForm("Edit", "Position"))
+    {    
+        @Html.AntiForgeryToken()
+
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+        <input type="submit" value="编辑" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
 </p>

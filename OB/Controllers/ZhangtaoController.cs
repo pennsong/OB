@@ -8,6 +8,9 @@ using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
+using OB.Lib;
+using WebMatrix.WebData;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -17,128 +20,256 @@ namespace OB.Controllers
 
         //
         // GET: /Zhangtao/
-
-        public ActionResult Index()
+        [Authorize(Roles = "HRAdmin")]
+        public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            var zhangtao = db.Zhangtao.Include(z => z.Client);
-            return View(zhangtao.ToList());
+            ViewBag.Path1 = "参数设置";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetZhangtao" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return View();
         }
 
-        //
-        // GET: /Zhangtao/Details/5
-
-        public ActionResult Details(int id = 0)
+        [Authorize(Roles = "HRAdmin")]
+        public PartialViewResult GetZhangtao(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            Zhangtao zhangtao = db.Zhangtao.Find(id);
-            if (zhangtao == null)
+            keyword = keyword.ToUpper();
+            var results = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.Name).OrderBy(a => a.Client.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<Zhangtao>.Page(this, rv, results));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Details(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(zhangtao);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
         }
 
-        //
-        // GET: /Zhangtao/Create
-
-        public ActionResult Create()
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(string returnUrl = "Index")
         {
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name");
+            ViewBag.Path1 = "参数设置";
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         //
-        // POST: /Zhangtao/Create
+        // POST: /Account/Register
 
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Zhangtao zhangtao)
+        public ActionResult CreateSave(Zhangtao model, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Zhangtao.Add(zhangtao);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    db.Zhangtao.Add(model);
+                    db.PPSave();
+                    Common.RMOk(this, "记录:'" + model.ToString() + "'新建成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
 
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", zhangtao.ClientId);
-            return View(zhangtao);
+            // 如果我们进行到这一步时某个地方出错，则重新显示表单
+            ViewBag.ReturnUrl = returnUrl;
+            return View("Create", model);
         }
 
-        //
-        // GET: /Zhangtao/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-            Zhangtao zhangtao = db.Zhangtao.Find(id);
-            if (zhangtao == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", zhangtao.ClientId);
-            return View(zhangtao);
-        }
-
-        //
-        // POST: /Zhangtao/Edit/5
-
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Zhangtao zhangtao)
+        public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditSave(Zhangtao model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Entry(zhangtao).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    result.Name = model.Name;
+
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
                 }
-                catch (DbUpdateException ex)
+                catch (Exception e)
                 {
-                    if (ex.InnerException.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
                 }
             }
-            ViewBag.ClientId = new SelectList(db.Client, "Id", "Name", zhangtao.ClientId);
-            return View(zhangtao);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("Edit", model);
         }
 
-        //
-        // GET: /Zhangtao/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            Zhangtao zhangtao = db.Zhangtao.Find(id);
-            if (zhangtao == null)
-            {
-                return HttpNotFound();
-            }
-            return View(zhangtao);
-        }
-
-        //
-        // POST: /Zhangtao/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
-            Zhangtao zhangtao = db.Zhangtao.Find(id);
-            db.Zhangtao.Remove(zhangtao);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                var removeName = result.ToString();
+                db.Zhangtao.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(Zhangtao record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "参数设置";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminZhangtaoQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult Abstract(int id)
+        {
+            var result = db.Zhangtao.Find(id);
+            return PartialView(result);
         }
 
         protected override void Dispose(bool disposing)

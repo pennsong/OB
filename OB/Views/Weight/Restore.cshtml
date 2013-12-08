@@ -2,25 +2,25 @@
 
 @{
     ViewBag.Name = "客户权重";
-    ViewBag.Title = "删除";
+    ViewBag.Title = "恢复";
 }
 
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<h3>您确定要删除此条记录么?</h3>
+<h3>您确定要恢复此条记录么?</h3>
 
 @Html.Action("Abstract")
 
 <div>
-    @using (Html.BeginForm("DeleteSave", "Weight"))
+    @using (Html.BeginForm("RestoreSave", "Weight"))
     {
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.WeightClientId)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
-        <input type="submit" value="确认删除" />
+        <input type="submit" value="确认恢复" />
     }
     <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>

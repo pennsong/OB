@@ -1,28 +1,25 @@
 ﻿@model OB.Models.Weight
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Name = "客户权重";
+    ViewBag.Title = "编辑";
 }
 
-<h2>Edit</h2>
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@Html.Action("Abstract")
+
+@using (Html.BeginForm("EditSave", "Weight"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
-        <legend>Weight</legend>
-
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
         @Html.HiddenFor(model => model.Id)
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.WeightClientId, "WeightClient")
-        </div>
-        <div class="editor-field">
-            @Html.DropDownList("WeightClientId", String.Empty)
-            @Html.ValidationMessageFor(model => model.WeightClientId)
-        </div>
+        @Html.HiddenFor(model => model.WeightClientId)
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Educations)
@@ -63,19 +60,19 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.SexId)
+            @Html.LabelFor(model => model.Sex)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.SexId)
-            @Html.ValidationMessageFor(model => model.SexId)
+            @Html.EditorFor(model => model.Sex)
+            @Html.ValidationMessageFor(model => model.Sex)
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.MarriageId)
+            @Html.LabelFor(model => model.Marriage)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.MarriageId)
-            @Html.ValidationMessageFor(model => model.MarriageId)
+            @Html.EditorFor(model => model.Marriage)
+            @Html.ValidationMessageFor(model => model.Marriage)
         </div>
 
         <div class="editor-label">
@@ -327,11 +324,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.HukouTypeId)
+            @Html.LabelFor(model => model.HukouType)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.HukouTypeId)
-            @Html.ValidationMessageFor(model => model.HukouTypeId)
+            @Html.EditorFor(model => model.HukouType)
+            @Html.ValidationMessageFor(model => model.HukouType)
         </div>
 
         <div class="editor-label">
@@ -367,11 +364,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.PensionStatusId)
+            @Html.LabelFor(model => model.PensionStatus)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.PensionStatusId)
-            @Html.ValidationMessageFor(model => model.PensionStatusId)
+            @Html.EditorFor(model => model.PensionStatus)
+            @Html.ValidationMessageFor(model => model.PensionStatus)
         </div>
 
         <div class="editor-label">
@@ -383,11 +380,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.AccumulationStatusId)
+            @Html.LabelFor(model => model.AccumulationStatus)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.AccumulationStatusId)
-            @Html.ValidationMessageFor(model => model.AccumulationStatusId)
+            @Html.EditorFor(model => model.AccumulationStatus)
+            @Html.ValidationMessageFor(model => model.AccumulationStatus)
         </div>
 
         <div class="editor-label">
@@ -711,11 +708,11 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.TaxTypeId)
+            @Html.LabelFor(model => model.TaxType)
         </div>
         <div class="editor-field">
-            @Html.EditorFor(model => model.TaxTypeId)
-            @Html.ValidationMessageFor(model => model.TaxTypeId)
+            @Html.EditorFor(model => model.TaxType)
+            @Html.ValidationMessageFor(model => model.TaxType)
         </div>
 
         <div class="editor-label">
@@ -895,13 +892,13 @@
         </div>
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {

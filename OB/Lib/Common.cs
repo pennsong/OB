@@ -655,6 +655,75 @@ namespace OB.Lib
         }
         //end Level
 
+        //Weight
+        public static IQueryable<Weight> GetHRAdminWeightQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var user = db.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var clientIds = user.HRAdminClients.Select(a => a.Id);
+            var result = db.Weight.Where(a => clientIds.Contains(a.WeightClientId.Value));
+
+            result = result.Where(a => a.WeightClient.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end Weight
+
+        //Zhangtao
+        public static IQueryable<Zhangtao> GetHRAdminZhangtaoQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var user = db.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var clientIds = user.HRAdminClients.Select(a => a.Id);
+            var result = db.Zhangtao.Where(a => clientIds.Contains(a.ClientId));
+
+            result = result.Where(a => a.Client.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end Zhangtao
+
+        //Position
+        public static IQueryable<Position> GetHRAdminPositionQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var user = db.User.Find(userId);
+            if (user == null)
+            {
+                return null;
+            }
+            var clientIds = user.HRAdminClients.Select(a => a.Id);
+            var result = db.Position.Where(a => clientIds.Contains(a.ClientId));
+
+            result = result.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end Position
+
         //contractType
         // hradmin contractType
         public static IQueryable<ContractType> GetHRAdminContractTypeQuery(OBContext db, int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")

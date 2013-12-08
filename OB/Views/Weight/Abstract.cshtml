@@ -1,0 +1,772 @@
+﻿@model OB.Models.Weight
+
+<fieldset>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WeightClient.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WeightClient.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Educations)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Educations)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Works)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Works)
+    </div>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Families)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Families)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ChineseName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ChineseName)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EnglishName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EnglishName)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Sex)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sex)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Marriage)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Marriage)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Nationality)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Nationality)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Nation)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Nation)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.CertificateId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CertificateId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.CertificateNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CertificateNumber)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Birthday)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Birthday)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.JuzhuAddress)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.JuzhuAddress)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.JuzhudiZipCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.JuzhudiZipCode)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Mobile1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mobile1)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Mobile2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mobile2)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EmergencyContract)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EmergencyContract)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EmergencyContractPhone)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EmergencyContractPhone)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PrivateMail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PrivateMail)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HujiAddress)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HujiAddress)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HujiZipCode)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HujiZipCode)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.JuzhuzhengNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.JuzhuzhengNumber)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.JuzhuzhengDueDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.JuzhuzhengDueDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.SocialGonglingStartDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SocialGonglingStartDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Bank)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Bank)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BankAccount)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BankAccount)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BankAccountName)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BankAccountName)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EmployeeNote)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EmployeeNote)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo1)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo2)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo3)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo3)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo4)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo4)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo5)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo5)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo6)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo6)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo7)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo7)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo8)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo8)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo9)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo9)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BasicInfo10)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BasicInfo10)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HukouType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HukouType)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionCityId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionCityId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationCityId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccumulationCityId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionTypeId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionTypeId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationTypeId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccumulationTypeId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionStatus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionStatus)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.YibaokaAvailable)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.YibaokaAvailable)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationStatus)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccumulationStatus)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccumulationNumber)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.DanganAddress)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DanganAddress)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.DanganOrganization)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DanganOrganization)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.DanganNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DanganNumber)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionInfo1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionInfo1)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionInfo2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionInfo2)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionInfo3)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionInfo3)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionInfo4)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionInfo4)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionInfo5)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionInfo5)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ClientId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ClientId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WorkClient)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WorkClient)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.CompanyMail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyMail)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EnterDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EnterDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ProbationDueDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProbationDueDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.EnterClientDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EnterClientDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.CompanyYearAdjust)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CompanyYearAdjust)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.SocialYearAdjust)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SocialYearAdjust)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.VacationDays)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.VacationDays)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WorkCityId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WorkCityId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.DepartmentId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DepartmentId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.LevelId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LevelId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PositionId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PositionId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ContractNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractNumber)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ContractBeginDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractBeginDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ContractEndDate)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractEndDate)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ContractTypeId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ContractTypeId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ProbationSalary)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProbationSalary)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Salary)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Salary)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionStartMonth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PensionStartMonth)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationStartMonth)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccumulationStartMonth)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PayByCompany)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PayByCompany)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Yljs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Yljs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Syjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Syjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Yiliaojs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Yiliaojs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Gsjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Gsjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Shengyujs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Shengyujs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Qtjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qtjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Bcjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Bcjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Gjjjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Gjjjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Bcgjjjs)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Bcgjjjs)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.TaxType)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TaxType)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ZhangtaoId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ZhangtaoId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.TaxCityId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TaxCityId)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo1)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo1)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo2)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo2)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo3)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo3)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo4)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo4)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo5)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo5)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo6)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo6)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo7)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo7)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo8)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo8)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo9)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo9)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo10)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo10)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo11)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo11)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo12)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo12)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo13)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo13)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo14)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo14)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo15)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo15)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo16)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo16)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo17)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo17)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo18)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo18)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo19)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo19)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HireInfo20)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HireInfo20)
+    </div>
+
+</fieldset>

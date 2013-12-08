@@ -197,10 +197,7 @@
     <Compile Include="Controllers\FamilyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\WebApi\ClientPensionCityController.cs" />
-    <Compile Include="Controllers\PositionController.cs" />
-    <Compile Include="Controllers\WeightController.cs" />
     <Compile Include="Controllers\WorkController.cs" />
-    <Compile Include="Controllers\ZhangtaoController.cs" />
     <Compile Include="Controllers\CertificateController.cs" />
     <Compile Include="Controllers\CityController.cs" />
     <Compile Include="Controllers\ClientCitySupplierHukouController.cs" />
@@ -212,6 +209,9 @@
     <Compile Include="Controllers\CustomFieldController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\LevelController.cs" />
+    <Compile Include="Controllers\PositionController.cs" />
+    <Compile Include="Controllers\WeightController.cs" />
+    <Compile Include="Controllers\ZhangtaoController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -712,21 +712,11 @@
     <Content Include="Views\Family\Create.cshtml" />
     <Content Include="Views\Family\Edit.cshtml" />
     <Content Include="Views\Family\Delete.cshtml" />
-    <Content Include="Views\Position\Index.cshtml" />
-    <Content Include="Views\Position\Details.cshtml" />
-    <Content Include="Views\Position\Create.cshtml" />
-    <Content Include="Views\Position\Edit.cshtml" />
-    <Content Include="Views\Position\Delete.cshtml" />
     <Content Include="Views\Work\Index.cshtml" />
     <Content Include="Views\Work\Details.cshtml" />
     <Content Include="Views\Work\Create.cshtml" />
     <Content Include="Views\Work\Edit.cshtml" />
     <Content Include="Views\Work\Delete.cshtml" />
-    <Content Include="Views\Zhangtao\Index.cshtml" />
-    <Content Include="Views\Zhangtao\Details.cshtml" />
-    <Content Include="Views\Zhangtao\Create.cshtml" />
-    <Content Include="Views\Zhangtao\Edit.cshtml" />
-    <Content Include="Views\Zhangtao\Delete.cshtml" />
     <Content Include="Views\Client\Index.cshtml" />
     <Content Include="Views\Client\Details.cshtml" />
     <Content Include="Views\Client\Create.cshtml" />
@@ -756,11 +746,6 @@
     <Content Include="Views\Account\CreateCandidate.cshtml" />
     <Content Include="Views\Employee\EditEmployeeDoc.cshtml" />
     <Content Include="Views\Employee\EditorTemplates\EditSingleEmployeeDoc.cshtml" />
-    <Content Include="Views\Weight\Index.cshtml" />
-    <Content Include="Views\Weight\Details.cshtml" />
-    <Content Include="Views\Weight\Create.cshtml" />
-    <Content Include="Views\Weight\Edit.cshtml" />
-    <Content Include="Views\Weight\Delete.cshtml" />
     <Content Include="Views\Employee\FrontDetail.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Education.cshtml" />
     <Content Include="Views\Employee\DisplayTemplates\Work.cshtml" />
@@ -879,6 +864,30 @@
     <Content Include="Views\Level\GetLevel.cshtml" />
     <Content Include="Views\Level\Index.cshtml" />
     <Content Include="Views\Level\Restore.cshtml" />
+    <Content Include="Views\Position\Abstract.cshtml" />
+    <Content Include="Views\Position\Create.cshtml" />
+    <Content Include="Views\Position\Delete.cshtml" />
+    <Content Include="Views\Position\Details.cshtml" />
+    <Content Include="Views\Position\Edit.cshtml" />
+    <Content Include="Views\Position\GetPosition.cshtml" />
+    <Content Include="Views\Position\Index.cshtml" />
+    <Content Include="Views\Position\Restore.cshtml" />
+    <Content Include="Views\Weight\Abstract.cshtml" />
+    <Content Include="Views\Weight\Create.cshtml" />
+    <Content Include="Views\Weight\Delete.cshtml" />
+    <Content Include="Views\Weight\Details.cshtml" />
+    <Content Include="Views\Weight\Edit.cshtml" />
+    <Content Include="Views\Weight\GetWeight.cshtml" />
+    <Content Include="Views\Weight\Index.cshtml" />
+    <Content Include="Views\Weight\Restore.cshtml" />
+    <Content Include="Views\Zhangtao\Abstract.cshtml" />
+    <Content Include="Views\Zhangtao\Create.cshtml" />
+    <Content Include="Views\Zhangtao\Delete.cshtml" />
+    <Content Include="Views\Zhangtao\Details.cshtml" />
+    <Content Include="Views\Zhangtao\Edit.cshtml" />
+    <Content Include="Views\Zhangtao\GetZhangtao.cshtml" />
+    <Content Include="Views\Zhangtao\Index.cshtml" />
+    <Content Include="Views\Zhangtao\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
