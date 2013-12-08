@@ -203,14 +203,15 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\WebApi\ClientPensionCityController.cs" />
-    <Compile Include="Controllers\PensionTypeController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
-    <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\WeightController.cs" />
     <Compile Include="Controllers\WorkController.cs" />
     <Compile Include="Controllers\ZhangtaoController.cs" />
     <Compile Include="Controllers\CertificateController.cs" />
     <Compile Include="Controllers\CityController.cs" />
+    <Compile Include="Controllers\ClientCitySupplierHukouController.cs" />
+    <Compile Include="Controllers\SupplierController.cs" />
+    <Compile Include="Controllers\PensionTypeController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -249,6 +250,7 @@
     <Compile Include="Models\ViewModel\Msg.cs" />
     <Compile Include="Models\ViewModel\Offer.cs" />
     <Compile Include="Models\ViewModel\OnPosition.cs" />
+    <Compile Include="Models\ViewModel\EditClientCitySupplierHukou.cs" />
     <Compile Include="Models\Work.cs" />
     <Compile Include="Models\Family.cs" />
     <Compile Include="Models\City.cs" />
@@ -725,11 +727,6 @@
     <Content Include="Views\Level\Create.cshtml" />
     <Content Include="Views\Level\Edit.cshtml" />
     <Content Include="Views\Level\Delete.cshtml" />
-    <Content Include="Views\PensionType\Index.cshtml" />
-    <Content Include="Views\PensionType\Details.cshtml" />
-    <Content Include="Views\PensionType\Create.cshtml" />
-    <Content Include="Views\PensionType\Edit.cshtml" />
-    <Content Include="Views\PensionType\Delete.cshtml" />
     <Content Include="Views\Position\Index.cshtml" />
     <Content Include="Views\Position\Details.cshtml" />
     <Content Include="Views\Position\Create.cshtml" />
@@ -811,11 +808,6 @@
     <Content Include="Views\Account\GetHR.cshtml" />
     <Content Include="Views\Account\GetCandidate.cshtml" />
     <Content Include="Views\AccumulationType\GetAccumulationType.cshtml" />
-    <Content Include="Views\Supplier\Index.cshtml" />
-    <Content Include="Views\Supplier\Details.cshtml" />
-    <Content Include="Views\Supplier\Create.cshtml" />
-    <Content Include="Views\Supplier\Edit.cshtml" />
-    <Content Include="Views\Supplier\Delete.cshtml" />
     <Content Include="Views\Client\GetHRAdminClient.cshtml" />
     <Content Include="Views\Shared\Msg.cshtml" />
     <Content Include="Views\Client\Restore.cshtml" />
@@ -846,6 +838,27 @@
     <Content Include="Views\City\GetCity.cshtml" />
     <Content Include="Views\City\Index.cshtml" />
     <Content Include="Views\City\Restore.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Create.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Delete.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Details.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Edit.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\GetClientCitySupplierHukou.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Index.cshtml" />
+    <Content Include="Views\ClientCitySupplierHukou\Restore.cshtml" />
+    <Content Include="Views\Supplier\Create.cshtml" />
+    <Content Include="Views\Supplier\Delete.cshtml" />
+    <Content Include="Views\Supplier\Details.cshtml" />
+    <Content Include="Views\Supplier\Edit.cshtml" />
+    <Content Include="Views\Supplier\GetSupplier.cshtml" />
+    <Content Include="Views\Supplier\Index.cshtml" />
+    <Content Include="Views\Supplier\Restore.cshtml" />
+    <Content Include="Views\PensionType\Create.cshtml" />
+    <Content Include="Views\PensionType\Delete.cshtml" />
+    <Content Include="Views\PensionType\Details.cshtml" />
+    <Content Include="Views\PensionType\Edit.cshtml" />
+    <Content Include="Views\PensionType\GetPensionType.cshtml" />
+    <Content Include="Views\PensionType\Index.cshtml" />
+    <Content Include="Views\PensionType\Restore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

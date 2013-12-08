@@ -1,20 +1,20 @@
-﻿@model OB.Models.PensionType
+﻿@model OB.Models.ClientCitySupplierHukou
 
 @{
-    ViewBag.Name = "社保类型";
-    ViewBag.Title = "删除";
+    ViewBag.Name = "客户城市供应商户口";
+    ViewBag.Title = "恢复";
 }
 
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<h3>您确定要删除此条记录么?</h3>
+<h3>您确定要恢复此条记录么?</h3>
 
 <fieldset>
     <legend>@ViewBag.Name</legend>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
+        @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
@@ -22,13 +22,13 @@
 </fieldset>
 
 <div>
-    @using (Html.BeginForm("DeleteSave", "PensionType"))
+    @using (Html.BeginForm("RestoreSave", "ClientCitySupplierHukou"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
-        <input type="submit" value="确认删除" />
+        <input type="submit" value="确认恢复" />
     }
     <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>

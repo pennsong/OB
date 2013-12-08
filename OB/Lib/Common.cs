@@ -23,6 +23,20 @@ namespace OB.Lib
             int page = int.Parse(tmpPage.ToString());
             var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
             page = page > tmpTotalPage ? tmpTotalPage : page;
+            page = page == 0 ? 1 : page;
+            rv.Add("totalPage", tmpTotalPage);
+            rv["page"] = page;
+
+            c.ViewBag.RV = rv;
+            return q.Skip(((tmpTotalPage > 0 ? page : 1) - 1) * size).Take(size);
+        }
+
+        public static IEnumerable<T> Page(Controller c, RouteValueDictionary rv, IEnumerable<T> q, int size = 2)
+        {
+            var tmpPage = rv.Where(a => a.Key == "page").Select(a => a.Value).SingleOrDefault();
+            int page = int.Parse(tmpPage.ToString());
+            var tmpTotalPage = (int)Math.Ceiling(((decimal)(q.Count()) / size));
+            page = page > tmpTotalPage ? tmpTotalPage : page;
             rv.Add("totalPage", tmpTotalPage);
             rv["page"] = page;
 
@@ -300,9 +314,46 @@ namespace OB.Lib
             }
             return result;
         }
-        // hrAdminClient
+        // end hrAdminClient
 
         //end client
+
+
+        //ClientCitySupplierHukou
+        // hrAdminClient
+        public static List<ClientCitySupplierHukou> GetHRAdminClientCitySupplierHukouList(int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetHRAdminClientCitySupplierHukouQuery(db, hrAdminUserId, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<ClientCitySupplierHukou> GetHRAdminClientCitySupplierHukouQuery(OBContext db, int hrAdminUserId, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var userHRAdminClients = db.User.Where(a => a.Id == hrAdminUserId).Single().HRAdminClients.Select(a => a.Id);
+
+            var hukouNameList = Enum.GetNames(typeof(HukouType)).Where(a => a.ToUpper().Contains(filter));
+
+            var hukouList = new List<HukouType> { };
+
+            foreach (var item in hukouNameList)
+            {
+                hukouList.Add((HukouType)(Enum.Parse(typeof(HukouType), item, true)));
+            }
+
+            var result = db.ClientCitySupplierHukou.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.City.Name.ToUpper().Contains(filter) || a.Supplier.Name.ToUpper().Contains(filter) || hukouList.Contains(a.HukouType)).Where(a => userHRAdminClients.Contains(a.Client.Id));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end hrAdminClient
+        //end ClientCitySupplierHukou
 
         //city
         // client pension city
@@ -349,6 +400,29 @@ namespace OB.Lib
         }
         // end city
 
+        //supplier
+        public static List<Supplier> GetSupplierList(bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetSupplierQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<Supplier> GetSupplierQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.Supplier.Where(a => a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end supplier
+
         //accumulation type
         public static List<AccumulationType> GetAccumulationTypeList(bool includeSoftDeleted = false, string filter = "")
         {
@@ -371,6 +445,29 @@ namespace OB.Lib
             return result;
         }
         //end accumulation type
+
+        //pension type
+        public static List<PensionType> GetPensionTypeList(bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetPensionTypeQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<PensionType> GetPensionTypeQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.PensionType.Where(a => a.Name.ToUpper().Contains(filter));
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end pension type
 
         //assurance
         // hradmin assurance

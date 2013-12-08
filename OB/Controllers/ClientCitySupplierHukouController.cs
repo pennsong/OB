@@ -8,49 +8,45 @@ using System.Web.Mvc;
 using OB.Models;
 using OB.Models.DAL;
 using System.Data.Entity.Infrastructure;
-using System.Web.Security;
 using OB.Lib;
-using OB.Models.ViewModel;
 using WebMatrix.WebData;
 using System.Web.Routing;
+using OB.Models.ViewModel;
 
 namespace OB.Controllers
 {
-    public class SupplierController : Controller
+    public class ClientCitySupplierHukouController : Controller
     {
         private OBContext db = new OBContext();
 
         //
-        // GET: /Supplier/
-        [Authorize(Roles = "Admin")]
+        // GET: /ClientCitySupplierHukou/
+        [Authorize(Roles = "HRAdmin")]
         public ActionResult Index(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             ViewBag.Path1 = "参数设置";
-            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetSupplier" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "Index" }, { "actionAjax", "GetClientCitySupplierHukou" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
-        [Authorize(Roles = "Admin")]
-        public PartialViewResult GetSupplier(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
+        [Authorize(Roles = "HRAdmin")]
+        public PartialViewResult GetClientCitySupplierHukou(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
-            var results = Common.GetSupplierQuery(db, includeSoftDeleted, keyword);
-            results = results.OrderBy(a => a.Name);
+            var tmpResults = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
+            var results = tmpResults.OrderBy(a => a.HukouType).OrderBy(a => a.Supplier.Name).OrderBy(a => a.City.Name).OrderBy(a => a.Client.Name);
             var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
-            var t = Common<Supplier>.Page(this, rv, results).ToList();
-            return PartialView(t);
+            return PartialView(Common<ClientCitySupplierHukou>.Page(this, rv, results));
         }
 
-        //
-        // GET: /Supplier/Details/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Details(int id = 0, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -63,9 +59,7 @@ namespace OB.Controllers
             return View(result);
         }
 
-        //
-        // GET: /Supplier/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(string returnUrl = "Index")
@@ -76,22 +70,24 @@ namespace OB.Controllers
         }
 
         //
-        // POST: /Supplier/Create
-        [Authorize(Roles = "Admin")]
+        // POST: /Account/Register
+
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateSave(Supplier model, string returnUrl = "Index")
+        public ActionResult CreateSave(ClientCitySupplierHukou model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
-            //检查记录在权限范围内
-            //end
             if (ModelState.IsValid)
             {
                 try
                 {
-                    db.Supplier.Add(model);
+                    model.Client = db.Client.Find(model.ClientId);
+                    model.City = db.City.Find(model.CityId);
+                    model.Supplier = db.Supplier.Find(model.SupplierId);
+                    db.ClientCitySupplierHukou.Add(model);
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + model.ToString() + "新建成功!");
+                    Common.RMOk(this, "记录:'" + model.Name + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -102,20 +98,20 @@ namespace OB.Controllers
                     }
                 }
             }
+
+            // 如果我们进行到这一步时某个地方出错，则重新显示表单
             ViewBag.ReturnUrl = returnUrl;
             return View("Create", model);
         }
 
-        //
-        // GET: /Supplier/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id = 0, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -123,21 +119,28 @@ namespace OB.Controllers
             }
             //end
 
+            var model = new EditClientCitySupplierHukou
+            {
+                ClientCitySupplierHukouId = result.Id,
+                Name = result.Name,
+                PensionTypeIds = result.PensionTypes.Select(a => a.Id).ToList(),
+                AccumulationTypeIds = result.AccumulationTypes.Select(a => a.Id).ToList(),
+            };
+
             ViewBag.ReturnUrl = returnUrl;
 
-            return View(result);
+            return View(model);
         }
 
         //
-        // POST: /Supplier/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditSave(Supplier model, string returnUrl = "Index")
+        public ActionResult EditSave(EditClientCitySupplierHukou model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId).Include(a => a.PensionTypes).Include(a => a.AccumulationTypes).Where(a => a.Id == model.ClientCitySupplierHukouId).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -149,19 +152,25 @@ namespace OB.Controllers
             {
                 try
                 {
-                    result.Name = model.Name;
-                    result.IsPension = model.IsPension;
-                    result.IsAccumulation = model.IsAccumulation;
+                    if (model.PensionTypeIds == null)
+                    {
+                        model.PensionTypeIds = new List<int> { };
+                    }
+                    if (model.AccumulationTypeIds == null)
+                    {
+                        model.AccumulationTypeIds = new List<int> { };
+                    }
+                    var pensionTypes = Common.GetPensionTypeQuery(db).Where(a => model.PensionTypeIds.Any(b => b == a.Id)).ToList();
+                    var accumulationTypes = Common.GetAccumulationTypeQuery(db).Where(a => model.PensionTypeIds.Any(b => b == a.Id)).ToList();
+                    result.PensionTypes = pensionTypes;
+                    result.AccumulationTypes = accumulationTypes;
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    Common.RMOk(this, "记录:" + result.ToString() + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
                 {
-                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
-                    {
-                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
-                    }
+                    ModelState.AddModelError(string.Empty, e.Message);
                 }
             }
             ViewBag.ReturnUrl = returnUrl;
@@ -169,16 +178,14 @@ namespace OB.Controllers
             return View("Edit", model);
         }
 
-        //
-        // GET: /Supplier/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id = 0, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -191,16 +198,14 @@ namespace OB.Controllers
             return View(result);
         }
 
-        //
-        // POST: /Supplier/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteSave(int id, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -210,7 +215,7 @@ namespace OB.Controllers
 
             try
             {
-                db.Supplier.Remove(result);
+                db.ClientCitySupplierHukou.Remove(result);
                 db.PPSave();
                 Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
                 return Redirect(Url.Content(returnUrl));
@@ -229,14 +234,14 @@ namespace OB.Controllers
             return Redirect(Url.Content(returnUrl));
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Restore(int id = 0, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -249,14 +254,14 @@ namespace OB.Controllers
             return View(result);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult RestoreSave(Supplier record, string returnUrl = "Index")
+        public ActionResult RestoreSave(ClientCitySupplierHukou record, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
-            var result = Common.GetSupplierQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            var result = Common.GetHRAdminClientCitySupplierHukouQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);

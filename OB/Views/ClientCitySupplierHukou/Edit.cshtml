@@ -1,0 +1,54 @@
+﻿@model OB.Models.ViewModel.EditClientCitySupplierHukou
+
+@{
+    ViewBag.Name = "客户城市供应商户口";
+    ViewBag.Title = "编辑";
+}
+
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("EditSave", "ClientCitySupplierHukou"))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>@ViewBag.Name</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+        @Html.HiddenFor(model => model.ClientCitySupplierHukouId)
+
+        <div class="display-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Name)
+        </div>
+        <div>
+            @Html.LabelFor(model => model.PensionTypeIds)
+            @Html.ListBoxFor(model => model.PensionTypeIds, new MultiSelectList(OB.Lib.Common.GetPensionTypeList(), "Id", "Name", Model.PensionTypeIds), new { @class = "multiselect2side", size = "10" })
+            @Html.LabelFor(model => model.AccumulationTypeIds)
+            @Html.ListBoxFor(model => model.AccumulationTypeIds, new MultiSelectList(OB.Lib.Common.GetAccumulationTypeList(), "Id", "Name", Model.AccumulationTypeIds), new { @class = "multiselect2side", size = "10" })
+        </div>
+        <p>
+            <input type="submit" value="保存" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
+    <script type="text/javascript">
+        $().ready(function () {
+            $(".multiselect2side").multiselect2side();
+        });
+    </script>
+}
+@section Styles {
+    @Styles.Render("~/Content/cw_css/jquery.multiselect2side.css")
+}

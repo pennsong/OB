@@ -1,7 +1,7 @@
-﻿@model OB.Models.Supplier
+﻿@model OB.Models.ClientCitySupplierHukou
 
 @{
-    ViewBag.Name = "供应商";
+    ViewBag.Name = "客户城市供应商户口";
     ViewBag.Title = "详情";
 }
 
@@ -12,26 +12,21 @@
     <legend>@ViewBag.Name</legend>
 
     <div class="display-label">
+        @Html.DisplayNameFor(model => model.Client.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Client.Name)
+    </div>
+
+    <div class="display-label">
         @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
     </div>
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.IsPension)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsPension)
-    </div>
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.IsAccumulation)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsAccumulation)
-    </div>
 </fieldset>
 <p>
-    @using (Html.BeginForm("Edit", "Supplier"))
+    @using (Html.BeginForm("Edit", "ClientCitySupplierHukou"))
     {    
         @Html.AntiForgeryToken()
 

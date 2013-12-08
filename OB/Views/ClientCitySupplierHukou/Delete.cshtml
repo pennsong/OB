@@ -1,7 +1,7 @@
-﻿@model OB.Models.PensionType
+﻿@model OB.Models.ClientCitySupplierHukou
 
 @{
-    ViewBag.Name = "社保类型";
+    ViewBag.Name = "客户城市供应商户口";
     ViewBag.Title = "删除";
 }
 
@@ -14,7 +14,14 @@
     <legend>@ViewBag.Name</legend>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
+        @Html.DisplayNameFor(model => model.ClientId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Client.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Name)
@@ -22,7 +29,7 @@
 </fieldset>
 
 <div>
-    @using (Html.BeginForm("DeleteSave", "PensionType"))
+    @using (Html.BeginForm("DeleteSave", "ClientCitySupplierHukou"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)
