@@ -156,8 +156,8 @@ namespace OB.Controllers
                     result.JuzhudiZipCode = model.JuzhudiZipCode;
                     result.Mobile1 = model.Mobile1;
                     result.Mobile2 = model.Mobile2;
-                    result.EmergencyContract = model.EmergencyContract;
-                    result.EmergencyContractPhone = model.EmergencyContractPhone;
+                    result.EmergencyContact = model.EmergencyContact;
+                    result.EmergencyContactPhone = model.EmergencyContactPhone;
                     result.PrivateMail = model.PrivateMail;
                     result.HujiAddress = model.HujiAddress;
                     result.HujiZipCode = model.HujiZipCode;

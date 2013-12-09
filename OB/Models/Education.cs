@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FrameLog;
+using OB.Models.Base;
+using OB.Models.DAL;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +10,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Education
+    public class Education : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
 
@@ -31,5 +34,23 @@ namespace OB.Models
         public DateTime? End { get; set; }
 
         public virtual Employee Employee { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
+        public override string ToString()
+        {
+            if (Employee == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Employee = db.Employee.Find(EmployeeId);
+                }
+            }
+            return Employee + "_" + School + "_" + Major;
+        }
     }
 }

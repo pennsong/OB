@@ -1,4 +1,5 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class AccumulationType: SoftDelete
+    public class AccumulationType : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
         [Required]
@@ -17,6 +18,12 @@ namespace OB.Models
         public string Name { get; set; }
 
         public virtual ICollection<ClientCitySupplierHukou> ClientCitySupplierHukous { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
 
         public override string ToString()
         {

@@ -1,4 +1,6 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +11,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class ClientPensionCityDocument : SoftDelete
+    public class ClientPensionCityDocument : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
 
@@ -24,9 +26,23 @@ namespace OB.Models
         public virtual Client Client { get; set; }
         public virtual City PensionCity { get; set; }
 
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
         public override string ToString()
         {
-            return Client.Name + "_" + (PensionCity == null ? "无" : PensionCity.Name);
+            if (Client == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Client = db.Client.Find(ClientId);
+                    PensionCity = db.City.Find(PensionCityId);
+                }
+            }
+            return Client + "_" + PensionCity + "_" + "资料";
         }
     }
 }

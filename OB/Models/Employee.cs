@@ -473,7 +473,7 @@ namespace OB.Models
                 PropertyInfo[] fs = typeof(Weight).GetProperties();
                 decimal count = 0;
                 decimal total = 0;
-                string[] exclude = { "Id", "WeightClientId", "WeightClient" };
+                string[] exclude = { "Id", "WeightClientId", "WeightClient", "IsDeleted" };
                 string[] collection = { "Educations", "Works", "Families" };
                 foreach (PropertyInfo item in fs)
                 {
@@ -541,5 +541,10 @@ namespace OB.Models
         public virtual ICollection<BudgetCenter> BudgetCenters { get; set; }
         public virtual ICollection<Assurance> Assurances { get; set; }
         public virtual ICollection<EmployeeDoc> EmployeeDocs { get; set; }
+
+        public override string ToString()
+        {
+            return ChineseName;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
 using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Web.Mvc;
 
 namespace OB.Models
 {
-    public class Document : SoftDelete
+    public class Document : SoftDelete, IHasLoggingReference
     {
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
@@ -32,6 +33,12 @@ namespace OB.Models
         public virtual Client Client { get; set; }
 
         public virtual ICollection<ClientPensionCityDocument> ClientPensionCityDocuments { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
 
         public override string ToString()
         {

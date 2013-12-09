@@ -541,7 +541,7 @@ namespace OB.Controllers
                     employee.Educations.Add(e);
                 }
                 // end
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("EditEmployeeWork");
             }
 

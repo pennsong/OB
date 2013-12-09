@@ -1,4 +1,6 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +10,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Assurance : SoftDelete
+    public class Assurance : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
         [DisplayName("客户")]
@@ -21,9 +23,22 @@ namespace OB.Models
         public virtual Client Client { get; set; }
         public virtual ICollection<Employee> Employees { get; set; }
 
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
         public override string ToString()
         {
-            return Name;
+            if (Client == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Client = db.Client.Find(ClientId);
+                }
+            }
+            return Client + "_" + Name;
         }
     }
 }

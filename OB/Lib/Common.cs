@@ -565,23 +565,6 @@ namespace OB.Lib
             }
             return result;
         }
-
-        private static IQueryable<Assurance> _GetAssurance(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.Assurance.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
-
-            if (client > 0)
-            {
-                result = result.Where(a => a.ClientId == 0);
-            }
-            if (userHRAdmin > 0)
-            {
-                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
-            }
-            return result;
-        }
         // end hradmin assurance
         //end assurance
 
@@ -740,23 +723,6 @@ namespace OB.Lib
             }
             return result;
         }
-
-        private static IQueryable<ContractType> _GetContractType(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.ContractType.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
-
-            if (client > 0)
-            {
-                result = result.Where(a => a.ClientId == 0);
-            }
-            if (userHRAdmin > 0)
-            {
-                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
-            }
-            return result;
-        }
         // end hradmin contractType
         //end contractType
 
@@ -773,23 +739,6 @@ namespace OB.Lib
             if (!includeSoftDeleted)
             {
                 result = result.Where(a => a.IsDeleted == false);
-            }
-            return result;
-        }
-
-        private static IQueryable<BudgetCenter> _GetBudgetCenter(OBContext db, string keyword = "", int client = 0, int userHRAdmin = 0)
-        {
-            keyword = keyword.ToUpper();
-
-            var result = db.BudgetCenter.Where(a => a.Name.Contains(keyword) || a.Client.Name.ToUpper().Contains(keyword));
-
-            if (client > 0)
-            {
-                result = result.Where(a => a.ClientId == 0);
-            }
-            if (userHRAdmin > 0)
-            {
-                result = result.Where(a => db.User.Where(c => c.Id == userHRAdmin).FirstOrDefault().HRAdminClients.Select(b => b.Id).Contains(a.ClientId));
             }
             return result;
         }

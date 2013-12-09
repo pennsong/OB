@@ -66,10 +66,10 @@ namespace OB.Models
         public int? Mobile2 { get; set; }
 
         [DisplayName("紧急联系人")]
-        public int? EmergencyContract { get; set; }
+        public int? EmergencyContact { get; set; }
 
         [DisplayName("紧急联系人电话")]
-        public int? EmergencyContractPhone { get; set; }
+        public int? EmergencyContactPhone { get; set; }
 
         [DisplayName("私人邮箱")]
         public int? PrivateMail { get; set; }

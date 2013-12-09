@@ -1,4 +1,6 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
+using OB.Models.DAL;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +11,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class ClientCitySupplierHukou : SoftDelete
+    public class ClientCitySupplierHukou : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
 
@@ -40,9 +42,24 @@ namespace OB.Models
         public virtual City City { get; set; }
         public virtual Supplier Supplier { get; set; }
 
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
         public override string ToString()
         {
-            return Name;
+            if (Client == null || City == null || Supplier == null)
+            {
+                using (var db = new OBContext())
+                {
+                    Client = db.Client.Find(ClientId);
+                    City = db.City.Find(CityId);
+                    Supplier = db.Supplier.Find(SupplierId);
+                }
+            }
+            return Client + "_" + City + "_" + Supplier + "_" + HukouType;
         }
 
     }
