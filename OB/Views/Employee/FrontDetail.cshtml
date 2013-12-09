@@ -378,7 +378,10 @@
         @Html.DisplayNameFor(model => model.Educations)
     </div>
     <div class="display-field multi">
-        @Html.DisplayFor(model => model.Educations)
+        @foreach (var item in Model.GetEducation())
+        {
+            @Html.DisplayFor(m => item)
+        }
     </div>
 
     <div class="display-label">

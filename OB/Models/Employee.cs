@@ -542,6 +542,11 @@ namespace OB.Models
         public virtual ICollection<Assurance> Assurances { get; set; }
         public virtual ICollection<EmployeeDoc> EmployeeDocs { get; set; }
 
+        public List<Education> GetEducation()
+        {
+            return Educations.Where(a => a.IsDeleted == false).ToList();
+        }
+
         public override string ToString()
         {
             return ChineseName;

@@ -480,7 +480,7 @@ namespace OB.Controllers
             var editEmployeeEducation = new EditEmployeeEducation { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Education, EditEducation>().ForMember(x => x.EducationId, o => o.MapFrom(s => s.Id));
-            var list = Mapper.Map<ICollection<Education>, ICollection<EditEducation>>(employee.Educations);
+            var list = Mapper.Map<ICollection<Education>, ICollection<EditEducation>>(employee.GetEducation());
 
             editEmployeeEducation.EditEducations = list;
 
@@ -504,7 +504,7 @@ namespace OB.Controllers
                 {
                     editEmployeeEducation.EditEducations = new List<EditEducation> { };
                 }
-                var old = new HashSet<int>(db.Education.Where(a => a.EmployeeId == editEmployeeEducation.EmployeeId).Select(a => a.Id));
+                var old = new HashSet<int>(employee.GetEducation().Select(a => a.Id));
                 var cur = new HashSet<int>(editEmployeeEducation.EditEducations.Where(a => a.Delete == false).Select(a => a.EducationId));
                 // 取得不在最新列表中的记录删除
                 var del = (from a in old
@@ -537,7 +537,7 @@ namespace OB.Controllers
                 var add = editEmployeeEducation.EditEducations.Where(a => a.Delete == false && a.EducationId == 0);
                 foreach (var i in add)
                 {
-                    var e = new Education { School = i.School, Major = i.Major, Degree = i.Degree.Value, Begin = i.Begin.Value, End = i.End };
+                    var e = new Education { EmployeeId = employee.Id, School = i.School, Major = i.Major, Degree = i.Degree.Value, Begin = i.Begin.Value, End = i.End };
                     employee.Educations.Add(e);
                 }
                 // end
