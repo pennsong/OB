@@ -11,6 +11,11 @@ namespace OB.Models
 {
     public class AccumulationType : SoftDelete, IHasLoggingReference
     {
+        public AccumulationType()
+        {
+            ClientCitySupplierHukous = new List<ClientCitySupplierHukou> { };
+        }
+
         public int Id { get; set; }
         [Required]
         [DisplayName("名称")]

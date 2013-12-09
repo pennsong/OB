@@ -7,12 +7,24 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Data.Entity;
+using OB.Models.Base;
+using FrameLog;
 
 
 namespace OB.Models
 {
-    public class Employee
+    public class Employee : SoftDelete, IHasLoggingReference
     {
+        public Employee()
+        {
+            Families = new List<Family> { };
+            Works = new List<Work> { };
+            Educations = new List<Education> { };
+            BudgetCenters = new List<BudgetCenter> { };
+            Assurances = new List<Assurance> { };
+            EmployeeDocs = new List<EmployeeDoc> { };
+        }
+
         public int Id { get; set; }
 
         [Timestamp]
@@ -542,9 +554,40 @@ namespace OB.Models
         public virtual ICollection<Assurance> Assurances { get; set; }
         public virtual ICollection<EmployeeDoc> EmployeeDocs { get; set; }
 
-        public List<Education> GetEducation()
+        public List<Family> GetFamilies()
+        {
+            return Families.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<Work> GetWorks()
+        {
+            return Works.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<Education> GetEducations()
         {
             return Educations.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<BudgetCenter> GetBudgetCenters()
+        {
+            return BudgetCenters.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<Assurance> GetAssurances()
+        {
+            return Assurances.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<EmployeeDoc> GetEmployeeDocs()
+        {
+            return EmployeeDocs.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
         }
 
         public override string ToString()

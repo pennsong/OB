@@ -14,6 +14,11 @@ namespace OB.Models
 {
     public class Document : SoftDelete, IHasLoggingReference
     {
+        public Document()
+        {
+            ClientPensionCityDocuments = new List<ClientPensionCityDocument> { };
+        }
+
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
 

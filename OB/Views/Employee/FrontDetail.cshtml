@@ -378,7 +378,7 @@
         @Html.DisplayNameFor(model => model.Educations)
     </div>
     <div class="display-field multi">
-        @foreach (var item in Model.GetEducation())
+        @foreach (var item in Model.GetEducations())
         {
             @Html.DisplayFor(m => item)
         }
@@ -388,14 +388,20 @@
         @Html.DisplayNameFor(model => model.Works)
     </div>
     <div class="display-field multi">
-        @Html.DisplayFor(model => model.Works)
+        @foreach (var item in Model.GetWorks())
+        {
+            @Html.DisplayFor(m => item)
+        }
     </div>
 
     <div class="display-label">
         @Html.DisplayNameFor(model => model.Families)
     </div>
     <div class="display-field multi">
-        @Html.DisplayFor(model => model.Families)
+        @foreach (var item in Model.GetFamilies())
+        {
+            @Html.DisplayFor(m => item)
+        }
     </div>
 
     <div class="display-label">
@@ -404,7 +410,6 @@
     <div class="display-field multi">
         @Html.Action("EmployeeDoc", "Employee", new { id = Model.Id })
     </div>
-
 </fieldset>
 
 @section Scripts {

@@ -11,6 +11,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace OB.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class WorkController : Controller
     {
         private OBContext db = new OBContext();
@@ -58,7 +59,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Work.Add(work);
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -100,7 +101,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Entry(work).State = EntityState.Modified;
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -137,7 +138,7 @@ namespace OB.Controllers
         {
             Work work = db.Work.Find(id);
             db.Work.Remove(work);
-            db.SaveChanges();
+            db.PPSave();
             return RedirectToAction("Index");
         }
 

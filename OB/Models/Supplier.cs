@@ -1,4 +1,5 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class Supplier : SoftDelete
+    public class Supplier : SoftDelete, IHasLoggingReference
     {
         public int Id { get; set; }
         [Required]
@@ -21,6 +22,12 @@ namespace OB.Models
 
         [DisplayName("公积金")]
         public bool IsAccumulation { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
 
         public override string ToString()
         {

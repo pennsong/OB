@@ -13,6 +13,11 @@ namespace OB.Models
 {
     public class ClientPensionCityDocument : SoftDelete, IHasLoggingReference
     {
+        public ClientPensionCityDocument()
+        {
+            Documents = new List<Document> { };
+        }
+
         public int Id { get; set; }
 
         [DisplayName("客户")]

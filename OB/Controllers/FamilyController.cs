@@ -11,6 +11,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace OB.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class FamilyController : Controller
     {
         private OBContext db = new OBContext();
@@ -58,7 +59,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Family.Add(family);
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -100,7 +101,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Entry(family).State = EntityState.Modified;
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -137,7 +138,7 @@ namespace OB.Controllers
         {
             Family family = db.Family.Find(id);
             db.Family.Remove(family);
-            db.SaveChanges();
+            db.PPSave();
             return RedirectToAction("Index");
         }
 

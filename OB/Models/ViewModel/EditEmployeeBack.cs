@@ -10,6 +10,12 @@ namespace OB.Models.ViewModel
 {
     public class EditEmployeeBack
     {
+        public EditEmployeeBack()
+        {
+            BudgetCenterIds = new List<int> { };
+            AssuranceIds = new List<int> { };
+        }
+
         [HiddenInput(DisplayValue = true)]
         [DisplayName("员工编号")]
         public int EmployeeId { get; set; }

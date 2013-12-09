@@ -11,6 +11,7 @@ using System.Data.Entity.Infrastructure;
 
 namespace OB.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EducationController : Controller
     {
         private OBContext db = new OBContext();
@@ -58,7 +59,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Education.Add(education);
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -100,7 +101,7 @@ namespace OB.Controllers
                 try
                 {
                     db.Entry(education).State = EntityState.Modified;
-                    db.SaveChanges();
+                    db.PPSave();
                     return RedirectToAction("Index");
                 }
                 catch (DbUpdateException ex)
@@ -137,7 +138,7 @@ namespace OB.Controllers
         {
             Education education = db.Education.Find(id);
             db.Education.Remove(education);
-            db.SaveChanges();
+            db.PPSave();
             return RedirectToAction("Index");
         }
 

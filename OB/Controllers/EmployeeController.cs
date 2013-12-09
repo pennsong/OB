@@ -59,7 +59,7 @@ namespace OB.Controllers
             if (ModelState.IsValid)
             {
                 db.Employee.Add(employee);
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("Index");
             }
 
@@ -123,7 +123,7 @@ namespace OB.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(employee).State = EntityState.Modified;
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("Index");
             }
             return View(employee);
@@ -162,7 +162,7 @@ namespace OB.Controllers
                 employee.EmployeeStatus = EmployeeStatus.新增已通知;
                 employee.OfferContent = offer.Content;
 
-                db.SaveChanges();
+                db.PPSave();
 
                 try
                 {
@@ -218,7 +218,7 @@ namespace OB.Controllers
                 employee.Timestamp = onPosition.Timestamp;
                 employee.EmployeeStatus = EmployeeStatus.在职;
 
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("HREmployeeIndex");
             }
 
@@ -339,27 +339,14 @@ namespace OB.Controllers
                 employee.HireInfo20 = editEmployeeBack.HireInfo20;
 
                 //save budgetcenters, assurances
-                if (editEmployeeBack.BudgetCenterIds == null)
-                {
-                    employee.BudgetCenters = new List<BudgetCenter> { };
-                }
-                else
-                {
-                    var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
-                    employee.BudgetCenters = budgetcenters;
-                }
 
-                if (editEmployeeBack.AssuranceIds == null)
-                {
-                    employee.Assurances = new List<Assurance> { };
-                }
-                else
-                {
-                    var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
-                    employee.Assurances = assurances;
-                }
+                var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
+                employee.BudgetCenters = budgetcenters;
 
-                db.SaveChanges();
+                var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
+                employee.Assurances = assurances;
+
+                db.PPSave();
                 return RedirectToAction("HREmployeeIndex");
             }
             editEmployeeBack.Employee = employee;
@@ -455,7 +442,7 @@ namespace OB.Controllers
                 employee.PensionInfo4 = editEmployeeFront.PensionInfo4;
                 employee.PensionInfo5 = editEmployeeFront.PensionInfo5;
 
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("EditEmployeeEducation");
             }
             editEmployeeFront.Employee = employee;
@@ -480,7 +467,7 @@ namespace OB.Controllers
             var editEmployeeEducation = new EditEmployeeEducation { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Education, EditEducation>().ForMember(x => x.EducationId, o => o.MapFrom(s => s.Id));
-            var list = Mapper.Map<ICollection<Education>, ICollection<EditEducation>>(employee.GetEducation());
+            var list = Mapper.Map<ICollection<Education>, ICollection<EditEducation>>(employee.GetEducations());
 
             editEmployeeEducation.EditEducations = list;
 
@@ -500,11 +487,7 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (editEmployeeEducation.EditEducations == null)
-                {
-                    editEmployeeEducation.EditEducations = new List<EditEducation> { };
-                }
-                var old = new HashSet<int>(employee.GetEducation().Select(a => a.Id));
+                var old = new HashSet<int>(employee.GetEducations().Select(a => a.Id));
                 var cur = new HashSet<int>(editEmployeeEducation.EditEducations.Where(a => a.Delete == false).Select(a => a.EducationId));
                 // 取得不在最新列表中的记录删除
                 var del = (from a in old
@@ -560,7 +543,7 @@ namespace OB.Controllers
             var editEmployeeWork = new EditEmployeeWork { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Work, EditWork>().ForMember(x => x.WorkId, o => o.MapFrom(s => s.Id));
-            var list = Mapper.Map<ICollection<Work>, ICollection<EditWork>>(employee.Works);
+            var list = Mapper.Map<ICollection<Work>, ICollection<EditWork>>(employee.GetWorks());
 
             editEmployeeWork.EditWorks = list;
 
@@ -580,11 +563,7 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (editEmployeeWork.EditWorks == null)
-                {
-                    editEmployeeWork.EditWorks = new List<EditWork> { };
-                }
-                var old = new HashSet<int>(db.Work.Where(a => a.EmployeeId == editEmployeeWork.EmployeeId).Select(a => a.Id));
+                var old = new HashSet<int>(employee.GetWorks().Select(a => a.Id));
                 var cur = new HashSet<int>(editEmployeeWork.EditWorks.Where(a => a.Delete == false).Select(a => a.WorkId));
                 // 取得不在最新列表中的记录删除
                 var del = (from a in old
@@ -623,7 +602,7 @@ namespace OB.Controllers
                     employee.Works.Add(e);
                 }
                 // end
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("EditEmployeeFamily");
             }
 
@@ -642,7 +621,7 @@ namespace OB.Controllers
             var editEmployeeFamily = new EditEmployeeFamily { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Family, EditFamily>().ForMember(x => x.FamilyId, o => o.MapFrom(s => s.Id));
-            var list = Mapper.Map<ICollection<Family>, ICollection<EditFamily>>(employee.Families);
+            var list = Mapper.Map<ICollection<Family>, ICollection<EditFamily>>(employee.GetFamilies());
 
             editEmployeeFamily.EditFamilies = list;
 
@@ -662,11 +641,7 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (editEmployeeFamily.EditFamilies == null)
-                {
-                    editEmployeeFamily.EditFamilies = new List<EditFamily> { };
-                }
-                var old = new HashSet<int>(db.Family.Where(a => a.EmployeeId == editEmployeeFamily.EmployeeId).Select(a => a.Id));
+                var old = new HashSet<int>(employee.GetFamilies().Select(a => a.Id));
                 var cur = new HashSet<int>(editEmployeeFamily.EditFamilies.Where(a => a.Delete == false).Select(a => a.FamilyId));
                 // 取得不在最新列表中的记录删除
                 var del = (from a in old
@@ -704,7 +679,7 @@ namespace OB.Controllers
                     employee.Families.Add(e);
                 }
                 // end
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("EditEmployeeDoc");
             }
 
@@ -715,12 +690,12 @@ namespace OB.Controllers
         public ActionResult EditEmployeeDoc()
         {
             ViewBag.Path1 = "上传资料>";
-            var employee = db.Employee.Where(a => a.UserId == WebSecurity.CurrentUserId).SingleOrDefault();
+            var employee = db.Employee.Include(a => a.EmployeeDocs).Where(a => a.UserId == WebSecurity.CurrentUserId).SingleOrDefault();
             if (employee == null)
             {
                 return HttpNotFound();
             }
-            var editEmployeeDoc = new EditEmployeeDoc { EmployeeId = employee.Id, EditSingleEmployeeDocs = new List<EditSingleEmployeeDoc> { } };
+            var editEmployeeDoc = new EditEmployeeDoc { EmployeeId = employee.Id };
 
             // 取得资料列表模版
             var clientPensionCityDocument = db.ClientPensionCityDocument.Include(a => a.Documents).Where(a => a.ClientId == employee.ClientId && ((a.PensionCityId == null && employee.PensionCityId == null) || (a.PensionCityId == employee.PensionCityId))).SingleOrDefault();
@@ -731,7 +706,8 @@ namespace OB.Controllers
 
             foreach (var item in clientPensionCityDocument.Documents)
             {
-                var employeeDoc = db.EmployeeDoc.Where(a => a.EmployeeId == employee.Id && a.DocumentId == item.Id).SingleOrDefault();
+                //var employeeDoc = db.EmployeeDoc.Where(a => a.EmployeeId == employee.Id && a.DocumentId == item.Id).SingleOrDefault();
+                var employeeDoc = employee.EmployeeDocs.Where(a => a.IsDeleted == false).Where(a => a.DocumentId == item.Id).SingleOrDefault();
                 var imgPath = "";
                 int employeeDocId = 0;
                 if (employeeDoc != null && !String.IsNullOrWhiteSpace(employeeDoc.ImgPath))
@@ -752,18 +728,14 @@ namespace OB.Controllers
         public ActionResult EditEmployeeDoc(EditEmployeeDoc editEmployeeDoc)
         {
             ViewBag.Path1 = "上传资料>";
-            var employee = db.Employee.Include(a => a.Families).Where(a => a.UserId == WebSecurity.CurrentUserId && a.Id == editEmployeeDoc.EmployeeId).SingleOrDefault();
+            var employee = db.Employee.Include(a => a.EmployeeDocs).Where(a => a.UserId == WebSecurity.CurrentUserId && a.Id == editEmployeeDoc.EmployeeId).SingleOrDefault();
             if (employee == null)
             {
                 return HttpNotFound();
             }
             if (ModelState.IsValid)
             {
-                if (editEmployeeDoc.EditSingleEmployeeDocs == null)
-                {
-                    editEmployeeDoc.EditSingleEmployeeDocs = new List<EditSingleEmployeeDoc> { };
-                }
-                var old = new HashSet<int>(db.EmployeeDoc.Where(a => a.EmployeeId == editEmployeeDoc.EmployeeId).Select(a => a.Id));
+                var old = new HashSet<int>(employee.GetEmployeeDocs().Select(a => a.Id));
                 var cur = new HashSet<int>(editEmployeeDoc.EditSingleEmployeeDocs.Where(a => !String.IsNullOrWhiteSpace(a.ImgPath)).Select(a => a.EmployeeDocId));
                 // 取得不在最新列表中的记录删除
                 var del = (from a in old
@@ -796,7 +768,7 @@ namespace OB.Controllers
                     employee.EmployeeDocs.Add(e);
                 }
                 // end
-                db.SaveChanges();
+                db.PPSave();
                 return RedirectToAction("FrontDetail");
             }
 
@@ -865,22 +837,25 @@ namespace OB.Controllers
         {
             Employee employee = db.Employee.Find(id);
             db.Employee.Remove(employee);
-            db.SaveChanges();
+            db.PPSave();
             return RedirectToAction("Index");
         }
 
+        [ChildActionOnly]
         public PartialViewResult EmployeeAbstract(int id = 0)
         {
             var employee = db.Employee.Find(id);
             return PartialView(employee);
         }
 
+        [ChildActionOnly]
         public PartialViewResult EmployeeDetail(int id = 0)//employeeId
         {
             var employee = db.Employee.Find(id);
             return PartialView(employee);
         }
 
+        [ChildActionOnly]
         public PartialViewResult EmployeeDoc(int id = 0)//employeeId
         {
             var employee = db.Employee.Find(id);

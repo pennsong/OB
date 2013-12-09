@@ -14,6 +14,27 @@ namespace OB.Models
 {
     public class Client : SoftDelete, IHasLoggingReference
     {
+        public Client()
+        {
+            HRs = new List<User> { };
+
+            WorkCities = new List<City> { };
+            TaxCities = new List<City> { };
+            PensionCities = new List<City> { };
+            AccumulationCities = new List<City> { };
+
+            Assurances = new List<Assurance> { };
+            BudgetCenters = new List<BudgetCenter> { };
+            ContractTypes = new List<ContractType> { };
+            Departments = new List<Department> { };
+            Documents = new List<Document> { };
+            Levels = new List<Level> { };
+            Positions = new List<Position> { };
+            Zhangtaos = new List<Zhangtao> { };
+
+            ClientPensionCityDocuments = new List<ClientPensionCityDocument> { };
+        }
+
         public int Id { get; set; }
         [Required]
         [DisplayName("名称")]

@@ -13,6 +13,12 @@ namespace OB.Models
 {
     public class ClientCitySupplierHukou : SoftDelete, IHasLoggingReference
     {
+        public ClientCitySupplierHukou()
+        {
+            PensionTypes = new List<PensionType> { };
+            AccumulationTypes = new List<AccumulationType> { };
+        }
+
         public int Id { get; set; }
 
         [DisplayName("客户")]

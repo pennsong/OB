@@ -321,7 +321,7 @@ namespace OB.Controllers
                         {
                             changePasswordSucceeded = WebSecurity.ChangePassword(User.Identity.Name, model.OldPassword, model.NewPassword);
                             db.User.Find(WebSecurity.CurrentUserId).Mail = model.Mail;
-                            db.SaveChanges();
+                            db.PPSave();
                             scope.Complete();
                         }
                     }

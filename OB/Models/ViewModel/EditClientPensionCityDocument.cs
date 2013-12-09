@@ -10,6 +10,11 @@ namespace OB.Models.ViewModel
 {
     public class EditClientPensionCityDocument
     {
+        public EditClientPensionCityDocument()
+        {
+            DocumentIds = new List<int> { };
+        }
+
         public int ClientPensionCityDocumentId { get; set; }
 
         public int ClientId { get; set; }

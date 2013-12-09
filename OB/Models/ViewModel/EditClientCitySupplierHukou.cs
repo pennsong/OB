@@ -10,6 +10,13 @@ namespace OB.Models.ViewModel
 {
     public class EditClientCitySupplierHukou
     {
+        public EditClientCitySupplierHukou()
+        {
+            PensionTypeIds = new List<int> { };
+            AccumulationTypeIds = new List<int> { };
+        }
+
+
         [HiddenInput(DisplayValue = true)]
         [DisplayName("客户城市供应商户口ID")]
         public int ClientCitySupplierHukouId { get; set; }

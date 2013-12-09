@@ -9,6 +9,11 @@ namespace OB.Models.ViewModel
 {
     public class EditEmployeeFamily
     {
+        public EditEmployeeFamily()
+        {
+            EditFamilies = new List<EditFamily> { };
+        }
+
         [HiddenInput(DisplayValue = false)]
         public int EmployeeId { get; set; }
 

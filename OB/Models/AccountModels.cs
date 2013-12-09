@@ -23,6 +23,12 @@ namespace OB.Models
 
     public class User : SoftDelete, IHasLoggingReference
     {
+        public User()
+        {
+            HRAdminClients = new List<Client> { };
+            HRClients = new List<Client> { };
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         [Required]

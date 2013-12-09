@@ -12,6 +12,11 @@ namespace OB.Models
 {
     public class BudgetCenter : SoftDelete, IHasLoggingReference
     {
+        public BudgetCenter()
+        {
+            Employees = new List<Employee> { };
+        }
+
         public int Id { get; set; }
         [DisplayName("客户")]
         public int ClientId { get; set; }

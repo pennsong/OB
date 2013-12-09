@@ -11,6 +11,14 @@ namespace OB.Models
 {
     public class City : SoftDelete, IHasLoggingReference
     {
+        public City()
+        {
+            WorkCityClients = new List<Client> { };
+            TaxCityClients = new List<Client> { };
+            PensionCityClients = new List<Client> { };
+            AccumulationCityClients = new List<Client> { };
+        }
+
         public int Id { get; set; }
         [Required]
         [DisplayName("名称")]

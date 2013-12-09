@@ -9,6 +9,11 @@ namespace OB.Models.ViewModel
 {
     public class EditEmployeeWork
     {
+        public EditEmployeeWork()
+        {
+            EditWorks = new List<EditWork> { };
+        }
+
         [HiddenInput(DisplayValue = false)]
         public int EmployeeId { get; set; }
 

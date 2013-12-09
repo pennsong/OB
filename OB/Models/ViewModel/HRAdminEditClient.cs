@@ -10,6 +10,13 @@ namespace OB.Models.ViewModel
 {
     public class HRAdminEditClient
     {
+        public HRAdminEditClient()
+        {
+            HRIds = new List<int> { };
+            PensionCities = new List<int> { };
+            TaxCities = new List<int> { };
+        }
+
         [HiddenInput(DisplayValue = true)]
         [DisplayName("客户ID")]
         public int ClientId { get; set; }
@@ -24,10 +31,5 @@ namespace OB.Models.ViewModel
         public ICollection<int> PensionCities { get; set; }
         [DisplayName("计税城市列表")]
         public ICollection<int> TaxCities { get; set; }
-
-        public override string ToString()
-        {
-            return ClientId + "-" + ClientName;
-        }
     }
 }

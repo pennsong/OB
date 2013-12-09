@@ -1,4 +1,5 @@
-﻿using OB.Models.Base;
+﻿using FrameLog;
+using OB.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,8 +9,13 @@ using System.Web;
 
 namespace OB.Models
 {
-    public class PensionType : SoftDelete
+    public class PensionType : SoftDelete, IHasLoggingReference
     {
+        public PensionType()
+        {
+            ClientCitySupplierHukous = new List<ClientCitySupplierHukou> { };
+        }
+
         public int Id { get; set; }
         [Required]
         [DisplayName("名称")]
@@ -17,6 +23,12 @@ namespace OB.Models
         public string Name { get; set; }
 
         public virtual ICollection<ClientCitySupplierHukou> ClientCitySupplierHukous { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
 
         public override string ToString()
         {

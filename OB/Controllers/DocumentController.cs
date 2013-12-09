@@ -90,7 +90,7 @@ namespace OB.Controllers
                 {
                     db.Document.Add(model);
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + model.ToString() + "新建成功!");
+                    Common.RMOk(this, "记录:" + model + "新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -151,7 +151,7 @@ namespace OB.Controllers
                     result.Name = model.Name;
                     result.Weight = model.Weight;
                     db.PPSave();
-                    Common.RMOk(this, "记录:" + model.ToString() + "保存成功!");
+                    Common.RMOk(this, "记录:" + model + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
@@ -205,23 +205,23 @@ namespace OB.Controllers
                 return Redirect(Url.Content(returnUrl));
             }
             //end
-
+            var removeName = result.ToString();
             try
             {
                 db.Document.Remove(result);
                 db.PPSave();
-                Common.RMOk(this, "记录:" + result.ToString() + "删除成功!");
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)
             {
                 if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
                 {
-                    Common.RMError(this, "记录" + result.ToString() + "被其他记录引用, 不能删除!");
+                    Common.RMError(this, "记录" + removeName + "被其他记录引用, 不能删除!");
                 }
                 else
                 {
-                    Common.RMError(this, "记录" + result.ToString() + "删除失败!");
+                    Common.RMError(this, "记录" + removeName + "删除失败!");
                 }
             }
             return Redirect(Url.Content(returnUrl));
@@ -266,12 +266,12 @@ namespace OB.Controllers
             {
                 result.IsDeleted = false;
                 db.PPSave();
-                Common.RMOk(this, "记录:" + result.ToString() + "恢复成功!");
+                Common.RMOk(this, "记录:" + result + "恢复成功!");
                 return Redirect(Url.Content(returnUrl));
             }
             catch (Exception e)
             {
-                Common.RMOk(this, "记录" + result.ToString() + "恢复失败!" + e.ToString());
+                Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
             }
             return Redirect(Url.Content(returnUrl));
         }
