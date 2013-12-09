@@ -2,7 +2,7 @@
     string action = (((RouteValueDictionary)(ViewBag.RV))["actionAjax"]).ToString();
     string returnRoot = (((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString();
 
-    ViewBag.Title = "供应商";
+    ViewBag.Name = "供应商";
     AjaxOptions ajaxOpts = new AjaxOptions
     {
         UpdateTargetId = "AjaxBody",
@@ -11,7 +11,7 @@
     
 }
 
-<h2>@ViewBag.Title</h2>
+<h1>@ViewBag.Name</h1>
 
 @using (Ajax.BeginForm(ajaxOpts))
 {
