@@ -1,0 +1,164 @@
+﻿@model OB.Models.Client
+
+<fieldset>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HRAdminId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HRAdmin.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HRs)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetHRs())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.WorkCities)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetWorkCities())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.TaxCities)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetTaxCities())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.PensionCities)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetPensionCities())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.AccumulationCities)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetAccumulationCities())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Assurances)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetAssurances())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.BudgetCenters)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetBudgetCenters())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ContractTypes)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetContractTypes())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Departments)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetDepartments())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Documents)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetDocuments())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Levels)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetLevels())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Positions)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetPositions())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Zhangtaos)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetZhangtaos())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ClientPensionCityDocuments)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetClientPensionCityDocuments())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+</fieldset>

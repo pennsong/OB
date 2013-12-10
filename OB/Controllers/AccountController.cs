@@ -42,7 +42,11 @@ namespace OB.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginModel model, string returnUrl)
         {
-            if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
+            //检查是否用户被删除
+            if (Common.GetUserQuery(db).Where(a => a.Name.ToUpper() == model.UserName.ToUpper()).SingleOrDefault() == null)
+            {
+            }
+            else if (ModelState.IsValid && WebSecurity.Login(model.UserName, model.Password, persistCookie: model.RememberMe))
             {
                 return RedirectToLocal(returnUrl);
             }
@@ -571,6 +575,579 @@ namespace OB.Controllers
             }
         }
         #endregion
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteHRAdmin(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteHRAdminSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+            var removeName = result.ToString();
+            try
+            {
+                db.User.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + removeName + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + removeName + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreHRAdmin(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreHRAdminSave(User record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditHRAdmin(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditHRAdminSave(User model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    result.Mail = model.Mail;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + result + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
+                    }
+                }
+            }
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("EditHRAdmin", model);
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult HRAdminDetails(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRAdminQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteHR(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteHRSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+            var removeName = result.ToString();
+            try
+            {
+                db.User.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + removeName + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + removeName + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreHR(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreHRSave(User record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditHR(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditHRSave(User model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    result.Mail = model.Mail;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + result + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
+                    }
+                }
+            }
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("EditHR", model);
+        }
+
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult HRDetails(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetHRQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCandidate(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteCandidateSave(int id, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+            var removeName = result.ToString();
+            try
+            {
+                db.User.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + removeName + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + removeName + "删除失败!");
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreCandidate(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreCandidateSave(User record, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditCandidate(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditCandidateSave(User model, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    result.Mail = model.Mail;
+                    db.PPSave();
+                    Common.RMOk(this, "记录:" + result + "保存成功!");
+                    return Redirect(Url.Content(returnUrl));
+                }
+                catch (Exception e)
+                {
+                    if (e.InnerException.Message.Contains("Cannot insert duplicate key row"))
+                    {
+                        ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
+                    }
+                }
+            }
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("EditCandidate", model);
+        }
+
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CandidateDetails(int id = 0, string returnUrl = "Index")
+        {
+            ViewBag.Path1 = "用户";
+            //检查记录在权限范围内
+            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult HRAdminAbstract(int id)
+        {
+            var result = Common.GetHRAdminQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            return PartialView(result);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult HRAbstract(int id)
+        {
+            var result = Common.GetHRQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            return PartialView(result);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult CandidateAbstract(int id)
+        {
+            var result = Common.GetCandidateQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            return PartialView(result);
+        }
 
         protected override void Dispose(bool disposing)
         {

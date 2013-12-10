@@ -8,6 +8,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Globalization;
 using System.Web.Security;
+using System.Linq;
+using System.ComponentModel;
 
 namespace OB.Models
 {
@@ -29,15 +31,30 @@ namespace OB.Models
             HRClients = new List<Client> { };
         }
 
+        [DisplayName("ID")]
         public int Id { get; set; }
+        [Required]
+        [DisplayName("用户名")]
         public string Name { get; set; }
         [Required]
+        [DisplayName("电子邮件")]
         public string Mail { get; set; }
 
-        //public virtual Employee Employee { get; set; }
-
+        [DisplayName("客户列表")]
         public virtual ICollection<Client> HRAdminClients { get; set; }
+        [DisplayName("客户列表")]
         public virtual ICollection<Client> HRClients { get; set; }
+
+        public List<Client> GetHRAdminClients()
+        {
+            return HRAdminClients.Where(a => a.IsDeleted == false).ToList();
+        }
+
+        public List<Client> GetHRClients()
+        {
+            return HRClients.Where(a => a.IsDeleted == false).ToList();
+        }
+
 
         //FrameLog related
         public object Reference

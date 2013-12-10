@@ -233,12 +233,16 @@ namespace OB.Controllers
             {
                 try
                 {
-                    var hrs = Common.GetUserQuery(db, "HR").Where(a => model.HRIds.Any(b => b == a.Id)).ToList();
+                    var hrs = Common.GetHRQuery(db).Where(a => model.HRIds.Any(b => b == a.Id)).ToList();
                     var taxCities = Common.GetCityQuery(db).Where(a => model.TaxCities.Any(b => b == a.Id)).ToList();
                     var pensionCities = Common.GetCityQuery(db).Where(a => model.PensionCities.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
                     result.PensionCities = pensionCities;
                     result.TaxCities = taxCities;
+                    result.PersonInfoNote = model.PersonInfoNote;
+                    result.EducationNote = model.EducationNote;
+                    result.WorkNote = model.WorkNote;
+                    result.FamilyNote = model.FamilyNote;
                     db.PPSave();
                     Common.RMOk(this, "记录:" + result + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
@@ -386,6 +390,20 @@ namespace OB.Controllers
             //end
             var changes = db.HistoryExplorer.ChangesTo(result, a => a.TaxCities).ToList();
             return PartialView(changes);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult Abstract(int id)
+        {
+            var result = db.Client.Find(id);
+            return PartialView(result);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult AbstractAll(int id)
+        {
+            var result = db.Client.Find(id);
+            return PartialView(result);
         }
 
         protected override void Dispose(bool disposing)

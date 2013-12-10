@@ -888,6 +888,36 @@
     <Content Include="Views\Zhangtao\GetZhangtao.cshtml" />
     <Content Include="Views\Zhangtao\Index.cshtml" />
     <Content Include="Views\Zhangtao\Restore.cshtml" />
+    <Content Include="Views\Account\DeleteHRAdmin.cshtml" />
+    <Content Include="Views\Account\RestoreHRAdmin.cshtml" />
+    <Content Include="Views\Account\EditHRAdmin.cshtml" />
+    <Content Include="Views\Account\HRAdminDetails.cshtml" />
+    <Content Include="Views\Account\EditHR.cshtml" />
+    <Content Include="Views\Account\DeleteHR.cshtml" />
+    <Content Include="Views\Account\RestoreHR.cshtml" />
+    <Content Include="Views\Account\HRDetails.cshtml" />
+    <Content Include="Views\Account\DeleteCandidate.cshtml" />
+    <Content Include="Views\Account\EditCandidate.cshtml" />
+    <Content Include="Views\Account\CandidateDetails.cshtml" />
+    <Content Include="Views\Account\RestoreCandidate.cshtml" />
+    <Content Include="Views\Account\HRAdminAbstract.cshtml" />
+    <Content Include="Views\Account\HRAbstract.cshtml" />
+    <Content Include="Views\Account\CandidateAbstract.cshtml" />
+    <Content Include="Views\Account\DisplayTemplates\Client.cshtml" />
+    <Content Include="Views\Client\Abstract.cshtml" />
+    <Content Include="Views\Client\AbstractAll.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Client.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\City.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\User.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Assurance.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\BudgetCenter.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\ContractType.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Department.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Document.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Level.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Position.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\Zhangtao.cshtml" />
+    <Content Include="Views\Client\DisplayTemplates\ClientPensionCityDocument.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

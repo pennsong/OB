@@ -122,27 +122,14 @@ namespace OB.Lib
             return context.Document.Where(x => x.Client.Name == clientName).ToList();
         }
 
-        //common get record
-        public static List<User> GetUserList(string role, bool includeSoftDeleted = false, string filter = "")
-        {
-            using (var db = new OBContext())
-            {
-                return _GetUser(db, role, includeSoftDeleted, filter).ToList();
-            }
-        }
-
-        public static IQueryable<User> GetUserQuery(OBContext db, string role, bool includeSoftDeleted = false, string filter = "")
-        {
-            return _GetUser(db, role, includeSoftDeleted, filter);
-        }
-
-        private static IQueryable<User> _GetUser(OBContext db, string role, bool includeSoftDeleted = false, string filter = "")
+        /////////////////////
+        //user
+        // general user
+        public static IQueryable<User> GetUserQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
         {
             filter = filter.ToUpper();
 
-            var usernames = Roles.GetUsersInRole(role);
-
-            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+            var result = db.User.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
 
             if (!includeSoftDeleted)
             {
@@ -150,10 +137,10 @@ namespace OB.Lib
             }
             return result;
         }
-        /////////////////////////////////////////////////////
-        //user
+        // end general user
+
         // hradmin
-        public static List<User> GetHRAdminList(string role, bool includeSoftDeleted = false, string filter = "")
+        public static List<User> GetHRAdminList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
@@ -178,7 +165,7 @@ namespace OB.Lib
         // end hradmin
 
         // hr
-        public static List<User> GetHRList(string role, bool includeSoftDeleted = false, string filter = "")
+        public static List<User> GetHRList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {

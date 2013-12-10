@@ -25,6 +25,11 @@ namespace OB.Models
         [DisplayName("社保城市")]
         public int? PensionCityId { get; set; }
 
+        [DisplayName("资料填写说明")]
+        [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
+        public string DocumentNote { get; set; }
+
         [DisplayName("资料列表")]
         public virtual ICollection<Document> Documents { get; set; }
 

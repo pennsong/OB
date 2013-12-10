@@ -1,7 +1,7 @@
-﻿@model OB.Models.Client
+﻿@model OB.Models.User
 
 @{
-    ViewBag.Name = "客户";
+    ViewBag.Name = "HRAdmin";
     ViewBag.Title = "恢复";
 }
 
@@ -10,10 +10,10 @@
 
 <h3>您确定要恢复此条记录么?</h3>
 
-@Html.Action("Abstract", "Client", new { id = Model.Id })
+@Html.Action("HRAdminAbstract", "Account", new { id = Model.Id })
 
 <div>
-    @using (Html.BeginForm("RestoreSave", "Client"))
+    @using (Html.BeginForm("RestoreHRAdminSave", "Account"))
     {
         @Html.AntiForgeryToken()
         @Html.Hidden("id", Model.Id)

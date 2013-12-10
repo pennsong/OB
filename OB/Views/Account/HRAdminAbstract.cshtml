@@ -1,0 +1,35 @@
+﻿@model OB.Models.User
+
+<fieldset>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Mail)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Mail)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.HRAdminClients)
+    </div>
+    <div class="display-field multi">
+        @foreach (var item in Model.GetHRAdminClients())
+        {
+            @Html.DisplayFor(m => item)
+        }
+    </div>
+
+</fieldset>

@@ -1,17 +1,17 @@
-﻿@model OB.Models.Client
+﻿@model OB.Models.User
 
 @{
-    ViewBag.Name = "客户";
+    ViewBag.Name = "HRAdmin";
     ViewBag.Title = "详情";
 }
 
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-@Html.Action("AbstractAll", "Client", new { id = Model.Id })
+@Html.Action("HRAdminAbstract", "Account", new { id = Model.Id })
 
 <p>
-    @using (Html.BeginForm("Edit", "Client"))
+    @using (Html.BeginForm("EditHRAdmin", "Account"))
     {    
         @Html.AntiForgeryToken()
 

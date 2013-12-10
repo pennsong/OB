@@ -25,10 +25,10 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.HRAdminId, "HRAdmin")
+            @Html.LabelFor(model => model.HRAdminId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.GetUserList("HRAdmin"), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.GetHRAdminList(), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.HRAdminId)
         </div>
 

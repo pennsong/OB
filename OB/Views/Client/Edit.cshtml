@@ -8,6 +8,8 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
+@Html.Action("Abstract", "Client", new { id = Model.Id })
+
 @using (Html.BeginForm("EditSave", "Client"))
 {
     @Html.AntiForgeryToken()
@@ -30,7 +32,7 @@
             @Html.LabelFor(model => model.HRAdminId, "HRAdmin")
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.GetUserList("HRAdmin"), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.HRAdminId, new SelectList(Common.GetHRAdminList(), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.HRAdminId)
         </div>
 

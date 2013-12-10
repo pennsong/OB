@@ -47,7 +47,7 @@
                     <div class="groupOperation">
                         @if (item.IsDeleted)
                         {
-                            using (Html.BeginForm("Restore", "Account"))
+                            using (Html.BeginForm("RestoreHR", "Account"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -58,7 +58,7 @@
                         }
                         else
                         {
-                            using (Html.BeginForm("Edit", "Account"))
+                            using (Html.BeginForm("EditHR", "Account"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -66,7 +66,7 @@
                             @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="编辑" />
                             }
-                            using (Html.BeginForm("Details", "Account"))
+                            using (Html.BeginForm("HRDetails", "Account"))
                             {    
                             @Html.AntiForgeryToken()
 
@@ -74,7 +74,7 @@
                             @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="详情" />
                             }
-                            using (Html.BeginForm("Delete", "Account"))
+                            using (Html.BeginForm("DeleteHR", "Account"))
                             {    
                             @Html.AntiForgeryToken()
 
