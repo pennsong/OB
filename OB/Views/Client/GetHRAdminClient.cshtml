@@ -31,8 +31,15 @@
                             @Html.Hidden("returnUrl", returnUrl)
                             <input type="submit" value="编辑" />
                         }
+                        @using (Html.BeginForm("Details", "Client"))
+                        {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="详情" />
+                        }
                     </div>
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
                 </td>
             </tr>
         }

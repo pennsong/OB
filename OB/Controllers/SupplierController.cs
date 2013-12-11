@@ -281,7 +281,7 @@ namespace OB.Controllers
         [ChildActionOnly]
         public PartialViewResult Abstract(int id)
         {
-            var result = db.PensionType.Find(id);
+            var result = db.Supplier.Find(id);
             return PartialView(result);
         }
 

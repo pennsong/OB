@@ -8,7 +8,7 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-@Html.Action("Abstract")
+@Html.Action("Abstract", "ContractType", new { id = Model.Id })
 
 @using (Html.BeginForm("EditSave", "ContractType"))
 {

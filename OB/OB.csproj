@@ -928,6 +928,8 @@
     <Content Include="Views\Document\Abstract.cshtml" />
     <Content Include="Views\PensionType\Abstract.cshtml" />
     <Content Include="Views\Supplier\Abstract.cshtml" />
+    <Content Include="Views\AccumulationType\Abstract.cshtml" />
+    <Content Include="Views\Assurance\Abstract.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -10,7 +10,7 @@
 
 <h3>您确定要恢复此条记录么?</h3>
 
-@Html.Action("Abstract")
+@Html.Action("Abstract", "ClientPensionCityDocument", new { id = Model.Id })
 
 <div>
     @using (Html.BeginForm("RestoreSave", "ClientPensionCityDocument"))

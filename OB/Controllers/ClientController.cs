@@ -60,7 +60,7 @@ namespace OB.Controllers
 
         //
         // GET: /Client/Details/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Details(int id = 0, string returnUrl = "Index")

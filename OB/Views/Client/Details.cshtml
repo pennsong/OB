@@ -11,13 +11,27 @@
 @Html.Action("AbstractAll", "Client", new { id = Model.Id })
 
 <p>
-    @using (Html.BeginForm("Edit", "Client"))
-    {    
+    @if (Roles.GetUsersInRole("Admin").Contains(WebSecurity.CurrentUserName))
+    {
+        using (Html.BeginForm("Edit", "Client"))
+        {    
         @Html.AntiForgeryToken()
 
         @Html.Hidden("id", Model.Id)
         @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
         <input type="submit" value="编辑" />
+        }
+    }
+    @if (Roles.GetUsersInRole("HRAdmin").Contains(WebSecurity.CurrentUserName))
+    {
+        using (Html.BeginForm("HRAdminEditClient", "Client"))
+        {    
+        @Html.AntiForgeryToken()
+
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+        <input type="submit" value="编辑" />
+        }
     }
     <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
 </p>

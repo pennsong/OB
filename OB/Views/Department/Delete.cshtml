@@ -10,7 +10,7 @@
 
 <h3>您确定要删除此条记录么?</h3>
 
-@Html.Action("Abstract")
+@Html.Action("Abstract", "Department", new { id = Model.Id })
 
 <div>
     @using (Html.BeginForm("DeleteSave", "Department"))
