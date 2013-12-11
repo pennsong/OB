@@ -5,6 +5,8 @@ using OB.Models.Base;
 using OB.Models.FrameLog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
@@ -16,6 +18,24 @@ using WebMatrix.WebData;
 
 namespace OB.Models.DAL
 {
+    [Table("webpages_Membership")]
+    public class webpages_Membership
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.None)]
+        public int UserId { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public string ConfirmationToken { get; set; }
+        public bool? IsConfirmed { get; set; }
+        public DateTime? LastPasswordFailureDate { get; set; }
+        public int PasswordFailuresSinceLastSuccess { get; set; }
+        public string Password { get; set; }
+        public DateTime? PasswordChangedDate { get; set; }
+        public string PasswordSalt { get; set; }
+        public string PasswordVerificationToken { get; set; }
+        public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
+    }
+
     public class OBContext : DbContext
     {
         public OBContext()
@@ -49,6 +69,8 @@ namespace OB.Models.DAL
         public DbSet<Weight> Weight { get; set; }
         public DbSet<Work> Work { get; set; }
         public DbSet<Zhangtao> Zhangtao { get; set; }
+        public DbSet<webpages_Membership> webpages_Memberships { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -13,6 +13,7 @@ using OB.Models.ViewModel;
 using System.IO;
 using System.Reflection;
 using System.Web.Helpers;
+using OB.Lib;
 
 namespace OB.Controllers
 {
@@ -166,13 +167,7 @@ namespace OB.Controllers
 
                 try
                 {
-                    WebMail.SmtpServer = "smtp.163.com";
-                    WebMail.SmtpPort = 25;
-                    WebMail.EnableSsl = false;
-                    WebMail.UserName = "ssss123456ssss@163.com";
-                    WebMail.Password = "tcltcl";
-                    WebMail.From = "ssss123456ssss@163.com";
-                    WebMail.Send("ssss123456ssssb@163.com", "RSVP Notification", offer.Content);
+                    Common.MailTo("ssss123456ssssb@163.com", "RSVP Notification", offer.Content);
                 }
                 catch (Exception e)
                 {

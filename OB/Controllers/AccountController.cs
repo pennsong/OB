@@ -110,10 +110,11 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail, IsDeleted = false });
+                    string tmpPassword = GenerateRandomPassword(6);
+                    WebSecurity.CreateUserAndAccount(model.UserName, tmpPassword, new { Mail = model.Mail, IsDeleted = false });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HRAdmin" });
-
+                    Common.MailTo(model.Mail, "E-Onboarding新建用户通知", "您的用户名:" + model.UserName + ",密码:" + tmpPassword + ",登陆网址:" + "<a href='" + Url.Action("Login", "Account", null, "http") + "'>登陆E-Onboarding</a>");
                     Common.RMOk(this, "记录:'" + model.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
@@ -170,9 +171,11 @@ namespace OB.Controllers
                 // 尝试注册用户
                 try
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Mail = model.Mail, IsDeleted = false });
+                    string tmpPassword = GenerateRandomPassword(6);
+                    WebSecurity.CreateUserAndAccount(model.UserName, tmpPassword, new { Mail = model.Mail, IsDeleted = false });
 
                     Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "HR" });
+                    Common.MailTo(model.Mail, "E-Onboarding新建用户通知", "您的用户名:" + model.UserName + ",密码:" + tmpPassword + ",登陆网址:" + "<a href='" + Url.Action("Login", "Account", null, "http") + "'>登陆E-Onboarding</a>");
 
                     Common.RMOk(this, "记录:'" + model.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
@@ -222,7 +225,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCandidateSave(CreateCandidate createCandidate, string returnUrl = "CandidateIndex")
+        public ActionResult CreateCandidateSave(CreateCandidate model, string returnUrl = "CandidateIndex")
         {
             ViewBag.Path1 = "用户";
             if (ModelState.IsValid)
@@ -233,17 +236,23 @@ namespace OB.Controllers
                     using (TransactionScope scope = new TransactionScope(TransactionScopeOption.Required))
                     {
                         // transaction
-                        WebSecurity.CreateUserAndAccount(createCandidate.UserName, createCandidate.Password, new { Mail = createCandidate.Mail, IsDeleted = false });
-                        Roles.AddUsersToRoles(new[] { createCandidate.UserName }, new[] { "Candidate" });
-                        var user = db.User.Where(a => a.Name == createCandidate.UserName).Single();
-                        var employee = new Employee { UserId = user.Id, User = user, EmployeeStatus = EmployeeStatus.新增未通知, ChineseName = createCandidate.ChineseName, ClientId = createCandidate.ClientId };
+                        string tmpPassword = GenerateRandomPassword(6);
+                        WebSecurity.CreateUserAndAccount(model.UserName, tmpPassword, new { Mail = model.Mail, IsDeleted = false });
+
+                        Roles.AddUsersToRoles(new[] { model.UserName }, new[] { "Candidate" });
+
+                        var user = db.User.Where(a => a.Name == model.UserName).Single();
+                        var employee = new Employee { UserId = user.Id, User = user, EmployeeStatus = EmployeeStatus.新增未通知, ChineseName = model.ChineseName, ClientId = model.ClientId };
                         db.Employee.Add(employee);
 
                         db.PPSave();
+
+                        Common.MailTo(model.Mail, "E-Onboarding新建用户通知", "您的用户名:" + model.UserName + ",密码:" + tmpPassword + ",登陆网址:" + "<a href='" + Url.Action("Login", "Account", null, "http") + "'>登陆E-Onboarding</a>");
+
                         scope.Complete();
                         // end transaction
                     }
-                    Common.RMOk(this, "记录:'" + createCandidate.UserName + "'新建成功!");
+                    Common.RMOk(this, "记录:'" + model.UserName + "'新建成功!");
                     return Redirect(Url.Content(returnUrl));
                 }
                 catch (MembershipCreateUserException e)
@@ -254,7 +263,7 @@ namespace OB.Controllers
 
             // 如果我们进行到这一步时某个地方出错，则重新显示表单
             ViewBag.ReturnUrl = returnUrl;
-            return View("CreateCandidate", createCandidate);
+            return View("CreateCandidate", model);
         }
 
         //
@@ -498,6 +507,120 @@ namespace OB.Controllers
 
             ViewBag.ShowRemoveButton = externalLogins.Count > 1 || OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             return PartialView("_RemoveExternalLoginsPartial", externalLogins);
+        }
+
+        [AllowAnonymous]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(string UserName)
+        {
+            //check user existance
+            var user = Membership.GetUser(UserName);
+            if (user == null)
+            {
+                TempData["Message"] = "用户不存在.";
+            }
+            else
+            {
+                //generate password token
+                var token = WebSecurity.GeneratePasswordResetToken(UserName, 15);
+                //create url with above token
+                var resetLink = "<a href='" + Url.Action("ResetPassword", "Account", new { un = UserName, rt = token }, "http") + "'>重置密码</a>";
+                //get user emailid
+                var emailid = (from i in db.User
+                               where i.Name.ToUpper() == UserName.ToUpper()
+                               select i.Mail).SingleOrDefault();
+                //send mail
+                string subject = "E-Onboarding重置密码";
+                string body = "<b>请点击以下链接重置密码</b><br/>" + resetLink; //edit it
+                try
+                {
+                    Common.MailTo(emailid, subject, body);
+                    TempData["Message"] = "密码重置邮件已发送到:" + emailid + ",请于15分钟内操作.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "邮件发送错误." + ex.Message;
+                }
+                //only for testing
+                //TempData["Message"] = resetLink;
+            }
+
+            return View();
+        }
+
+        private string GenerateRandomPassword(int length)
+        {
+            string allowedChars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789";
+            char[] chars = new char[length];
+            Random rd = new Random();
+            for (int i = 0; i < length; i++)
+            {
+                chars[i] = allowedChars[rd.Next(0, allowedChars.Length)];
+            }
+            return new string(chars);
+        }
+
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string un, string rt)
+        {
+            //TODO: Check the un and rt matching and then perform following
+            //get userid of received username
+            var userid = (from i in db.User
+                          where i.Name == un
+                          select i.Id).FirstOrDefault();
+            //check userid and token matches
+            bool any = (from j in db.webpages_Memberships
+                        where (j.UserId == userid)
+                        && (j.PasswordVerificationToken == rt)
+                        && (j.PasswordVerificationTokenExpirationDate > DateTime.UtcNow)
+                        select j).Any();
+
+            if (any == true)
+            {
+                //generate random password
+                string newpassword = GenerateRandomPassword(6);
+                //reset password
+                bool response = WebSecurity.ResetPassword(rt, newpassword);
+                if (response == true)
+                {
+                    //get user emailid to send password
+                    var emailid = (from i in db.User
+                                   where i.Name == un
+                                   select i.Mail).FirstOrDefault();
+                    //send email
+                    string subject = "E-Onboarding新密码";
+                    string body = "<b>重置的新密码</b><br/>" + newpassword; //edit it
+                    try
+                    {
+                        Common.MailTo(emailid, subject, body);
+                        TempData["Message"] = "重置的新密码已发送到:" + emailid;
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["Message"] = "邮件发送错误." + ex.Message;
+                    }
+
+                    //display message
+                    TempData["Message"] = "成功! 请检查您的邮箱:" + emailid + ". 您的新密码是 " + newpassword;
+                }
+                else
+                {
+                    TempData["Message"] = "非法操作!.";
+                }
+            }
+            else
+            {
+                TempData["Message"] = "不合法令牌或令牌已过期!.";
+            }
+
+            return View();
         }
 
         #region 帮助程序

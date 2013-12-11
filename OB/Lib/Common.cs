@@ -7,7 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
@@ -122,6 +124,40 @@ namespace OB.Lib
             return context.Document.Where(x => x.Client.Name == clientName).ToList();
         }
 
+        //public static void MailTo(string mailAddress, string subject, string content)
+        //{
+        //    WebMail.SmtpServer = "smtp.163.com";
+        //    WebMail.SmtpPort = 25;
+        //    WebMail.EnableSsl = false;
+        //    WebMail.UserName = "ssss123456ssss@163.com";
+        //    WebMail.Password = "tcltcl";
+        //    WebMail.From = "ssss123456ssss@163.com";
+        //    WebMail.Send(mailAddress, subject, content);
+        //}
+
+        public static void MailTo(string emailid, string subject, string body)
+        {
+            System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
+            client.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+            client.EnableSsl = false;
+            client.Host = "smtp.163.com";
+            client.Port = 25;
+
+
+            System.Net.NetworkCredential credentials = new System.Net.NetworkCredential("ssss123456ssss@163.com", "tcltcl");
+            client.UseDefaultCredentials = false;
+            client.Credentials = credentials;
+
+            System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
+            msg.From = new MailAddress("ssss123456ssss@163.com");
+            msg.To.Add(new MailAddress(emailid));
+
+            msg.Subject = subject;
+            msg.IsBodyHtml = true;
+            msg.Body = body;
+
+            client.Send(msg);
+        }
         /////////////////////
         //user
         // general user

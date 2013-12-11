@@ -845,3 +845,7 @@ div.groupOperation form {
 .autoHeight {
     height: auto;
 }
+
+.help {
+    float: right;
+}

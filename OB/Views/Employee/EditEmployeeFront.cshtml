@@ -5,7 +5,14 @@
 }
 
 <h2>EditEmployeeFront</h2>
-
+<div class="help">
+    <div class="">
+        @Html.DisplayNameFor(model => model.Employee.Client.PersonInfoNote)
+    </div>
+    <div class="">
+        @Html.DisplayFor(model => model.Employee.Client.PersonInfoNote)
+    </div>
+</div>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
