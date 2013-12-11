@@ -19,6 +19,11 @@ namespace OB.Models.ViewModel
 
         public int ClientId { get; set; }
 
+        [DisplayName("资料填写说明")]
+        [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
+        public string DocumentNote { get; set; }
+
         [DisplayName("资料列表")]
         public ICollection<int> DocumentIds { get; set; }
     }

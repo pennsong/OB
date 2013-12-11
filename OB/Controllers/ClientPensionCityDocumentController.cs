@@ -122,6 +122,8 @@ namespace OB.Controllers
             {
                 ClientPensionCityDocumentId = result.Id,
                 ClientId = result.ClientId,
+                DocumentNote = result.DocumentNote,
+
                 DocumentIds = result.Documents.Select(a => a.Id).ToList(),
             };
 
@@ -152,6 +154,7 @@ namespace OB.Controllers
                 {
                     var documentIds = Common.GetClientDocumentQuery(db, model.ClientId).Where(a => model.DocumentIds.Any(b => b == a.Id)).ToList();
                     result.Documents = documentIds;
+                    result.DocumentNote = model.DocumentNote;
                     db.PPSave();
                     Common.RMOk(this, "记录:" + result + "保存成功!");
                     return Redirect(Url.Content(returnUrl));

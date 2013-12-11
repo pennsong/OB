@@ -38,7 +38,13 @@
                 @Html.DropDownListFor(m => m.PensionCityId, new SelectList(Common.GetClientPensionCityList(Model.ClientId), "Id", "Name"), String.Empty)
             }
         </div>
-
+        <div class="editor-label">
+            @Html.LabelFor(model => model.DocumentNote)
+        </div>
+        <div class="editor-field autoHeight">
+            @Html.EditorFor(model => model.DocumentNote)
+            @Html.ValidationMessageFor(model => model.DocumentNote)
+        </div>
         <p>
             <input type="submit" value="保存" />
         </p>

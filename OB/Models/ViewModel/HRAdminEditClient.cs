@@ -17,28 +17,30 @@ namespace OB.Models.ViewModel
             TaxCities = new List<int> { };
         }
 
-        [HiddenInput(DisplayValue = true)]
         [DisplayName("客户ID")]
         public int ClientId { get; set; }
 
-        [HiddenInput(DisplayValue = true)]
         [DisplayName("客户名称")]
         public string ClientName { get; set; }
 
         [DisplayName("个人资料填写说明")]
         [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
         public string PersonInfoNote { get; set; }
 
         [DisplayName("教育经历填写说明")]
         [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
         public string EducationNote { get; set; }
 
         [DisplayName("工作经历填写说明")]
         [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
         public string WorkNote { get; set; }
 
         [DisplayName("家庭信息填写说明")]
         [MaxLength(3000)]
+        [DataType(DataType.MultilineText)]
         public string FamilyNote { get; set; }
 
         [DisplayName("HR列表")]

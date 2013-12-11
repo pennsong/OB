@@ -13,41 +13,66 @@
 
     <fieldset>
         <legend>EditClientHR</legend>
-        <div>
-            @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
-            @Html.EditorFor(model => model)
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
+        @Html.HiddenFor(model => model.ClientId)
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.ClientId)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.ClientId)
+        </div>
+        @Html.HiddenFor(model => model.ClientName)
+        <div class="display-label">
+            @Html.DisplayNameFor(model => model.ClientName)
+        </div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.ClientName)
+        </div>
+
+        <div class="editor-label">
             @Html.LabelFor(model => model.HRIds)
+        </div>
+        <div class="editor-field autoHeight">
             @Html.ListBoxFor(model => model.HRIds, new MultiSelectList(OB.Lib.Common.GetHRList(), "Id", "Name", Model.HRIds), new { @class = "multiselect2side", size = "10" })
+        </div>
+        <div class="editor-label">
             @Html.LabelFor(model => model.PensionCities)
+        </div>
+        <div class="editor-field autoHeight">
             @Html.ListBoxFor(model => model.PensionCities, new MultiSelectList(OB.Lib.Common.GetCityList(), "Id", "Name", Model.PensionCities), new { @class = "multiselect2side", size = "10" })
+        </div>
+        <div class="editor-label">
             @Html.LabelFor(model => model.TaxCities)
+        </div>
+        <div class="editor-field autoHeight">
             @Html.ListBoxFor(model => model.TaxCities, new MultiSelectList(OB.Lib.Common.GetCityList(), "Id", "Name", Model.TaxCities), new { @class = "multiselect2side", size = "10" })
         </div>
+
         <div class="editor-label">
             @Html.LabelFor(model => model.PersonInfoNote)
         </div>
-        <div class="editor-field">
+        <div class="editor-field autoHeight">
             @Html.EditorFor(model => model.PersonInfoNote)
             @Html.ValidationMessageFor(model => model.PersonInfoNote)
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.EducationNote)
         </div>
-        <div class="editor-field">
+        <div class="editor-field autoHeight">
             @Html.EditorFor(model => model.EducationNote)
             @Html.ValidationMessageFor(model => model.EducationNote)
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.WorkNote)
         </div>
-        <div class="editor-field">
+        <div class="editor-field autoHeight">
             @Html.EditorFor(model => model.WorkNote)
             @Html.ValidationMessageFor(model => model.WorkNote)
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.FamilyNote)
         </div>
-        <div class="editor-field">
+        <div class="editor-field autoHeight">
             @Html.EditorFor(model => model.FamilyNote)
             @Html.ValidationMessageFor(model => model.FamilyNote)
         </div>

@@ -205,6 +205,11 @@ namespace OB.Controllers
             {
                 ClientId = result.Id,
                 ClientName = result.Name,
+                EducationNote = result.EducationNote,
+                FamilyNote = result.FamilyNote,
+                PersonInfoNote = result.PersonInfoNote,
+                WorkNote = result.WorkNote,
+
                 HRIds = result.HRs.Select(a => a.Id).ToList(),
                 PensionCities = result.PensionCities.Select(a => a.Id).ToList(),
                 TaxCities = result.TaxCities.Select(a => a.Id).ToList(),

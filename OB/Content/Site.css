@@ -841,3 +841,7 @@ div.groupOperation form {
 .red {
     background-color: red;
 }
+
+.autoHeight {
+    height: auto;
+}
