@@ -8,16 +8,8 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>@ViewBag.Name</legend>
+@Html.Action("Abstract", "PensionType", new { id = Model.Id })
 
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-</fieldset>
 <p>
     @using (Html.BeginForm("Edit", "PensionType"))
     {    

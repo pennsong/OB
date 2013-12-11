@@ -263,6 +263,13 @@ namespace OB.Controllers
             return Redirect(Url.Content(returnUrl));
         }
 
+        [ChildActionOnly]
+        public PartialViewResult Abstract(int id)
+        {
+            var result = db.Assurance.Find(id);
+            return PartialView(result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

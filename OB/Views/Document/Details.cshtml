@@ -8,30 +8,8 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>@ViewBag.Name</legend>
+@Html.Action("Abstract", "Document", new { id = Model.Id })
 
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.ClientId)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Client.Name)
-    </div>
-
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.Weight)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Weight)
-    </div>
-</fieldset>
 <p>
     @using (Html.BeginForm("Edit", "Document"))
     {    

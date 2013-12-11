@@ -8,6 +8,8 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
+@Html.Action("Abstract", "ClientCitySupplierHukou", new { id = Model.ClientCitySupplierHukouId })
+
 @using (Html.BeginForm("EditSave", "ClientCitySupplierHukou"))
 {
     @Html.AntiForgeryToken()

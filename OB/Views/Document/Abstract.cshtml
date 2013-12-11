@@ -1,0 +1,31 @@
+﻿@model OB.Models.Document
+
+<fieldset>
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.ClientId)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Client.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">
+        @Html.DisplayNameFor(model => model.Weight)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Weight)
+    </div>
+</fieldset>

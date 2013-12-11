@@ -8,16 +8,9 @@
 <h1>@ViewBag.Name</h1>
 <h2>@ViewBag.Title</h2>
 
-<fieldset>
-    <legend>@ViewBag.Name</legend>
+<h3>您确定要删除此条记录么?</h3>
 
-    <div class="display-label">
-        @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-</fieldset>
+@Html.Action("Abstract", "AccumulationType", new { id = Model.Id })
 <p>
     @using (Html.BeginForm("Edit", "AccumulationType"))
     {    
