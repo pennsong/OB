@@ -10,16 +10,7 @@
 
 <h3>您确定要删除此条记录么?</h3>
 
-<fieldset>
-    <legend>@ViewBag.Name</legend>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-</fieldset>
+@Html.Action("Abstract", "AccumulationType", new { id = Model.Id })
 
 <div>
     @using (Html.BeginForm("DeleteSave", "AccumulationType"))

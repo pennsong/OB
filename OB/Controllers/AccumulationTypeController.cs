@@ -262,6 +262,13 @@ namespace OB.Controllers
             return View(result);
         }
 
+        [ChildActionOnly]
+        public PartialViewResult Abstract(int id)
+        {
+            var result = db.AccumulationType.Find(id);
+            return PartialView(result);
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();
