@@ -28,12 +28,14 @@
             @Html.ListBoxFor(model => model.DocumentIds, new MultiSelectList(OB.Lib.Common.GetClientDocumentList(Model.ClientId), "Id", "Name", Model.DocumentIds), new { @class = "multiselect2side", size = "10" })
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.DocumentNote)
-        </div>
-        <div class="editor-field autoHeight">
-            @Html.EditorFor(model => model.DocumentNote)
-            @Html.ValidationMessageFor(model => model.DocumentNote)
+        <div class="clearBoth">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.DocumentNote)
+            </div>
+            <div class="editor-field autoHeight">
+                @Html.TextAreaFor(model => model.DocumentNote, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.DocumentNote)
+            </div>
         </div>
         <p>
             <input type="submit" value="保存" />
@@ -48,9 +50,18 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
+    @Scripts.Render("~/Scripts/ckeditor/ckeditor.js")
     <script type="text/javascript">
         $().ready(function () {
             $(".multiselect2side").multiselect2side();
+
+            $(".multiselect2side").multiselect2side();
+
+            CKEDITOR.replace('Content', {
+                // Load the German interface.
+                language: 'zh-cn'
+            });
+
         });
     </script>
 }

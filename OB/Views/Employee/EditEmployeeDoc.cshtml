@@ -5,6 +5,10 @@
 }
 
 <h2>EditEmployeeDoc</h2>
+<div class="help">
+    <p>个人资料填写说明</p>
+    @Html.Action("GetDocumentNote", "Employee", new { id = Model.EmployeeId })
+</div>
 <fieldset>
     <legend>EditEmployeeDoc</legend>
     @Html.Action("EmployeeAbstract", "Employee", new { id = Model.EmployeeId })

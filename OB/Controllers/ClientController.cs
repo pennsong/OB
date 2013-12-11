@@ -221,6 +221,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult HRAdminEditClientSave(HRAdminEditClient model, string returnUrl = "HRAdminClientIndex")
         {
             ViewBag.Path1 = "参数设置";

@@ -48,34 +48,37 @@
             @Html.ListBoxFor(model => model.TaxCities, new MultiSelectList(OB.Lib.Common.GetCityList(), "Id", "Name", Model.TaxCities), new { @class = "multiselect2side", size = "10" })
         </div>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.PersonInfoNote)
+        <div class="clearBoth">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.PersonInfoNote)
+            </div>
+            <div class="editor-field autoHeight">
+                @Html.TextAreaFor(model => model.PersonInfoNote, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.PersonInfoNote)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.EducationNote)
+            </div>
+            <div class="editor-field autoHeight">
+                @Html.TextAreaFor(model => model.EducationNote, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.EducationNote)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.WorkNote)
+            </div>
+            <div class="editor-field autoHeight">
+                @Html.TextAreaFor(model => model.WorkNote, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.WorkNote)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.FamilyNote)
+            </div>
+            <div class="editor-field autoHeight">
+                @Html.TextAreaFor(model => model.FamilyNote, new { @class = "ckeditor" })
+                @Html.ValidationMessageFor(model => model.FamilyNote)
+            </div>
         </div>
-        <div class="editor-field autoHeight">
-            @Html.EditorFor(model => model.PersonInfoNote)
-            @Html.ValidationMessageFor(model => model.PersonInfoNote)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.EducationNote)
-        </div>
-        <div class="editor-field autoHeight">
-            @Html.EditorFor(model => model.EducationNote)
-            @Html.ValidationMessageFor(model => model.EducationNote)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.WorkNote)
-        </div>
-        <div class="editor-field autoHeight">
-            @Html.EditorFor(model => model.WorkNote)
-            @Html.ValidationMessageFor(model => model.WorkNote)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.FamilyNote)
-        </div>
-        <div class="editor-field autoHeight">
-            @Html.EditorFor(model => model.FamilyNote)
-            @Html.ValidationMessageFor(model => model.FamilyNote)
-        </div>
+
         <p>
             <input type="submit" value="保存" />
         </p>
@@ -89,9 +92,16 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/Scripts/cw/jquery.multiselect2side.js")
+    @Scripts.Render("~/Scripts/ckeditor/ckeditor.js")
+
     <script type="text/javascript">
         $().ready(function () {
             $(".multiselect2side").multiselect2side();
+
+            CKEDITOR.replace('Content', {
+                // Load the German interface.
+                language: 'zh-cn'
+            });
         });
     </script>
 }

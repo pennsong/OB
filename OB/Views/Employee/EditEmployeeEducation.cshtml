@@ -5,7 +5,10 @@
 }
 
 <h2>EditEmployeeEducation</h2>
-
+<div class="help">
+    <p>教育经历填写说明</p>
+    @Html.Action("GetEducationNote", "Employee", new { id = Model.EmployeeId })
+</div>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

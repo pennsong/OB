@@ -847,5 +847,9 @@ div.groupOperation form {
 }
 
 .help {
-    float: right;
+
+}
+
+.clearBoth {
+    clear: both;
 }

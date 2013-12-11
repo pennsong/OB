@@ -6,12 +6,8 @@
 
 <h2>EditEmployeeFront</h2>
 <div class="help">
-    <div class="">
-        @Html.DisplayNameFor(model => model.Employee.Client.PersonInfoNote)
-    </div>
-    <div class="">
-        @Html.DisplayFor(model => model.Employee.Client.PersonInfoNote)
-    </div>
+    <p>家庭信息填写说明</p>
+    @Html.Action("GetFamilyNote", "Employee", new { id = Model.EmployeeId })
 </div>
 @using (Html.BeginForm())
 {

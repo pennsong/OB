@@ -864,6 +864,49 @@ namespace OB.Controllers
             return PartialView(employee);
         }
 
+        [ChildActionOnly]
+        public MvcHtmlString GetWorkNote(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            return MvcHtmlString.Create(employee.Client.WorkNote);
+        }
+
+        [ChildActionOnly]
+        public MvcHtmlString GetEducationNote(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            return MvcHtmlString.Create(employee.Client.EducationNote);
+        }
+
+        [ChildActionOnly]
+        public MvcHtmlString GetFamilyNote(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            return MvcHtmlString.Create(employee.Client.FamilyNote);
+        }
+
+        [ChildActionOnly]
+        public MvcHtmlString GetPersonInfoNote(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            return MvcHtmlString.Create(employee.Client.PersonInfoNote);
+        }
+
+        [ChildActionOnly]
+        public MvcHtmlString GetDocumentNote(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            var tmp = db.ClientPensionCityDocument.Where(a => a.ClientId == employee.ClientId && ((a.PensionCityId == null && employee.PensionCityId == null) || a.PensionCityId == employee.PensionCityId)).SingleOrDefault();
+            if (tmp == null)
+            {
+                return MvcHtmlString.Create("");
+            }
+            else
+            {
+                return MvcHtmlString.Create(tmp.DocumentNote);
+            }
+        }
+
         protected override void Dispose(bool disposing)
         {
             db.Dispose();
