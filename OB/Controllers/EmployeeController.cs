@@ -363,6 +363,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             Mapper.CreateMap<Employee, EditEmployeeFront>().ForMember(x => x.EmployeeId, o => o.MapFrom(s => s.Id));
             var editEmployeeFront = Mapper.Map<Employee, EditEmployeeFront>(employee);
             editEmployeeFront.Employee = employee;
@@ -386,6 +392,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             if (ModelState.IsValid)
             {
                 employee.Timestamp = editEmployeeFront.Timestamp;
@@ -451,6 +463,24 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "Candidate")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Submit(int id)//employeeId
+        {
+            ViewBag.Path1 = "递交成功>";
+            Employee employee = db.Employee.Where(a => a.UserId == WebSecurity.CurrentUserId && a.Id == id).SingleOrDefault();
+            if (employee == null)
+            {
+                return HttpNotFound();
+            }
+
+            employee.EmployeeStatus = EmployeeStatus.新增已填写;
+            db.PPSave();
+
+            return View();
+        }
+
+        [Authorize(Roles = "Candidate")]
         public ActionResult EditEmployeeEducation()
         {
             ViewBag.Path1 = "教育信息>";
@@ -459,6 +489,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             var editEmployeeEducation = new EditEmployeeEducation { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Education, EditEducation>().ForMember(x => x.EducationId, o => o.MapFrom(s => s.Id));
@@ -480,6 +516,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             if (ModelState.IsValid)
             {
                 var old = new HashSet<int>(employee.GetEducations().Select(a => a.Id));
@@ -535,6 +577,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             var editEmployeeWork = new EditEmployeeWork { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Work, EditWork>().ForMember(x => x.WorkId, o => o.MapFrom(s => s.Id));
@@ -556,6 +604,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             if (ModelState.IsValid)
             {
                 var old = new HashSet<int>(employee.GetWorks().Select(a => a.Id));
@@ -613,6 +667,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             var editEmployeeFamily = new EditEmployeeFamily { EmployeeId = employee.Id };
 
             Mapper.CreateMap<Family, EditFamily>().ForMember(x => x.FamilyId, o => o.MapFrom(s => s.Id));
@@ -634,6 +694,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             if (ModelState.IsValid)
             {
                 var old = new HashSet<int>(employee.GetFamilies().Select(a => a.Id));
@@ -690,6 +756,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             var editEmployeeDoc = new EditEmployeeDoc { EmployeeId = employee.Id };
 
             // 取得资料列表模版
@@ -727,6 +799,12 @@ namespace OB.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (employee.EmployeeStatus != EmployeeStatus.新增已通知)
+            {
+                return RedirectToAction("FrontDetail");
+            }
+
             if (ModelState.IsValid)
             {
                 var old = new HashSet<int>(employee.GetEmployeeDocs().Select(a => a.Id));

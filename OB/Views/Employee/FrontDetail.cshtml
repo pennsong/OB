@@ -412,6 +412,19 @@
     </div>
 </fieldset>
 
+@if (Model.EmployeeStatus == EmployeeStatus.新增已通知)
+{
+    using (Html.BeginForm("Submit", "Employee", new { id = Model.Id }))
+    {
+    @Html.AntiForgeryToken()
+    <input type="submit" value="递交" />
+    }
+}
+else
+{
+    <p>资料已递交</p>
+}
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>

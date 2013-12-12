@@ -336,6 +336,7 @@
     <Compile Include="Models\Zhangtao.cs" />
     <Compile Include="Models\Assurance.cs" />
     <None Include="Properties\PublishProfiles\LocalTest.pubxml" />
+    <Content Include="Images\defaultFile.png" />
     <Content Include="Scripts\ckeditor\build-config.js" />
     <Content Include="Scripts\ckeditor\ckeditor.js" />
     <Content Include="Scripts\ckeditor\config.js" />
@@ -931,6 +932,7 @@
     <Content Include="Views\Supplier\Abstract.cshtml" />
     <Content Include="Views\AccumulationType\Abstract.cshtml" />
     <Content Include="Views\Assurance\Abstract.cshtml" />
+    <Content Include="Views\Employee\Submit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
