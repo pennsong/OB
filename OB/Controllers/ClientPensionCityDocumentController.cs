@@ -75,6 +75,7 @@ namespace OB.Controllers
         [Authorize(Roles = "HRAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult CreateSave(ClientPensionCityDocument model, string returnUrl = "Index")
         {
             ViewBag.Path1 = "参数设置";

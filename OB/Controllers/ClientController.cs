@@ -211,8 +211,10 @@ namespace OB.Controllers
                 WorkNote = result.WorkNote,
 
                 HRIds = result.HRs.Select(a => a.Id).ToList(),
-                PensionCities = result.PensionCities.Select(a => a.Id).ToList(),
+                WorkCities = result.WorkCities.Select(a => a.Id).ToList(),
                 TaxCities = result.TaxCities.Select(a => a.Id).ToList(),
+                PensionCities = result.PensionCities.Select(a => a.Id).ToList(),
+                AccumulationCities = result.AccumulationCities.Select(a => a.Id).ToList(),
             };
             ViewBag.ReturnUrl = returnUrl;
             return View(record);
@@ -227,7 +229,7 @@ namespace OB.Controllers
             ViewBag.Path1 = "参数设置";
             //检查记录在权限范围内
             var results = Common.GetHRAdminClientQuery(db, WebSecurity.CurrentUserId);
-            var result = results.Include(a => a.HRs).Include(a => a.PensionCities).Include(a => a.TaxCities).Where(a => a.Id == model.ClientId).SingleOrDefault();
+            var result = results.Include(a => a.HRs).Include(a => a.PensionCities).Include(a => a.TaxCities).Include(a => a.WorkCities).Include(a => a.AccumulationCities).Where(a => a.Id == model.ClientId).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -240,11 +242,16 @@ namespace OB.Controllers
                 try
                 {
                     var hrs = Common.GetHRQuery(db).Where(a => model.HRIds.Any(b => b == a.Id)).ToList();
+                    var workCities = Common.GetCityQuery(db).Where(a => model.WorkCities.Any(b => b == a.Id)).ToList();
                     var taxCities = Common.GetCityQuery(db).Where(a => model.TaxCities.Any(b => b == a.Id)).ToList();
                     var pensionCities = Common.GetCityQuery(db).Where(a => model.PensionCities.Any(b => b == a.Id)).ToList();
+                    var accumulationCities = Common.GetCityQuery(db).Where(a => model.AccumulationCities.Any(b => b == a.Id)).ToList();
                     result.HRs = hrs;
-                    result.PensionCities = pensionCities;
+                    result.WorkCities = workCities;
                     result.TaxCities = taxCities;
+                    result.PensionCities = pensionCities;
+                    result.AccumulationCities = accumulationCities;
+
                     result.PersonInfoNote = model.PersonInfoNote;
                     result.EducationNote = model.EducationNote;
                     result.WorkNote = model.WorkNote;

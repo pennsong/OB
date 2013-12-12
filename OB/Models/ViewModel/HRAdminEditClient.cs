@@ -45,9 +45,13 @@ namespace OB.Models.ViewModel
 
         [DisplayName("HR列表")]
         public ICollection<int> HRIds { get; set; }
-        [DisplayName("社保城市列表")]
-        public ICollection<int> PensionCities { get; set; }
+        [DisplayName("工作城市列表")]
+        public ICollection<int> WorkCities { get; set; }
         [DisplayName("计税城市列表")]
         public ICollection<int> TaxCities { get; set; }
+        [DisplayName("社保城市列表")]
+        public ICollection<int> PensionCities { get; set; }
+        [DisplayName("公积金城市列表")]
+        public ICollection<int> AccumulationCities { get; set; }
     }
 }

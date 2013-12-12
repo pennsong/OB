@@ -701,11 +701,10 @@ namespace OB.Controllers
 
             foreach (var item in clientPensionCityDocument.Documents)
             {
-                //var employeeDoc = db.EmployeeDoc.Where(a => a.EmployeeId == employee.Id && a.DocumentId == item.Id).SingleOrDefault();
-                var employeeDoc = employee.EmployeeDocs.Where(a => a.IsDeleted == false).Where(a => a.DocumentId == item.Id).SingleOrDefault();
+                var employeeDoc = employee.EmployeeDocs.Where(a => a.DocumentId == item.Id).SingleOrDefault();
                 var imgPath = "";
                 int employeeDocId = 0;
-                if (employeeDoc != null && !String.IsNullOrWhiteSpace(employeeDoc.ImgPath))
+                if (employeeDoc != null)
                 {
                     imgPath = employeeDoc.ImgPath;
                     employeeDocId = employeeDoc.Id;
@@ -731,17 +730,7 @@ namespace OB.Controllers
             if (ModelState.IsValid)
             {
                 var old = new HashSet<int>(employee.GetEmployeeDocs().Select(a => a.Id));
-                var cur = new HashSet<int>(editEmployeeDoc.EditSingleEmployeeDocs.Where(a => !String.IsNullOrWhiteSpace(a.ImgPath)).Select(a => a.EmployeeDocId));
-                // 取得不在最新列表中的记录删除
-                var del = (from a in old
-                           where !(cur.Contains(a))
-                           select a).ToList();
-                foreach (var i in del)
-                {
-                    var e = db.EmployeeDoc.Find(i);
-                    db.EmployeeDoc.Remove(e);
-                }
-                // end
+                var cur = new HashSet<int>(editEmployeeDoc.EditSingleEmployeeDocs.Where(a => a.EmployeeDocId != 0).Select(a => a.EmployeeDocId));
 
                 // 取得在最新列表中的记录更新
                 var upd = (from a in old
@@ -774,40 +763,7 @@ namespace OB.Controllers
         [HttpPost]
         public string UploadImg(HttpPostedFileBase filebase)
         {
-            DateTime importNow = DateTime.Now;
-            TimeSpan _TimeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
-            long importTime = (long)_TimeSpan.TotalMilliseconds;
-
-            HttpPostedFileBase file = Request.Files["files"];
-            string FileName;
-            string savePath;
-            if (file == null || file.ContentLength <= 0)
-            {
-                return "文件不能为空";
-            }
-            else
-            {
-                string filename = Path.GetFileName(file.FileName);
-                int filesize = file.ContentLength;//获取上传文件的大小单位为字节byte
-                string fileEx = System.IO.Path.GetExtension(filename);//获取上传文件的扩展名
-                string NoFileName = System.IO.Path.GetFileNameWithoutExtension(filename);//获取无扩展名的文件名
-                int Maxsize = 10000 * 1024;//定义上传文件的最大空间大小为4M
-                string FileType = ".xls,.xlsx";//定义上传文件的类型字符串
-
-                FileName = NoFileName + importNow.ToString("yyyyMMddhhmmss") + "_" + importTime + fileEx;
-                //if (!FileType.Contains(fileEx))
-                //{
-                //    return "文件类型不对，只能导入xls和xlsx格式的文件";
-                //}
-                if (filesize >= Maxsize)
-                {
-                    return "上传文件超过2M，不能上传";
-                }
-                string uploadPath = AppDomain.CurrentDomain.BaseDirectory + "Content/UploadedFolder/";
-                savePath = Path.Combine(uploadPath, FileName);
-                file.SaveAs(savePath);
-                return "OK" + FileName;
-            }
+            return Common.UploadImg(this, filebase);
         }
 
         //

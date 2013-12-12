@@ -19,7 +19,7 @@ namespace OB.Models
             ClientPensionCityDocuments = new List<ClientPensionCityDocument> { };
         }
 
-        [HiddenInput(DisplayValue = false)]
+        [HiddenInput(DisplayValue = true)]
         public int Id { get; set; }
 
         [HiddenInput(DisplayValue = true)]
@@ -34,6 +34,9 @@ namespace OB.Models
         [Required]
         [DisplayName("权重")]
         public int Weight { get; set; }
+
+        [DisplayName("模版")]
+        public string TemplatePath { get; set; }
 
         public virtual Client Client { get; set; }
 

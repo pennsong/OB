@@ -128,7 +128,7 @@ namespace OB.Models.DAL
         #endregion
     }
 
-    public class OBInitializer : DropCreateDatabaseIfModelChanges<OBContext>
+    public class OBInitializer : CreateDatabaseIfNotExists<OBContext>
     {
         protected override void Seed(OBContext context)
         {

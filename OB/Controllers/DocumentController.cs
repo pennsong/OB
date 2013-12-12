@@ -150,6 +150,7 @@ namespace OB.Controllers
                 {
                     result.Name = model.Name;
                     result.Weight = model.Weight;
+                    result.TemplatePath = model.TemplatePath;
                     db.PPSave();
                     Common.RMOk(this, "记录:" + model + "保存成功!");
                     return Redirect(Url.Content(returnUrl));
@@ -274,6 +275,27 @@ namespace OB.Controllers
                 Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
             }
             return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HRAdmin")]
+        [HttpPost]
+        public string UploadImg(HttpPostedFileBase filebase)
+        {
+            return Common.UploadImg(this, filebase, "Template");
+        }
+
+        [Authorize]
+        public MvcHtmlString TemplateDownloadLink(int id)//Document's Id
+        {
+            var document = db.Document.Find(id);
+            if (document == null || String.IsNullOrWhiteSpace(document.TemplatePath))
+            {
+                return MvcHtmlString.Create("");
+            }
+            else
+            {
+                return MvcHtmlString.Create("<a href='" + Url.Content("~/Content/UploadedFolder/Template/" + document.TemplatePath) + "'>下载模版</a>");
+            }
         }
 
         [ChildActionOnly]

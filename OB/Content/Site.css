@@ -794,7 +794,8 @@ img.doc {
     position: absolute;
     display: inline-block;
     top: 3px;
-    left: 60%;
+    left: 305px;
+    width: 400px;
 }
 
 .editor-label {
@@ -847,7 +848,6 @@ div.groupOperation form {
 }
 
 .help {
-
 }
 
 .clearBoth {

@@ -329,6 +329,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Content\UploadedFolder\dummy.txt" />
+    <Content Include="Content\UploadedFolder\Template\dummy.txt" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Compile Include="Models\BudgetCenter.cs" />
