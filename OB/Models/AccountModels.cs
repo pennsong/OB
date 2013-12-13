@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Web.Security;
 using System.Linq;
 using System.ComponentModel;
+using OB.Models.DAL;
 
 namespace OB.Models
 {
@@ -44,6 +45,8 @@ namespace OB.Models
         public virtual ICollection<Client> HRAdminClients { get; set; }
         [DisplayName("客户列表")]
         public virtual ICollection<Client> HRClients { get; set; }
+
+        public virtual ICollection<Role> Roles { get; set; }
 
         public List<Client> GetHRAdminClients()
         {

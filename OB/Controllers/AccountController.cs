@@ -203,7 +203,7 @@ namespace OB.Controllers
         public PartialViewResult GetCandidate(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
             keyword = keyword.ToUpper();
-            var results = Common.GetCandidateQuery(db, includeSoftDeleted, keyword);
+            var results = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId, includeSoftDeleted, keyword);
             results = results.OrderBy(a => a.Name);
             var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return PartialView(Common<User>.Page(this, rv, results));
@@ -1074,7 +1074,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1094,7 +1094,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1130,7 +1130,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1150,7 +1150,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1179,7 +1179,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1200,7 +1200,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db).Where(a => a.Id == model.Id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == model.Id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1238,7 +1238,7 @@ namespace OB.Controllers
         {
             ViewBag.Path1 = "用户";
             //检查记录在权限范围内
-            var result = Common.GetCandidateQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId).Where(a => a.Id == id).SingleOrDefault();
             if (result == null)
             {
                 Common.RMError(this);
@@ -1268,7 +1268,7 @@ namespace OB.Controllers
         [ChildActionOnly]
         public PartialViewResult CandidateAbstract(int id)
         {
-            var result = Common.GetCandidateQuery(db, true).Where(a => a.Id == id).SingleOrDefault();
+            var result = Common.GetHRCandidateQuery(db, WebSecurity.CurrentUserId, true).Where(a => a.Id == id).SingleOrDefault();
             return PartialView(result);
         }
 

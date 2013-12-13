@@ -36,6 +36,18 @@ namespace OB.Models.DAL
         public DateTime? PasswordVerificationTokenExpirationDate { get; set; }
     }
 
+    [Table("webpages_Roles")]
+    public class Role
+    {
+        [Key]
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]
+        public int RoleId { get; set; }
+        [Required]
+        public string RoleName { get; set; }
+
+        public virtual ICollection<User> Users { get; set; }
+    }
+
     public class OBContext : DbContext
     {
         public OBContext()
@@ -43,8 +55,6 @@ namespace OB.Models.DAL
         {
             Logger = new FrameLogModule<ChangeSet, User>(new ChangeSetFactory(), FrameLogContext);
         }
-
-        public DbSet<User> User { get; set; }
 
         public DbSet<AccumulationType> AccumulationType { get; set; }
         public DbSet<Assurance> Assurance { get; set; }
@@ -69,7 +79,10 @@ namespace OB.Models.DAL
         public DbSet<Weight> Weight { get; set; }
         public DbSet<Work> Work { get; set; }
         public DbSet<Zhangtao> Zhangtao { get; set; }
+
+        public DbSet<User> User { get; set; }
         public DbSet<webpages_Membership> webpages_Memberships { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -77,6 +90,8 @@ namespace OB.Models.DAL
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             modelBuilder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
             modelBuilder.Conventions.Remove<ManyToManyCascadeDeleteConvention>();
+
+            modelBuilder.Entity<User>().HasMany(c => c.Roles).WithMany(i => i.Users).Map(t => t.MapLeftKey("UserID").MapRightKey("RoleID").ToTable("webpages_UsersInRoles"));
 
             modelBuilder.Entity<Client>().HasMany(c => c.WorkCities).WithMany(i => i.WorkCityClients).Map(t => t.MapLeftKey("ClientId").MapRightKey("CityId").ToTable("ClientWorkCity"));
             modelBuilder.Entity<Client>().HasMany(c => c.TaxCities).WithMany(i => i.TaxCityClients).Map(t => t.MapLeftKey("ClientId").MapRightKey("CityId").ToTable("ClientTaxCity"));
@@ -128,7 +143,7 @@ namespace OB.Models.DAL
         #endregion
     }
 
-    public class OBInitializer : CreateDatabaseIfNotExists<OBContext>
+    public class OBInitializer : DropCreateDatabaseAlways<OBContext>
     {
         protected override void Seed(OBContext context)
         {

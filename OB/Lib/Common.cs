@@ -164,17 +164,6 @@ namespace OB.Lib
             return context.Document.Where(x => x.Client.Name == clientName).ToList();
         }
 
-        //public static void MailTo(string mailAddress, string subject, string content)
-        //{
-        //    WebMail.SmtpServer = "smtp.163.com";
-        //    WebMail.SmtpPort = 25;
-        //    WebMail.EnableSsl = false;
-        //    WebMail.UserName = "ssss123456ssss@163.com";
-        //    WebMail.Password = "tcltcl";
-        //    WebMail.From = "ssss123456ssss@163.com";
-        //    WebMail.Send(mailAddress, subject, content);
-        //}
-
         public static void MailTo(string emailid, string subject, string body)
         {
             System.Net.Mail.SmtpClient client = new System.Net.Mail.SmtpClient();
@@ -200,12 +189,25 @@ namespace OB.Lib
         }
         /////////////////////
         //user
-        // general user
-        public static IQueryable<User> GetUserQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        // general User
+        public static IQueryable<User> GetUserQuery(OBContext db, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
         {
-            filter = filter.ToUpper();
+            IQueryable<User> result;
 
-            var result = db.User.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+            if (noTrack)
+            {
+                result = db.User.AsNoTracking().AsQueryable();
+            }
+            else
+            {
+                result = db.User.AsQueryable();
+            }
+
+            if (!String.IsNullOrWhiteSpace(filter))
+            {
+                filter = filter.ToUpper();
+                result = result.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+            }
 
             if (!includeSoftDeleted)
             {
@@ -213,49 +215,82 @@ namespace OB.Lib
             }
             return result;
         }
-        // end general user
 
-        // hradmin
+        public static User GetUser(OBContext db, int userId, bool includeSoftDeleted = false, bool noTrack = false)
+        {
+            return GetUserQuery(db, includeSoftDeleted, null, noTrack).Where(a => a.Id == userId).SingleOrDefault();
+        }
+        // end general User
+
+        // HRAdmin
         public static List<User> GetHRAdminList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return GetHRAdminQuery(db, includeSoftDeleted, filter).ToList();
+                return GetHRAdminQuery(db, includeSoftDeleted, filter, true).ToList();
             }
         }
 
-        public static IQueryable<User> GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        public static IQueryable<User> GetHRAdminQuery(OBContext db, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
         {
-            filter = filter.ToUpper();
+            IQueryable<User> result;
 
-            var usernames = Roles.GetUsersInRole("HRAdmin");
+            result = GetUserQuery(db, includeSoftDeleted, filter, noTrack).Where(a => a.Roles.Any(ab => ab.RoleName == "HRAdmin"));
 
-            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
-
-            if (!includeSoftDeleted)
-            {
-                result = result.Where(a => a.IsDeleted == false);
-            }
             return result;
         }
-        // end hradmin
+        // end HRAdmin
 
-        // hr
+        // HR
         public static List<User> GetHRList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
             {
-                return GetHRQuery(db, includeSoftDeleted, filter).ToList();
+                return GetHRQuery(db, includeSoftDeleted, filter, true).ToList();
             }
         }
 
-        public static IQueryable<User> GetHRQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        public static IQueryable<User> GetHRQuery(OBContext db, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
         {
-            filter = filter.ToUpper();
+            IQueryable<User> result;
 
-            var usernames = Roles.GetUsersInRole("HR");
+            result = GetUserQuery(db, includeSoftDeleted, filter, noTrack).Where(a => a.Roles.Any(ab => ab.RoleName == "HR"));
 
-            var result = db.User.Where(x => usernames.Contains(x.Name)).Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
+            return result;
+        }
+        // end HR
+
+        // Candidate
+        public static IQueryable<User> GetHRCandidateQuery(OBContext db, int hrUserId, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
+        {
+            IQueryable<User> result;
+
+            result = GetUserQuery(db, includeSoftDeleted, filter, noTrack).Where(a => a.Roles.Any(ab => ab.RoleName == "Candidate")).Where(a => (GetEmployeeQuery(db, true, null, true).Where(aa => aa.UserId == a.Id).Single().Client.HRs.Any(aaa => aaa.Id == hrUserId)));
+
+            return result;
+        }
+        // end Candidate
+        //end User
+
+        //Employee
+        public static IQueryable<Employee> GetEmployeeQuery(OBContext db, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
+        {
+            IQueryable<Employee> result;
+
+            if (noTrack)
+            {
+                result = db.Employee.AsNoTracking().AsQueryable();
+            }
+            else
+            {
+                result = db.Employee.AsQueryable();
+            }
+
+            if (!String.IsNullOrWhiteSpace(filter))
+            {
+                filter = filter.ToUpper();
+                result = result.Where(a => a.ChineseName.ToUpper().Contains(filter) || a.EnglishName.ToUpper().Contains(filter));
+            }
 
             if (!includeSoftDeleted)
             {
@@ -263,44 +298,30 @@ namespace OB.Lib
             }
             return result;
         }
-        // end hr
 
-        // candidate
-        public static List<User> GetCandidateList(string role, bool includeSoftDeleted = false, string filter = "")
+        public static Employee GetEmployee(OBContext db, int employeeId, bool includeSoftDeleted = false, bool noTrack = false)
         {
-            using (var db = new OBContext())
-            {
-                return GetCandidateQuery(db, includeSoftDeleted, filter).ToList();
-            }
+            return GetEmployeeQuery(db, includeSoftDeleted, null, noTrack).Where(a => a.Id == employeeId).SingleOrDefault();
         }
 
-        public static IQueryable<User> GetCandidateQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        // HR Employee
+        public static IQueryable<Employee> GetHREmployeeQuery(OBContext db, int hrUserId, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
         {
-            filter = filter.ToUpper();
+            IQueryable<Employee> result;
 
-            var usernames = Roles.GetUsersInRole("Candidate");
+            result = GetEmployeeQuery(db, includeSoftDeleted, filter, noTrack).Where(a => a.Client.HRs.Any(ab => ab.Id == hrUserId));
 
-            var curUserHRClients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id);
-
-            var result = from a in db.User
-                         join b in db.Employee
-                         on a.Id equals b.UserId
-                         where usernames.Contains(a.Name) && curUserHRClients.Contains(b.ClientId)
-                         select a;
-
-            result = result.Where(a => a.Name.ToUpper().Contains(filter) || a.Mail.ToUpper().Contains(filter));
-
-            if (!includeSoftDeleted)
-            {
-                result = result.Where(a => a.IsDeleted == false);
-            }
             return result;
         }
-        // end candidate
-        //end user
 
-        //employee
-        // hr employee
+
+
+
+
+
+
+
+
         public static List<Employee> GetHREmployeeList(string role, bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
@@ -336,18 +357,9 @@ namespace OB.Lib
             }
             return result;
         }
-        // end hr employee
-        public static IQueryable<Employee> GetEmployeeQuery(OBContext db, int id, bool includeSoftDeleted = false)
-        {
-            var result = db.Employee.Where(a => a.Id == id);
+        // end HR Employee
 
-            if (!includeSoftDeleted)
-            {
-                result = result.Where(a => a.IsDeleted == false);
-            }
-            return result;
-        }
-        //end employee
+        //end Employee
 
         //certificate
         public static IQueryable<Certificate> GetCertificateQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
@@ -365,44 +377,64 @@ namespace OB.Lib
         }
         //end certificate
 
-        //client
-        public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
+        //Client
+        public static List<Client> GetClientList(bool includeSoftDeleted = false, string filter = null)
         {
-            keyword = keyword.ToUpper();
+            using (var db = new OBContext())
+            {
+                return GetClientQuery(db, includeSoftDeleted, filter, true).ToList();
+            }
+        }
 
-            var result = db.Client.Where(a => a.Name.Contains(keyword));
+        public static IQueryable<Client> GetClientQuery(OBContext db, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
+        {
+            IQueryable<Client> result;
+
+            if (noTrack)
+            {
+                result = db.Client.AsNoTracking().AsQueryable();
+            }
+            else
+            {
+                result = db.Client.AsQueryable();
+            }
+
+            if (!String.IsNullOrWhiteSpace(filter))
+            {
+                filter = filter.ToUpper();
+                result = result.Where(a => a.Name.ToUpper().Contains(filter));
+            }
 
             if (!includeSoftDeleted)
             {
                 result = result.Where(a => a.IsDeleted == false);
             }
-
             return result;
         }
-        // hrClient
-        public static List<Client> GetHRClientList(int userId, string filter = "")
+
+        public static Client GetClient(OBContext db, int ClientId, bool includeSoftDeleted = false, bool noTrack = false)
+        {
+            return GetClientQuery(db, includeSoftDeleted, null, noTrack).Where(a => a.Id == ClientId).SingleOrDefault();
+        }
+
+        // HR Client
+        public static List<Client> GetHRClientList(int hrUserId, bool includeSoftDeleted = false, string filter = null)
         {
             using (var db = new OBContext())
             {
-                return GetHRClientQuery(db, userId, filter).ToList();
+                return GetHRClientQuery(db, hrUserId, includeSoftDeleted, filter, true).ToList();
             }
         }
 
-        public static IQueryable<Client> GetHRClientQuery(OBContext db, int userId, string filter = "")
+        public static IQueryable<Client> GetHRClientQuery(OBContext db, int hrUserId, bool includeSoftDeleted = false, string filter = null, bool noTrack = false)
         {
-            filter = filter.ToUpper();
+            IQueryable<Client> result;
 
-            var userHRClients = db.User.Where(a => a.Id == userId).Single().HRClients.Select(a => a.Id);
+            result = GetClientQuery(db, includeSoftDeleted, filter, noTrack).Where(a => a.HRs.Any(ab => ab.Id == hrUserId));
 
-            var result = db.Client.Where(a => a.Name.ToUpper().Contains(filter)).Where(a => userHRClients.Contains(a.Id));
-
-            if (true)
-            {
-                result = result.Where(a => a.IsDeleted == false);
-            }
             return result;
         }
-        // end hrClient
+        // end HR Client
 
         // hrAdminClient
         public static List<Client> GetHRAdminClientList(int userId, string filter = "")
@@ -648,7 +680,7 @@ namespace OB.Lib
 
         public static IQueryable<City> GetEmployeeWorkCityQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
@@ -668,7 +700,7 @@ namespace OB.Lib
 
         public static IQueryable<City> GetEmployeeTaxCityQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
@@ -688,7 +720,7 @@ namespace OB.Lib
 
         public static IQueryable<City> GetEmployeePensionCityQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
@@ -708,7 +740,7 @@ namespace OB.Lib
 
         public static IQueryable<City> GetEmployeeAccumulationCityQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
@@ -804,7 +836,7 @@ namespace OB.Lib
 
         public static IQueryable<AccumulationType> GetEmployeeAccumulationTypeQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
@@ -856,7 +888,7 @@ namespace OB.Lib
 
         public static IQueryable<PensionType> GetEmployeePensionTypeQuery(OBContext db, int employeeId)
         {
-            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            var employee = GetEmployee(db, employeeId);
             if (employee == null)
             {
                 return null;
