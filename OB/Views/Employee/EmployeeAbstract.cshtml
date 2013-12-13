@@ -1,4 +1,26 @@
 ﻿@model OB.Models.Employee
-@*@Html.DisplayForModel(Model)*@
-@Html.DisplayFor(model => model.Id)
-@Html.DisplayFor(model => model.ChineseName)
+
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.Id)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.Id)
+</div>
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.ChineseName)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.ChineseName)
+</div>
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.ClientId)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.Client.Name)
+</div>
+<div class="display-label">
+    @Html.DisplayNameFor(model => model.PensionCityId)
+</div>
+<div class="display-field">
+    @Html.DisplayFor(model => model.PensionCity.Name)
+</div>

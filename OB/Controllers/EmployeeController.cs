@@ -14,6 +14,7 @@ using System.IO;
 using System.Reflection;
 using System.Web.Helpers;
 using OB.Lib;
+using System.Web.Routing;
 
 namespace OB.Controllers
 {
@@ -21,63 +22,131 @@ namespace OB.Controllers
     {
         private OBContext db = new OBContext();
 
-        //
-        // GET: /Employee/
-
-        public ActionResult Index(int page = 1)
+        [Authorize(Roles = "HR")]
+        public ActionResult HREmployeeIndex(int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            return View(db.Employee.OrderBy(a => a.Id).ToList());
-        }
-
-        //
-        // GET: /Employee/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-            Employee employee = db.Employee.Find(id);
-            if (employee == null)
-            {
-                return HttpNotFound();
-            }
-            return View(employee);
-        }
-
-        //
-        // GET: /Employee/Create
-
-        public ActionResult Create()
-        {
+            ViewBag.Path1 = "员工管理";
+            ViewBag.RV = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", "HREmployeeIndex" }, { "actionAjax", "GetHREmployee" }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
             return View();
         }
 
-        //
-        // POST: /Employee/Create
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Employee employee)
+        [Authorize(Roles = "HR")]
+        public PartialViewResult GetHREmployee(string returnRoot, string actionAjax = "", int page = 1, string keyword = "", bool includeSoftDeleted = false)
         {
-            if (ModelState.IsValid)
-            {
-                db.Employee.Add(employee);
-                db.PPSave();
-                return RedirectToAction("Index");
-            }
-
-            return View(employee);
+            keyword = keyword.ToUpper();
+            var results = Common.GetHREmployeeQuery(db, includeSoftDeleted, keyword);
+            results = results.OrderBy(a => a.EnglishName).OrderBy(a => a.ChineseName).OrderBy(a => a.Id).OrderBy(a => a.Client.Name);
+            var rv = new RouteValueDictionary { { "tickTime", DateTime.Now.ToLongTimeString() }, { "returnRoot", returnRoot }, { "actionAjax", actionAjax }, { "page", page }, { "keyword", keyword }, { "includeSoftDeleted", includeSoftDeleted } };
+            return PartialView(Common<Employee>.Page(this, rv, results));
         }
 
         //
-        // GET: /Employee/Edit/5
-
-        public ActionResult Edit(int id = 0)
+        // GET: /Employee/Delete/5
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id = 0, string returnUrl = "HREmployeeIndex")
         {
-            Employee employee = db.Employee.Find(id);
-            if (employee == null)
+            ViewBag.Path1 = "员工管理";
+            //检查记录在权限范围内
+            var result = Common.GetHREmployeeQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
             {
-                return HttpNotFound();
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
             }
-            return View(employee);
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        //
+        // POST: /Employee/Delete/5
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteSave(int id, string returnUrl = "HREmployeeIndex")
+        {
+            ViewBag.Path1 = "员工管理";
+            //检查记录在权限范围内
+            var result = Common.GetHREmployeeQuery(db).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+            var removeName = result.ToString();
+            try
+            {
+                db.Employee.Remove(result);
+                db.PPSave();
+                Common.RMOk(this, "记录:" + removeName + "删除成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.InnerException.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Common.RMError(this, "记录" + removeName + "被其他记录引用, 不能删除!");
+                }
+                else
+                {
+                    Common.RMError(this, "记录" + removeName + "删除失败!" + e.ToString());
+                }
+            }
+            return Redirect(Url.Content(returnUrl));
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Restore(int id = 0, string returnUrl = "HREmployeeIndex")
+        {
+            ViewBag.Path1 = "员工管理";
+            //检查记录在权限范围内
+            var result = Common.GetHREmployeeQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View(result);
+        }
+
+        [Authorize(Roles = "HR")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RestoreSave(Employee record, string returnUrl = "HREmployeeIndex")
+        {
+            ViewBag.Path1 = "员工管理";
+            //检查记录在权限范围内
+            var result = Common.GetHREmployeeQuery(db, true).Where(a => a.IsDeleted == true).Where(a => a.Id == record.Id).SingleOrDefault();
+            if (result == null)
+            {
+                Common.RMError(this);
+                return Redirect(Url.Content(returnUrl));
+            }
+            //end
+
+            try
+            {
+                result.IsDeleted = false;
+                db.PPSave();
+                Common.RMOk(this, "记录:" + result + "恢复成功!");
+                return Redirect(Url.Content(returnUrl));
+            }
+            catch (Exception e)
+            {
+                Common.RMOk(this, "记录" + result + "恢复失败!" + e.ToString());
+            }
+            return Redirect(Url.Content(returnUrl));
         }
 
         [Authorize(Roles = "Candidate")]
@@ -101,7 +170,7 @@ namespace OB.Controllers
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult BackDetail(int id)
+        public ActionResult BackDetails(int id, string returnUrl = "HREmployeeIndex")
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -111,27 +180,15 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
 
-            return View(employee);
-        }
+            ViewBag.ReturnUrl = returnUrl;
 
-        //
-        // POST: /Employee/Edit/5
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Employee employee)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(employee).State = EntityState.Modified;
-                db.PPSave();
-                return RedirectToAction("Index");
-            }
             return View(employee);
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult SendOffer(int id)//employeeId
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SendOffer(int id, string returnUrl = "HREmployeeIndex")//employeeId
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -141,6 +198,9 @@ namespace OB.Controllers
                 return HttpNotFound();
             }
             Offer offer = new Offer { EmployeeId = id, Content = "test" };
+
+            ViewBag.ReturnUrl = returnUrl;
+
             return View(offer);
         }
 
@@ -148,7 +208,7 @@ namespace OB.Controllers
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
-        public ActionResult SendOffer(Offer offer)
+        public ActionResult SendOfferSave(Offer offer, string returnUrl = "HREmployeeIndex")
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -159,29 +219,31 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                employee.Timestamp = offer.Timestamp;
-                employee.EmployeeStatus = EmployeeStatus.新增已通知;
-                employee.OfferContent = offer.Content;
-
-                db.PPSave();
-
                 try
                 {
-                    Common.MailTo("ssss123456ssssb@163.com", "RSVP Notification", offer.Content);
+                    employee.Timestamp = offer.Timestamp;
+                    employee.EmployeeStatus = EmployeeStatus.新增已通知;
+                    employee.OfferContent = offer.Content;
+
+                    Common.MailTo(employee.User.Mail, "Offer from E-Onboarding", offer.Content);
+
+                    db.PPSave();
+
+                    return Redirect(Url.Content(returnUrl));
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine(e.ToString());
+                    Common.RMOk(this, "记录" + employee + "发送Offer失败!" + e.ToString());
                 }
-
-                return RedirectToAction("HREmployeeIndex");
             }
+
+            ViewBag.ReturnUrl = returnUrl;
 
             return View(offer);
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult OnPosition(int id)//employeeId
+        public ActionResult OnPosition(int id, string returnUrl = "HREmployeeIndex")//employeeId
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -192,6 +254,8 @@ namespace OB.Controllers
             }
             OnPosition onPosition = new OnPosition { EmployeeId = employee.Id, Timestamp = employee.Timestamp };
 
+            ViewBag.ReturnUrl = returnUrl;
+
             return View(onPosition);
         }
 
@@ -199,7 +263,7 @@ namespace OB.Controllers
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
-        public ActionResult OnPosition(OnPosition onPosition)
+        public ActionResult OnPositionSave(OnPosition onPosition, string returnUrl = "HREmployeeIndex")
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -210,27 +274,30 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                employee.Timestamp = onPosition.Timestamp;
-                employee.EmployeeStatus = EmployeeStatus.在职;
+                try
+                {
+                    employee.Timestamp = onPosition.Timestamp;
+                    employee.EmployeeStatus = EmployeeStatus.在职;
 
-                db.PPSave();
-                return RedirectToAction("HREmployeeIndex");
+                    db.PPSave();
+
+                    return Redirect(Url.Content(returnUrl));
+                }
+                catch (Exception e)
+                {
+                    Common.RMOk(this, "记录" + employee + "入职失败!" + e.ToString());
+                }
             }
+
+            ViewBag.ReturnUrl = returnUrl;
 
             return View(onPosition);
         }
 
         [Authorize(Roles = "HR")]
-        public ActionResult HREmployeeIndex()
-        {
-            ViewBag.Path1 = "员工管理";
-            var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
-            var employees = db.Employee.Where(a => clientList.Contains(a.ClientId));
-            return View(employees.ToList());
-        }
-
-        [Authorize(Roles = "HR")]
-        public ActionResult EditEmployeeBack(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditEmployeeBack(int id, string returnUrl = "HREmployeeIndex")
         {
             ViewBag.Path1 = "员工管理";
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
@@ -249,13 +316,15 @@ namespace OB.Controllers
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
 
+            ViewBag.ReturnUrl = returnUrl;
+
             return View(editEmployeeBack);
         }
 
         [Authorize(Roles = "HR")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditEmployeeBack(EditEmployeeBack editEmployeeBack)
+        public ActionResult EditEmployeeBackSave(EditEmployeeBack editEmployeeBack, string returnUrl = "HREmployeeIndex")
         {
             var clientList = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id).ToList();
             Employee employee = db.Employee.Include(a => a.BudgetCenters).Include(a => a.Assurances).Where(a => a.Id == editEmployeeBack.EmployeeId && clientList.Contains(a.ClientId)).SingleOrDefault();
@@ -265,84 +334,91 @@ namespace OB.Controllers
             }
             if (ModelState.IsValid)
             {
-                employee.Timestamp = editEmployeeBack.Timestamp;
-                employee.ChineseName = editEmployeeBack.ChineseName;
-                employee.Mobile1 = editEmployeeBack.Mobile1;
-                employee.PrivateMail = editEmployeeBack.PrivateMail;
-                employee.EmployeeNote = editEmployeeBack.EmployeeNote;
-                employee.BasicInfo6 = editEmployeeBack.BasicInfo6;
-                employee.BasicInfo7 = editEmployeeBack.BasicInfo7;
-                employee.BasicInfo8 = editEmployeeBack.BasicInfo8;
-                employee.BasicInfo9 = editEmployeeBack.BasicInfo9;
-                employee.BasicInfo10 = editEmployeeBack.BasicInfo10;
-                employee.PensionCityId = editEmployeeBack.PensionCityId;
-                employee.AccumulationCityId = editEmployeeBack.AccumulationCityId;
-                employee.PensionTypeId = editEmployeeBack.PensionTypeId;
-                employee.AccumulationTypeId = editEmployeeBack.AccumulationTypeId;
-                employee.WorkClient = editEmployeeBack.WorkClient;
-                employee.CompanyMail = editEmployeeBack.CompanyMail;
-                employee.EnterDate = editEmployeeBack.EnterDate;
-                employee.ProbationDueDate = editEmployeeBack.ProbationDueDate;
-                employee.EnterClientDate = editEmployeeBack.EnterClientDate;
-                employee.CompanyYearAdjust = editEmployeeBack.CompanyYearAdjust;
-                employee.SocialYearAdjust = editEmployeeBack.SocialYearAdjust;
-                employee.VacationDays = editEmployeeBack.VacationDays;
-                employee.WorkCityId = editEmployeeBack.WorkCityId;
-                employee.DepartmentId = editEmployeeBack.DepartmentId;
-                employee.LevelId = editEmployeeBack.LevelId;
-                employee.PositionId = editEmployeeBack.PositionId;
-                employee.ContractNumber = editEmployeeBack.ContractNumber;
-                employee.ContractBeginDate = editEmployeeBack.ContractBeginDate;
-                employee.ContractEndDate = editEmployeeBack.ContractEndDate;
-                employee.ContractTypeId = editEmployeeBack.ContractTypeId;
-                employee.ProbationSalary = editEmployeeBack.ProbationSalary;
-                employee.Salary = editEmployeeBack.Salary;
-                employee.PensionStartMonth = editEmployeeBack.PensionStartMonth;
-                employee.AccumulationStartMonth = editEmployeeBack.AccumulationStartMonth;
-                employee.PayByCompany = editEmployeeBack.PayByCompany;
-                employee.Yljs = editEmployeeBack.Yljs;
-                employee.Syjs = editEmployeeBack.Syjs;
-                employee.Yiliaojs = editEmployeeBack.Yiliaojs;
-                employee.Gsjs = editEmployeeBack.Gsjs;
-                employee.Shengyujs = editEmployeeBack.Shengyujs;
-                employee.Qtjs = editEmployeeBack.Qtjs;
-                employee.Bcjs = editEmployeeBack.Bcjs;
-                employee.Gjjjs = editEmployeeBack.Gjjjs;
-                employee.Bcgjjjs = editEmployeeBack.Bcgjjjs;
-                employee.TaxType = editEmployeeBack.TaxType;
-                employee.ZhangtaoId = editEmployeeBack.ZhangtaoId;
-                employee.TaxCityId = editEmployeeBack.TaxCityId;
-                employee.HireInfo1 = editEmployeeBack.HireInfo1;
-                employee.HireInfo2 = editEmployeeBack.HireInfo2;
-                employee.HireInfo3 = editEmployeeBack.HireInfo3;
-                employee.HireInfo4 = editEmployeeBack.HireInfo4;
-                employee.HireInfo5 = editEmployeeBack.HireInfo5;
-                employee.HireInfo6 = editEmployeeBack.HireInfo6;
-                employee.HireInfo7 = editEmployeeBack.HireInfo7;
-                employee.HireInfo8 = editEmployeeBack.HireInfo8;
-                employee.HireInfo9 = editEmployeeBack.HireInfo9;
-                employee.HireInfo10 = editEmployeeBack.HireInfo10;
-                employee.HireInfo11 = editEmployeeBack.HireInfo11;
-                employee.HireInfo12 = editEmployeeBack.HireInfo12;
-                employee.HireInfo13 = editEmployeeBack.HireInfo13;
-                employee.HireInfo14 = editEmployeeBack.HireInfo14;
-                employee.HireInfo15 = editEmployeeBack.HireInfo15;
-                employee.HireInfo16 = editEmployeeBack.HireInfo16;
-                employee.HireInfo17 = editEmployeeBack.HireInfo17;
-                employee.HireInfo18 = editEmployeeBack.HireInfo18;
-                employee.HireInfo19 = editEmployeeBack.HireInfo19;
-                employee.HireInfo20 = editEmployeeBack.HireInfo20;
+                try
+                {
+                    employee.Timestamp = editEmployeeBack.Timestamp;
+                    employee.ChineseName = editEmployeeBack.ChineseName;
+                    employee.Mobile1 = editEmployeeBack.Mobile1;
+                    employee.PrivateMail = editEmployeeBack.PrivateMail;
+                    employee.EmployeeNote = editEmployeeBack.EmployeeNote;
+                    employee.BasicInfo6 = editEmployeeBack.BasicInfo6;
+                    employee.BasicInfo7 = editEmployeeBack.BasicInfo7;
+                    employee.BasicInfo8 = editEmployeeBack.BasicInfo8;
+                    employee.BasicInfo9 = editEmployeeBack.BasicInfo9;
+                    employee.BasicInfo10 = editEmployeeBack.BasicInfo10;
+                    employee.PensionCityId = editEmployeeBack.PensionCityId;
+                    employee.AccumulationCityId = editEmployeeBack.AccumulationCityId;
+                    employee.PensionTypeId = editEmployeeBack.PensionTypeId;
+                    employee.AccumulationTypeId = editEmployeeBack.AccumulationTypeId;
+                    employee.WorkClient = editEmployeeBack.WorkClient;
+                    employee.CompanyMail = editEmployeeBack.CompanyMail;
+                    employee.EnterDate = editEmployeeBack.EnterDate;
+                    employee.ProbationDueDate = editEmployeeBack.ProbationDueDate;
+                    employee.EnterClientDate = editEmployeeBack.EnterClientDate;
+                    employee.CompanyYearAdjust = editEmployeeBack.CompanyYearAdjust;
+                    employee.SocialYearAdjust = editEmployeeBack.SocialYearAdjust;
+                    employee.VacationDays = editEmployeeBack.VacationDays;
+                    employee.WorkCityId = editEmployeeBack.WorkCityId;
+                    employee.DepartmentId = editEmployeeBack.DepartmentId;
+                    employee.LevelId = editEmployeeBack.LevelId;
+                    employee.PositionId = editEmployeeBack.PositionId;
+                    employee.ContractNumber = editEmployeeBack.ContractNumber;
+                    employee.ContractBeginDate = editEmployeeBack.ContractBeginDate;
+                    employee.ContractEndDate = editEmployeeBack.ContractEndDate;
+                    employee.ContractTypeId = editEmployeeBack.ContractTypeId;
+                    employee.ProbationSalary = editEmployeeBack.ProbationSalary;
+                    employee.Salary = editEmployeeBack.Salary;
+                    employee.PensionStartMonth = editEmployeeBack.PensionStartMonth;
+                    employee.AccumulationStartMonth = editEmployeeBack.AccumulationStartMonth;
+                    employee.PayByCompany = editEmployeeBack.PayByCompany;
+                    employee.Yljs = editEmployeeBack.Yljs;
+                    employee.Syjs = editEmployeeBack.Syjs;
+                    employee.Yiliaojs = editEmployeeBack.Yiliaojs;
+                    employee.Gsjs = editEmployeeBack.Gsjs;
+                    employee.Shengyujs = editEmployeeBack.Shengyujs;
+                    employee.Qtjs = editEmployeeBack.Qtjs;
+                    employee.Bcjs = editEmployeeBack.Bcjs;
+                    employee.Gjjjs = editEmployeeBack.Gjjjs;
+                    employee.Bcgjjjs = editEmployeeBack.Bcgjjjs;
+                    employee.TaxType = editEmployeeBack.TaxType;
+                    employee.ZhangtaoId = editEmployeeBack.ZhangtaoId;
+                    employee.TaxCityId = editEmployeeBack.TaxCityId;
+                    employee.HireInfo1 = editEmployeeBack.HireInfo1;
+                    employee.HireInfo2 = editEmployeeBack.HireInfo2;
+                    employee.HireInfo3 = editEmployeeBack.HireInfo3;
+                    employee.HireInfo4 = editEmployeeBack.HireInfo4;
+                    employee.HireInfo5 = editEmployeeBack.HireInfo5;
+                    employee.HireInfo6 = editEmployeeBack.HireInfo6;
+                    employee.HireInfo7 = editEmployeeBack.HireInfo7;
+                    employee.HireInfo8 = editEmployeeBack.HireInfo8;
+                    employee.HireInfo9 = editEmployeeBack.HireInfo9;
+                    employee.HireInfo10 = editEmployeeBack.HireInfo10;
+                    employee.HireInfo11 = editEmployeeBack.HireInfo11;
+                    employee.HireInfo12 = editEmployeeBack.HireInfo12;
+                    employee.HireInfo13 = editEmployeeBack.HireInfo13;
+                    employee.HireInfo14 = editEmployeeBack.HireInfo14;
+                    employee.HireInfo15 = editEmployeeBack.HireInfo15;
+                    employee.HireInfo16 = editEmployeeBack.HireInfo16;
+                    employee.HireInfo17 = editEmployeeBack.HireInfo17;
+                    employee.HireInfo18 = editEmployeeBack.HireInfo18;
+                    employee.HireInfo19 = editEmployeeBack.HireInfo19;
+                    employee.HireInfo20 = editEmployeeBack.HireInfo20;
 
-                //save budgetcenters, assurances
+                    //save budgetcenters, assurances
 
-                var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
-                employee.BudgetCenters = budgetcenters;
+                    var budgetcenters = db.BudgetCenter.Where(a => editEmployeeBack.BudgetCenterIds.Any(b => b == a.Id)).ToList();
+                    employee.BudgetCenters = budgetcenters;
 
-                var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
-                employee.Assurances = assurances;
+                    var assurances = db.Assurance.Where(a => editEmployeeBack.AssuranceIds.Any(b => b == a.Id)).ToList();
+                    employee.Assurances = assurances;
 
-                db.PPSave();
-                return RedirectToAction("HREmployeeIndex");
+                    db.PPSave();
+                    return RedirectToAction("HREmployeeIndex");
+                }
+                catch (Exception e)
+                {
+                    Common.RMOk(this, "记录" + employee + "编辑失败!" + e.ToString());
+                }
             }
             editEmployeeBack.Employee = employee;
             editEmployeeBack.BudgetCenterIds = employee.BudgetCenters.Select(a => a.Id).ToList();
@@ -351,7 +427,9 @@ namespace OB.Controllers
             ViewBag.PensionTypeList = db.PensionType.OrderBy(a => a.Id).ToList();
             ViewBag.AccumulationTypeList = db.AccumulationType.OrderBy(a => a.Id).ToList();
 
-            return View(editEmployeeBack);
+            ViewBag.ReturnUrl = returnUrl;
+
+            return View("EditEmployeeBack", editEmployeeBack);
         }
 
         [Authorize(Roles = "Candidate")]
@@ -844,32 +922,6 @@ namespace OB.Controllers
             return Common.UploadImg(this, filebase);
         }
 
-        //
-        // GET: /Employee/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            Employee employee = db.Employee.Find(id);
-            if (employee == null)
-            {
-                return HttpNotFound();
-            }
-            return View(employee);
-        }
-
-        //
-        // POST: /Employee/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Employee employee = db.Employee.Find(id);
-            db.Employee.Remove(employee);
-            db.PPSave();
-            return RedirectToAction("Index");
-        }
-
         [ChildActionOnly]
         public PartialViewResult EmployeeAbstract(int id = 0)
         {
@@ -878,7 +930,7 @@ namespace OB.Controllers
         }
 
         [ChildActionOnly]
-        public PartialViewResult EmployeeDetail(int id = 0)//employeeId
+        public PartialViewResult EmployeeDetails(int id = 0)//employeeId
         {
             var employee = db.Employee.Find(id);
             return PartialView(employee);
@@ -938,6 +990,20 @@ namespace OB.Controllers
             else
             {
                 return MvcHtmlString.Create(tmp.DocumentNote);
+            }
+        }
+
+        [ChildActionOnly]
+        public MvcHtmlString GetPercent(int id = 0)//employeeId
+        {
+            var employee = db.Employee.Find(id);
+            if (employee == null)
+            {
+                return MvcHtmlString.Create("");
+            }
+            else
+            {
+                return MvcHtmlString.Create(employee.GetPercent());
             }
         }
 

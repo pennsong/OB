@@ -5,7 +5,7 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<h3>@Html.DisplayNameFor(model => model.Percent):@Html.DisplayFor(model => model.Percent)</h3>
+<h3>完成度:@Html.Action("GetPercent", "Employee", new { id = Model.Id })</h3>
 
 <fieldset>
     <legend>Employee</legend>

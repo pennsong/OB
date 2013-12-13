@@ -17,7 +17,7 @@ namespace OB.Models.ViewModel
         }
 
         [HiddenInput(DisplayValue = true)]
-        [DisplayName("员工编号")]
+        [DisplayName("员工ID")]
         public int EmployeeId { get; set; }
 
         [Timestamp]

@@ -1,0 +1,25 @@
+﻿@model OB.Models.Employee
+
+@{
+    ViewBag.Name = "员工";
+    ViewBag.Title = "删除";
+}
+
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
+
+<h3>您确定要删除此条记录么?</h3>
+
+@Html.Action("EmployeeDetails", "Employee", new { id = Model.Id })
+
+<div>
+    @using (Html.BeginForm("DeleteSave", "Employee"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+
+        <input type="submit" value="确认删除" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>

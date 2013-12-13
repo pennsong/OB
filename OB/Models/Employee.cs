@@ -464,74 +464,6 @@ namespace OB.Models
         [DisplayName("雇佣信息20")]
         public string HireInfo20 { get; set; }
 
-        [DisplayName("完成度")]
-        [DisplayFormat(DataFormatString = "{0:P2}")]
-        public decimal Percent
-        {
-            get
-            {
-                // 取权重
-                Weight weight;
-                using (var db = new OBContext())
-                {
-                    weight = db.Weight.Where(a => a.WeightClientId == ClientId).SingleOrDefault();
-                    if (weight == null)
-                    {
-                        weight = db.Weight.Where(a => a.WeightClientId == null).Single();
-                    }
-                }
-
-                // 取得普通权重
-                PropertyInfo[] fs = typeof(Weight).GetProperties();
-                decimal count = 0;
-                decimal total = 0;
-                string[] exclude = { "Id", "WeightClientId", "WeightClient", "IsDeleted" };
-                string[] collection = { "Educations", "Works", "Families" };
-                foreach (PropertyInfo item in fs)
-                {
-                    if (exclude.Contains(item.Name))
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        var t = typeof(Employee).GetProperty(item.Name);
-                        var v = t.GetValue(this);
-                        if ((collection.Contains(item.Name) && Convert.ToInt32(v.GetType().GetProperty("Count").GetValue(v)) > 0) || (!(collection.Contains(item.Name)) && v != null))
-                        {
-                            count += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
-                        }
-                    }
-                    total += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
-                }
-
-                // 取得上传文件权重
-                var clientPensionCityDocument = Client.ClientPensionCityDocuments.Where(a => (a.PensionCityId == null && PensionCityId == null) || (a.PensionCityId == PensionCityId)).SingleOrDefault();
-                if (clientPensionCityDocument == null)
-                {
-                    return 0;
-                }
-                foreach (var item in clientPensionCityDocument.Documents)
-                {
-                    var doc = EmployeeDocs.Where(a => a.DocumentId == item.Id).SingleOrDefault();
-                    if (doc != null && !String.IsNullOrWhiteSpace(doc.ImgPath))
-                    {
-                        count += item.Weight;
-                    }
-                    total += item.Weight;
-                }
-
-                if (total == 0)
-                {
-                    return 0;
-                }
-                else
-                {
-                    return (count / total);
-                }
-            }
-        }
-
         public virtual User User { get; set; }
         public virtual Certificate Certificate { get; set; }
         public virtual City PensionCity { get; set; }
@@ -553,6 +485,17 @@ namespace OB.Models
         public virtual ICollection<BudgetCenter> BudgetCenters { get; set; }
         public virtual ICollection<Assurance> Assurances { get; set; }
         public virtual ICollection<EmployeeDoc> EmployeeDocs { get; set; }
+
+        //FrameLog related
+        public object Reference
+        {
+            get { return Id; }
+        }
+
+        public override string ToString()
+        {
+            return ChineseName;
+        }
 
         public List<Family> GetFamilies()
         {
@@ -584,15 +527,70 @@ namespace OB.Models
             return EmployeeDocs.Where(a => a.IsDeleted == false).ToList();
         }
 
-        //FrameLog related
-        public object Reference
+        public string GetPercent()
         {
-            get { return Id; }
+
+            // 取权重
+            Weight weight;
+            using (var db = new OBContext())
+            {
+                weight = db.Weight.Where(a => a.WeightClientId == ClientId).SingleOrDefault();
+                if (weight == null)
+                {
+                    weight = db.Weight.Where(a => a.WeightClientId == null).Single();
+                }
+            }
+
+            // 取得普通权重
+            PropertyInfo[] fs = typeof(Weight).GetProperties();
+            decimal count = 0;
+            decimal total = 0;
+            string[] exclude = { "Id", "WeightClientId", "WeightClient", "IsDeleted" };
+            string[] collection = { "Educations", "Works", "Families" };
+            foreach (PropertyInfo item in fs)
+            {
+                if (exclude.Contains(item.Name))
+                {
+                    continue;
+                }
+                else
+                {
+                    var t = typeof(Employee).GetProperty(item.Name);
+                    var v = t.GetValue(this);
+                    if ((collection.Contains(item.Name) && Convert.ToInt32(v.GetType().GetProperty("Count").GetValue(v)) > 0) || (!(collection.Contains(item.Name)) && v != null))
+                    {
+                        count += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
+                    }
+                }
+                total += Convert.ToInt32(typeof(Weight).GetProperty(item.Name).GetValue(weight));
+            }
+
+            // 取得上传文件权重
+            var clientPensionCityDocument = Client.ClientPensionCityDocuments.Where(a => (a.PensionCityId == null && PensionCityId == null) || (a.PensionCityId == PensionCityId)).SingleOrDefault();
+            if (clientPensionCityDocument == null)
+            {
+                return "0%";
+            }
+            foreach (var item in clientPensionCityDocument.Documents)
+            {
+                var doc = EmployeeDocs.Where(a => a.DocumentId == item.Id).SingleOrDefault();
+                if (doc != null && !String.IsNullOrWhiteSpace(doc.ImgPath))
+                {
+                    count += item.Weight;
+                }
+                total += item.Weight;
+            }
+
+            if (total == 0)
+            {
+                return "0%";
+            }
+            else
+            {
+                return String.Format("{0:P2}.", (count / total));
+            }
         }
 
-        public override string ToString()
-        {
-            return ChineseName;
-        }
+
     }
 }

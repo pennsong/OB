@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Employee>
+@{
+    string returnUrl = Url.Action((((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString(), (RouteValueDictionary)(ViewBag.RV));
+}
+
+@Html.Partial("PageLink")
+
+<table>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChineseName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmployeeStatus)
+            </th>
+            <th>完成度
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EnterDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProbationDueDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContractBeginDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ContractEndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProbationSalary)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salary)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ChineseName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmployeeStatus)
+                </td>
+                <td>
+                    @Html.Action("GetPercent", "Employee", new { id = item.Id })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Client.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EnterDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProbationDueDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContractBeginDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ContractEndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProbationSalary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    <div class="groupOperation">
+
+
+                        @if (item.IsDeleted)
+                        {
+                            using (Html.BeginForm("Restore", "Employee"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="恢复" />
+                            }
+                        }
+                        else
+                        {
+                            if (item.EmployeeStatus == EmployeeStatus.新增未通知)
+                            {
+                                using (Html.BeginForm("SendOffer", "Employee"))
+                                {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="发送Offer" />
+                                }
+                            }
+                            using (Html.BeginForm("EditEmployeeBack", "Employee"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="编辑" />
+                            }
+                            using (Html.BeginForm("BackDetails", "Employee"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="详情" />
+                            }
+                            using (Html.BeginForm("Delete", "Employee"))
+                            {    
+                            @Html.AntiForgeryToken()
+
+                            @Html.Hidden("id", item.Id)
+                            @Html.Hidden("returnUrl", returnUrl)
+                            <input type="submit" value="删除" />
+                            }
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

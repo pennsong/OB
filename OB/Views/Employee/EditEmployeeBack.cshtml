@@ -6,13 +6,14 @@
 
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("EditEmployeeBackSave", "Employee"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
     <fieldset>
         <legend>EditEmployeeBack</legend>
+        @Html.Hidden("returnUrl", (string)ViewBag.ReturnUrl)
 
         <div class="editor-label">
             @Html.LabelFor(model => model.EmployeeId)
@@ -98,7 +99,7 @@
             @Html.LabelFor(model => model.PensionCityId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.PensionCityId, new SelectList(Model.Employee.Client.PensionCities.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.PensionCityId, new SelectList(Common.GetEmployeePensionCityList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.PensionCityId)
         </div>
 
@@ -106,7 +107,7 @@
             @Html.LabelFor(model => model.AccumulationCityId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.AccumulationCityId, new SelectList(Model.Employee.Client.AccumulationCities.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.AccumulationCityId, new SelectList(Common.GetEmployeeAccumulationCityList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.AccumulationCityId)
         </div>
 
@@ -114,7 +115,7 @@
             @Html.LabelFor(model => model.PensionTypeId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.PensionTypeId, new SelectList(ViewBag.PensionTypeList, "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.PensionTypeId, new SelectList(Common.GetEmployeePensionTypeList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.PensionTypeId)
         </div>
 
@@ -122,7 +123,7 @@
             @Html.LabelFor(model => model.AccumulationTypeId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.AccumulationTypeId, new SelectList(ViewBag.AccumulationTypeList, "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.AccumulationTypeId, new SelectList(Common.GetEmployeeAccumulationTypeList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.AccumulationTypeId)
         </div>
 
@@ -194,7 +195,7 @@
             @Html.LabelFor(model => model.WorkCityId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.WorkCityId, new SelectList(Model.Employee.Client.WorkCities.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.WorkCityId, new SelectList(Common.GetEmployeeWorkCityList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.WorkCityId)
         </div>
 
@@ -202,7 +203,7 @@
             @Html.LabelFor(model => model.DepartmentId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.DepartmentId, new SelectList(Model.Employee.Client.Departments.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.DepartmentId, new SelectList(Common.GetEmployeeDepartmentList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.DepartmentId)
         </div>
 
@@ -210,7 +211,7 @@
             @Html.LabelFor(model => model.LevelId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.LevelId, new SelectList(Model.Employee.Client.Levels.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.LevelId, new SelectList(Common.GetEmployeeLevelList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.LevelId)
         </div>
 
@@ -218,7 +219,7 @@
             @Html.LabelFor(model => model.PositionId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.PositionId, new SelectList(Model.Employee.Client.Positions.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.PositionId, new SelectList(Common.GetEmployeePositionList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.PositionId)
         </div>
 
@@ -250,7 +251,7 @@
             @Html.LabelFor(model => model.ContractTypeId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Model.Employee.Client.ContractTypes.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.ContractTypeId, new SelectList(Common.GetEmployeeContractTypeList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.ContractTypeId)
         </div>
 
@@ -378,7 +379,7 @@
             @Html.LabelFor(model => model.ZhangtaoId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.ZhangtaoId, new SelectList(Model.Employee.Client.Zhangtaos.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.ZhangtaoId, new SelectList(Common.GetEmployeeZhangtaoList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.ZhangtaoId)
         </div>
 
@@ -386,7 +387,7 @@
             @Html.LabelFor(model => model.TaxCityId)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.TaxCityId, new SelectList(Model.Employee.Client.TaxCities.OrderBy(a => a.Name).ToList(), "Id", "Name"), String.Empty)
+            @Html.DropDownListFor(model => model.TaxCityId, new SelectList(Common.GetEmployeeTaxCityList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), String.Empty)
             @Html.ValidationMessageFor(model => model.TaxCityId)
         </div>
 
@@ -553,24 +554,24 @@
             @Html.LabelFor(model => model.BudgetCenterIds)
         </div>
         <div class="editor-field">
-            @Html.ListBoxFor(model => model.BudgetCenterIds, new MultiSelectList(Model.Employee.Client.BudgetCenters.OrderBy(a => a.Name).ToList(), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
+            @Html.ListBoxFor(model => model.BudgetCenterIds, new MultiSelectList(Common.GetEmployeeBudgetCenterList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
             @Html.ValidationMessageFor(model => model.TaxCityId)
         </div>
         <div class="editor-label">
             @Html.LabelFor(model => model.AssuranceIds)
         </div>
         <div class="editor-field">
-            @Html.ListBoxFor(model => model.AssuranceIds, new MultiSelectList(Model.Employee.Client.Assurances.OrderBy(a => a.Name).ToList(), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
+            @Html.ListBoxFor(model => model.AssuranceIds, new MultiSelectList(Common.GetEmployeeAssuranceList(Model.EmployeeId).OrderBy(a => a.Name), "Id", "Name"), new { @class = "multiselect2side", size = "10" })
             @Html.ValidationMessageFor(model => model.TaxCityId)
         </div>
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="保存" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Styles {

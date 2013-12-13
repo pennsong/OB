@@ -159,6 +159,10 @@ namespace OB.Controllers
                     {
                         ModelState.AddModelError(string.Empty, "相同名称的记录已存在,保存失败!");
                     }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, e.ToString());
+                    }
                 }
             }
             ViewBag.ReturnUrl = returnUrl;

@@ -5,14 +5,15 @@
 }
 
 <h2>@ViewBag.Title</h2>
-@using (Html.BeginForm())
+@Html.Action("EmployeeAbstract", "Employee", new { id = Model.EmployeeId })
+@using (Html.BeginForm("SendOfferSave", "Employee"))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    @Html.Action("EmployeeAbstract", "Employee", new { id = Model.EmployeeId });
     <fieldset>
         <legend>Offer</legend>
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
         @Html.HiddenFor(model => model.EmployeeId)
         @Html.HiddenFor(model => model.Timestamp)
@@ -20,13 +21,13 @@
         @Html.ValidationMessageFor(model => model.Content)
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="发送Offer" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("取消", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

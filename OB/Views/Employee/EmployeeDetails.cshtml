@@ -1,7 +1,8 @@
 ﻿@model OB.Models.Employee
 <fieldset>
     <legend>员工信息</legend>
-    <h3>@Html.DisplayNameFor(model => model.Percent):@Html.DisplayFor(model => model.Percent)</h3>
+    <h3>完成度:@Html.Action("GetPercent", "Employee", new { id = Model.Id })</h3>
+
     <div class="display-label">
         @Html.DisplayNameFor(model => model.UserId)
     </div>

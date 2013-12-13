@@ -758,8 +758,8 @@
     <Content Include="Views\Home\Reset.cshtml" />
     <Content Include="Views\Employee\SendOffer.cshtml" />
     <Content Include="Views\Employee\OnPosition.cshtml" />
-    <Content Include="Views\Employee\EmployeeDetail.cshtml" />
-    <Content Include="Views\Employee\BackDetail.cshtml" />
+    <Content Include="Views\Employee\EmployeeDetails.cshtml" />
+    <Content Include="Views\Employee\BackDetails.cshtml" />
     <Content Include="Views\Employee\EmployeeDoc.cshtml" />
     <Content Include="Views\Shared\PageLink.cshtml" />
     <Content Include="Views\Client\GetClient.cshtml" />
@@ -933,6 +933,10 @@
     <Content Include="Views\AccumulationType\Abstract.cshtml" />
     <Content Include="Views\Assurance\Abstract.cshtml" />
     <Content Include="Views\Employee\Submit.cshtml" />
+    <Content Include="Views\Employee\GetHREmployee.cshtml" />
+    <Content Include="Views\Employee\Delete.cshtml" />
+    <Content Include="Views\Employee\Restore.cshtml" />
+    <Content Include="Views\Employee\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

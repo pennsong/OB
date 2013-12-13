@@ -69,7 +69,7 @@ namespace OB.Lib
                 int filesize = file.ContentLength;//获取上传文件的大小单位为字节byte
                 string fileEx = System.IO.Path.GetExtension(filename);//获取上传文件的扩展名
                 string NoFileName = System.IO.Path.GetFileNameWithoutExtension(filename);//获取无扩展名的文件名
-                int Maxsize = 5* 1024 * 1024;//定义上传文件的最大空间大小为5M
+                int Maxsize = 5 * 1024 * 1024;//定义上传文件的最大空间大小为5M
                 string FileType = ".xls,.xlsx,.png,.jpg,.jpeg,.pdf";//定义上传文件的类型字符串
 
                 FileName = NoFileName + importNow.ToString("yyyyMMddhhmmss") + "_" + importTime + fileEx;
@@ -299,6 +299,56 @@ namespace OB.Lib
         // end candidate
         //end user
 
+        //employee
+        // hr employee
+        public static List<Employee> GetHREmployeeList(string role, bool includeSoftDeleted = false, string filter = "")
+        {
+            using (var db = new OBContext())
+            {
+                return GetHREmployeeQuery(db, includeSoftDeleted, filter).ToList();
+            }
+        }
+
+        public static IQueryable<Employee> GetHREmployeeQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+            int filterInt;
+            bool parseFilterInt = int.TryParse(filter, out filterInt);
+
+            var curUserHRClients = db.User.Where(a => a.Id == WebSecurity.CurrentUserId).Single().HRClients.Select(a => a.Id);
+
+            var result = from a in db.Employee
+                         where curUserHRClients.Contains(a.ClientId)
+                         select a;
+
+            if (parseFilterInt)
+            {
+                result = result.Where(a => a.ChineseName.ToUpper().Contains(filter) || a.EnglishName.ToUpper().Contains(filter) || a.Id == filterInt);
+            }
+            else
+            {
+                result = result.Where(a => a.ChineseName.ToUpper().Contains(filter) || a.EnglishName.ToUpper().Contains(filter));
+            }
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // end hr employee
+        public static IQueryable<Employee> GetEmployeeQuery(OBContext db, int id, bool includeSoftDeleted = false)
+        {
+            var result = db.Employee.Where(a => a.Id == id);
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        //end employee
+
         //certificate
         public static IQueryable<Certificate> GetCertificateQuery(OBContext db, bool includeSoftDeleted = false, string keyword = "")
         {
@@ -499,6 +549,50 @@ namespace OB.Lib
         //end ClientPensionCityDocument
 
         //city
+        // client work city
+        public static List<City> GetClientWorkCityList(int clientId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetClientWorkCityQuery(db, clientId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetClientWorkCityQuery(OBContext db, int clientId)
+        {
+            var client = db.Client.Where(a => a.Id == clientId).SingleOrDefault();
+            if (client == null)
+            {
+                return null;
+            }
+            var clientCities = client.WorkCities.Select(a => a.Id);
+            var result = GetCityQuery(db).Where(a => clientCities.Contains(a.Id));
+            return result;
+        }
+        // end client work city
+
+        // client tax city
+        public static List<City> GetClientTaxCityList(int clientId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetClientTaxCityQuery(db, clientId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetClientTaxCityQuery(OBContext db, int clientId)
+        {
+            var client = db.Client.Where(a => a.Id == clientId).SingleOrDefault();
+            if (client == null)
+            {
+                return null;
+            }
+            var clientCities = client.TaxCities.Select(a => a.Id);
+            var result = GetCityQuery(db).Where(a => clientCities.Contains(a.Id));
+            return result;
+        }
+        // end client tax city
+
         // client pension city
         public static List<City> GetClientPensionCityList(int clientId)
         {
@@ -520,6 +614,108 @@ namespace OB.Lib
             return result;
         }
         // end client pension city
+
+        // client accumulation city
+        public static List<City> GetClientAccumulationCityList(int clientId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetClientAccumulationCityQuery(db, clientId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetClientAccumulationCityQuery(OBContext db, int clientId)
+        {
+            var client = db.Client.Where(a => a.Id == clientId).SingleOrDefault();
+            if (client == null)
+            {
+                return null;
+            }
+            var clientCities = client.AccumulationCities.Select(a => a.Id);
+            var result = GetCityQuery(db).Where(a => clientCities.Contains(a.Id));
+            return result;
+        }
+        // end client accumulation city
+
+        // employee work city
+        public static List<City> GetEmployeeWorkCityList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeeWorkCityQuery(db, employeeId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetEmployeeWorkCityQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientWorkCityQuery(db, employee.ClientId);
+        }
+        // end employee work city
+
+        // employee tax city
+        public static List<City> GetEmployeeTaxCityList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeeTaxCityQuery(db, employeeId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetEmployeeTaxCityQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientTaxCityQuery(db, employee.ClientId);
+        }
+        // end employee tax city
+
+        // employee pension city
+        public static List<City> GetEmployeePensionCityList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeePensionCityQuery(db, employeeId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetEmployeePensionCityQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientPensionCityQuery(db, employee.ClientId);
+        }
+        // end employee pension city
+
+        // employee accumulation city
+        public static List<City> GetEmployeeAccumulationCityList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeeAccumulationCityQuery(db, employeeId).ToList();
+            }
+        }
+
+        public static IQueryable<City> GetEmployeeAccumulationCityQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientAccumulationCityQuery(db, employee.ClientId);
+        }
+        // end employee accumulation city
 
         public static List<City> GetCityList(bool includeSoftDeleted = false, string filter = "")
         {
@@ -566,7 +762,7 @@ namespace OB.Lib
         }
         // end supplier
 
-        //accumulation type
+        //accumulationType
         public static List<AccumulationType> GetAccumulationTypeList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
@@ -587,9 +783,38 @@ namespace OB.Lib
             }
             return result;
         }
-        //end accumulation type
+        // client accumulationType
+        public static IQueryable<AccumulationType> GetClientAccumulationTypeQuery(OBContext db, int clientId)
+        {
+            var result = from a in db.ClientCitySupplierHukou
+                         where a.ClientId == clientId
+                         from b in a.AccumulationTypes
+                         select b;
+            return result;
+        }
+        // end client accumulationType
+        // employee accumulationType
+        public static List<AccumulationType> GetEmployeeAccumulationTypeList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeeAccumulationTypeQuery(db, employeeId).ToList();
+            }
+        }
 
-        //pension type
+        public static IQueryable<AccumulationType> GetEmployeeAccumulationTypeQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientAccumulationTypeQuery(db, employee.ClientId);
+        }
+        // end employee accumulationType
+        //end accumulationType
+
+        //pensionType
         public static List<PensionType> GetPensionTypeList(bool includeSoftDeleted = false, string filter = "")
         {
             using (var db = new OBContext())
@@ -610,7 +835,37 @@ namespace OB.Lib
             }
             return result;
         }
-        //end pension type
+        // client pensionType
+        public static IQueryable<PensionType> GetClientPensionTypeQuery(OBContext db, int clientId)
+        {
+            var result = from a in db.ClientCitySupplierHukou
+                         where a.ClientId == clientId
+                         from b in a.PensionTypes
+                         select b;
+            return result;
+        }
+        // end client pensionType
+        // employee pensionType
+        public static List<PensionType> GetEmployeePensionTypeList(int employeeId)
+        {
+            using (var db = new OBContext())
+            {
+                return GetEmployeePensionTypeQuery(db, employeeId).ToList();
+            }
+        }
+
+        public static IQueryable<PensionType> GetEmployeePensionTypeQuery(OBContext db, int employeeId)
+        {
+            var employee = GetEmployeeQuery(db, employeeId).SingleOrDefault();
+            if (employee == null)
+            {
+                return null;
+            }
+            return GetClientPensionTypeQuery(db, employee.ClientId);
+        }
+        // end employee pensionType
+
+        //end pensionType
 
         //assurance
         // hradmin assurance
@@ -656,6 +911,24 @@ namespace OB.Lib
         //end CustomField
 
         //Department
+        public static IQueryable<Department> GetDepartmentQuery(OBContext db, bool includeSoftDeleted = false, string filter = "")
+        {
+            filter = filter.ToUpper();
+
+            var result = db.Department.AsQueryable();
+
+            if (!String.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(a => a.Client.Name.ToUpper().Contains(filter) || a.Name.ToUpper().Contains(filter));
+            }
+
+            if (!includeSoftDeleted)
+            {
+                result = result.Where(a => a.IsDeleted == false);
+            }
+            return result;
+        }
+        // HRAdmin Department
         public static IQueryable<Department> GetHRAdminDepartmentQuery(OBContext db, int userId, bool includeSoftDeleted = false, string filter = "")
         {
             filter = filter.ToUpper();
@@ -676,6 +949,22 @@ namespace OB.Lib
             }
             return result;
         }
+        // HRAdmin Department
+
+        // client department
+        public static IQueryable<Department> GetClientDepartmentQuery(OBContext db, int clientId)
+        {
+            var client = db.Client.Where(a => a.Id == clientId).SingleOrDefault();
+            if (client == null)
+            {
+                return null;
+            }
+            var clientDepartments = client.Departments.Select(a => a.Id);
+            var result = GetDepartmentQuery(db).Where(a => clientDepartments.Contains(a.Id));
+            return result;
+        }
+        // end client department
+
         //end Department
 
         //Level

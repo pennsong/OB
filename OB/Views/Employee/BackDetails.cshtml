@@ -1,0 +1,21 @@
+﻿@model OB.Models.Employee
+
+@{
+    ViewBag.Title = "员工详情";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.Action("EmployeeDetails", "Employee", new { id = Model.Id })
+
+<p>
+    @using (Html.BeginForm("EditEmployeeBack", "Employee"))
+    {    
+        @Html.AntiForgeryToken()
+
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+        <input type="submit" value="编辑" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">返回</a>
+</p>

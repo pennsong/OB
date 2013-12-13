@@ -11,21 +11,21 @@
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
-    @Html.Action("EmployeeDetail", "Employee", new { id = Model.EmployeeId });
+    @Html.Action("EmployeeDetails", "Employee", new { id = Model.EmployeeId });
     <fieldset>
         <legend>OnPosition</legend>
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
 
         @Html.HiddenFor(model => model.EmployeeId)
         @Html.HiddenFor(model => model.Timestamp)
 
         <p>
-            <input type="submit" value="Save" />
+            <input type="submit" value="确认入职" />
         </p>
     </fieldset>
 }
-
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
 </div>
 
 @section Scripts {

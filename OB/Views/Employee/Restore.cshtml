@@ -1,0 +1,25 @@
+﻿@model OB.Models.Employee
+
+@{
+    ViewBag.Name = "员工";
+    ViewBag.Title = "恢复";
+}
+
+<h1>@ViewBag.Name</h1>
+<h2>@ViewBag.Title</h2>
+
+<h3>您确定要恢复此条记录么?</h3>
+
+@Html.Action("EmployeeDetails", "Employee", new { id = Model.Id })
+
+<div>
+    @using (Html.BeginForm("RestoreSave", "Employee"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+        @Html.Hidden("returnUrl", @Url.Content((string)ViewBag.ReturnUrl))
+
+        <input type="submit" value="确认恢复" />
+    }
+    <a href="@Url.Content((string)ViewBag.ReturnUrl)">取消</a>
+</div>

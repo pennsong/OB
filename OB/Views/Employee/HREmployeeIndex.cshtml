@@ -1,96 +1,48 @@
-﻿@model IEnumerable<OB.Models.Employee>
+﻿@{
+    string action = (((RouteValueDictionary)(ViewBag.RV))["actionAjax"]).ToString();
+    string returnRoot = (((RouteValueDictionary)(ViewBag.RV))["returnRoot"]).ToString();
 
-@{
-    ViewBag.Title = "HREmployeeIndex";
+    ViewBag.Name = "员工列表";
+    AjaxOptions ajaxOpts = new AjaxOptions
+    {
+        UpdateTargetId = "AjaxBody",
+        Url = Url.Action(action),
+    };
+    
 }
 
-<h2>HREmployeeIndex</h2>
+<h1>@ViewBag.Name</h1>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ChineseName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EmployeeStatus)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Percent)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ClientId)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EnterDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ProbationDueDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ContractBeginDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ContractEndDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ProbationSalary)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Salary)
-        </th>
-        <th></th>
-    </tr>
-
-    @foreach (var item in Model)
-    {
+@using (Ajax.BeginForm(ajaxOpts))
+{
+    <table>
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                <span class="searchLabel">关键词</span>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChineseName)
+                <span class="searchLabel">包含已删除项目</span>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            @Html.Hidden("returnRoot", returnRoot)
+            @Html.Hidden("actionAjax", action)
+            <td>
+                @Html.TextBox("keyword")
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.EmployeeStatus)
+                @Html.CheckBox("includeSoftDeleted", false)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Percent)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Client.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EnterDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProbationDueDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContractBeginDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ContractEndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProbationSalary)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Salary)
-            </td>
-            <td>
-                @Html.ActionLink("发送Offer", "SendOffer", new { id = item.Id }) |
-                @Html.ActionLink("入职", "OnPosition", new { id = item.Id }) |
-                @Html.ActionLink("编辑", "EditEmployeeBack", new { id = item.Id }) |
-                @Html.ActionLink("详情", "BackDetail", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <button type="submit">查询</button>
             </td>
         </tr>
-    }
-
-</table>
+    </table>
+}
+<div id="AjaxBody">
+    @Html.Action(action, (RouteValueDictionary)(ViewBag.RV))
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
